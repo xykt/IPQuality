@@ -1269,27 +1269,6 @@ netflix[utype]="${smedia[nodata]}"
 return
 fi
 }
-function MediaUnlockTest_YouTube_CDN(){
-local tmpresult=$(curl -$1 -sS --max-time 10 "https://redirector.googlevideo.com/report_mapping" 2>&1)
-if [[ $tmpresult == "curl"* ]];then
-youtube[uregion]="${smedia[nodata]}"
-return
-fi
-local iata=$(echo $tmpresult|grep '=>'|awk "NR==1"|awk '{print $3}'|cut -f2 -d'-'|cut -c 1-3|tr [:lower:] [:upper:])
-location=$(curl -s "$IATA_Database"|grep "\"$iata\""|awk -F',' '{print $1}'|tr -d '"')
-local isIDC=$(echo $tmpresult|grep "router")
-if [ -n "$iata" ]&&[ -z "$isIDC" ];then
-local CDN_ISP=$(echo $tmpresult|awk "NR==1"|awk '{print $3}'|cut -f1 -d"-"|tr [:lower:] [:upper:])
-youtube[uregion]="  [$location]   "
-return
-elif [ -n "$iata" ]&&[ -n "$isIDC" ];then
-youtube[uregion]="  [$location]   "
-return
-else
-youtube[uregion]="${smedia[nodata]}"
-return
-fi
-}
 function MediaUnlockTest_YouTube_Premium(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Youtube $Font_Suffix"
 ((ibar_step+=3))
@@ -1304,24 +1283,24 @@ local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
 local tmpresult=$(curl -$1 --max-time 10 -sSL -H "Accept-Language: en" -b "YSC=BiCUU3-5Gdk; CONSENT=YES+cb.20220301-11-p0.en+FX+700; GPS=1; VISITOR_INFO1_LIVE=4VwPMkB7W5A; PREF=tz=Asia.Shanghai; _gcl_au=1.1.1809531354.1646633279" "https://www.youtube.com/premium" 2>&1)
 if [[ $tmpresult == "curl"* ]];then
 youtube[ustatus]="${smedia[bad]}"
-MediaUnlockTest_YouTube_CDN $1
-youtube[utype]="$resultunlocktype"
+youtube[uregion]="${smedia[nodata]}"
+youtube[utype]="${smedia[nodata]}"
 return
 fi
 local isCN=$(echo $tmpresult|grep 'www.google.cn')
 if [ -n "$isCN" ];then
 youtube[ustatus]="${smedia[cn]}"
 youtube[uregion]="  $Font_Red[CN]$Font_Green   "
-youtube[utype]="$resultunlocktype"
+youtube[utype]="${smedia[nodata]}"
 return
 fi
 local isNotAvailable=$(echo $tmpresult|grep 'Premium is not available in your country')
-local region=$(echo $tmpresult|grep "countryCode"|sed 's/.*"countryCode"//'|cut -f2 -d'"')
+local region=$(echo $tmpresult|sed -n 's/.*"contentRegion":"\([^"]*\)".*/\1/p')
 local isAvailable=$(echo $tmpresult|grep 'ad-free')
 if [ -n "$isNotAvailable" ];then
 youtube[ustatus]="${smedia[noprem]}"
-MediaUnlockTest_YouTube_CDN $1
-youtube[utype]="$resultunlocktype"
+youtube[uregion]="${smedia[nodata]}"
+youtube[utype]="${smedia[nodata]}"
 return
 elif [ -n "$isAvailable" ]&&[ -n "$region" ];then
 youtube[ustatus]="${smedia[yes]}"
@@ -1330,13 +1309,13 @@ youtube[utype]="$resultunlocktype"
 return
 elif [ -z "$region" ]&&[ -n "$isAvailable" ];then
 youtube[ustatus]="${smedia[yes]}"
-MediaUnlockTest_YouTube_CDN $1
+youtube[uregion]="${smedia[nodata]}"
 youtube[utype]="$resultunlocktype"
 return
 else
 youtube[ustatus]="${smedia[bad]}"
-MediaUnlockTest_YouTube_CDN $1
-youtube[utype]="$resultunlocktype"
+youtube[uregion]="${smedia[nodata]}"
+youtube[utype]="${smedia[nodata]}"
 fi
 }
 function MediaUnlockTest_PrimeVideo_Region(){
