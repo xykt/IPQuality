@@ -1361,6 +1361,7 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
 local tmpresult=$(curl -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://spclient.wg.spotify.com/signup/public/v1/account" -d "birth_day=11&birth_month=11&birth_year=2000&collect_personal_info=undefined&creation_flow=&creation_point=https%3A%2F%2Fwww.spotify.com%2Fhk-en%2F&displayname=Gay%20Lord&gender=male&iagree=1&key=a1e486e2729f46d6bb368d6b2bcda326&platform=www&referrer=&send-email=0&thirdpartyemail=0&identifier_token=AgE6YTvEzkReHNfJpO114514" -H "Accept-Language: en" 2>&1)
+if echo "$tmpresult"|jq . >/dev/null 2>&1;then
 local region=$(echo $tmpresult|jq -r '.country')
 local isLaunched=$(echo $tmpresult|jq -r '.is_country_launched')
 local StatusCode=$(echo $tmpresult|jq -r '.status')
@@ -1378,6 +1379,12 @@ elif [ "$StatusCode" = "311" ]&&[ "$isLaunched" = "true" ];then
 spotify[ustatus]="${smedia[yes]}"
 spotify[uregion]="  [$region]   "
 spotify[utype]="$resultunlocktype"
+return
+fi
+else
+spotify[ustatus]="${smedia[bad]}"
+spotify[uregion]="${smedia[nodata]}"
+spotify[utype]="${smedia[nodata]}"
 return
 fi
 }
