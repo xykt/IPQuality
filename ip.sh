@@ -362,14 +362,19 @@ case $package_manager in
 apt)sudo apt update
 sudo $install_command jq curl bc netcat-openbsd
 ;;
-dnf|yum)sudo $package_manager makecache
+dnf)sudo dnf install epel-release -y
+sudo $package_manager makecache
+sudo $install_command jq curl bc nmap-ncat
+;;
+yum)sudo yum install epel-release -y
+sudo $package_manager makecache
 sudo $install_command jq curl bc nmap-ncat
 ;;
 pacman)sudo pacman -Sy
 sudo $install_command jq curl bc gnu-netcat
 ;;
 apk)sudo apk update
-sudo $install_command jq curl bc netcat-openbsd
+sudo $install_command jq curl bc netcat-openbsd grep
 esac
 }
 declare -A browsers=(
