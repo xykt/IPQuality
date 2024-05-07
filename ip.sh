@@ -1465,7 +1465,7 @@ fi
 }
 get_sorted_mx_records(){
 local domain=$1
-dig +short MX $domain|sort -n|awk '{print $2}'|sed 's/\.$//'
+dig +short MX $domain|sort -n|head -1|awk '{print $2}'
 }
 check_email_service(){
 local service=$1
@@ -1603,13 +1603,17 @@ if [[ -n $city_info ]];then
 echo -n -e "\r$Font_Cyan${sbasic[city]}$Font_Green$city_info$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[countrycode]} && ${maxmind[countrycode]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[country]}$Font_Green[${maxmind[countrycode]}]${maxmind[country]}$Font_Suffix\n"
+echo -n -e "\r$Font_Cyan${sbasic[country]}$Font_Green[${maxmind[countrycode]}]${maxmind[country]}$Font_Suffix"
+if [[ -n ${maxmind[continentcode]} && ${maxmind[continentcode]} != "null" ]];then
+echo -n -e "$Font_Green, [${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
+else
+echo -n -e "\n"
+fi
+elif [[ -n ${maxmind[continentcode]} && ${maxmind[continentcode]} != "null" ]];then
+echo -n -e "\r$Font_Cyan${sbasic[continent]}$Font_Green[${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[regcountrycode]} && ${maxmind[regcountrycode]} != "null" ]];then
 echo -n -e "\r$Font_Cyan${sbasic[regcountry]}$Font_Green[${maxmind[regcountrycode]}]${maxmind[regcountry]}$Font_Suffix\n"
-fi
-if [[ -n ${maxmind[continentcode]} && ${maxmind[continentcode]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[continent]}$Font_Green[${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[timezone]} && ${maxmind[timezone]} != "null" ]];then
 echo -n -e "\r$Font_Cyan${sbasic[timezone]}$Font_Green${maxmind[timezone]}$Font_Suffix\n"
