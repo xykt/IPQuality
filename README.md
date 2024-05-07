@@ -4,14 +4,26 @@
 <a href="/LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="license" /></a>  
 </p>
 
-## IP质量体检脚本 -  [IP Quality Check Script (EN)](https://github.com/xykt/IPQuality/blob/main/README_EN.md)
+## IP质量体检脚本  -  [IP Quality Check Script (EN)](https://github.com/xykt/IPQuality/blob/main/README_EN.md)
 
 **支持OS/Platform：Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux**
 
+- 中英文双语言支持
+- 支持IPv4/IPv6双栈查询
+- 精美排版，直观显示，多终端单屏优化展示，便于截图分享
+- 基础信息、IP类型、风险评分、风险因子、流媒体解锁、邮局检测六大模块
+- 基础数据源自*Maxmind*数据库
+- 风险信息 *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2LOCATION / IPQS / DB-IP / SCAMALYTICS / IPWHOIS* 多数据库整合
+- 流媒体及AI多个服务商 *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Spotify / ChatGPT* 解锁及解锁类型检测
+- 多邮局供应商 *Gmail / Outlook / Yahoo / Apple / QQ / Mail.ru / AOL / GMX / Mail.com / 163 / Sohu / Sina* 连通性检测
+- IP地址黑名单400+数据库检测
+
+##### 屏幕截图
 ![截图](https://raw.githubusercontent.com/xykt/IPQuality/main/img/cn_ipv4.png)
 
-**使用脚本前请确认curl已安装**
+## 使用方法
 
+##### 默认双栈检测：
 ````bash
 bash <(curl -Ls IP.Check.Place)
 ````
@@ -30,7 +42,6 @@ bash <(curl -Ls IP.Check.Place) -6
 ````bash
 bash <(curl -Ls IP.Check.Place) -l en
 ````
-
 
 ## 脚本更新
 
