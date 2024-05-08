@@ -1237,37 +1237,43 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result2=$(Check_DNS_2 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
-local result1=$(curl -$1 --user-agent "$UA_Browser" -fsL --max-time 10 "https://www.netflix.com/title/70143836"|sed -n 's/.*"isPlayable":\([^,}]*\).*/\1/p')
-local result2=$(curl -$1 --user-agent "$UA_Browser" -fsL --max-time 10 "https://www.netflix.com/title/80018499"|sed -n 's/.*"isPlayable":\([^,}]*\).*/\1/p')
-if [[ $result1 == "true" ]];then
-local region=$(curl -$1 --user-agent "$UA_Browser" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/login" 2>&1|cut -d '/' -f4|cut -d '-' -f1|tr [:lower:] [:upper:])
-if [[ -z $region ]];then
-region="US"
-fi
-netflix[ustatus]="${smedia[yes]}"
-netflix[uregion]="  [$region]   "
-netflix[utype]="$resultunlocktype"
-return
-elif [[ $result2 == "true" ]];then
-local region=$(curl -$1 --user-agent "$UA_Browser" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/login" 2>&1|cut -d '/' -f4|cut -d '-' -f1|tr [:lower:] [:upper:])
-if [[ -z $region ]];then
-region="US"
-fi
-netflix[ustatus]="${smedia[org]}"
-netflix[uregion]="  [$region]   "
-netflix[utype]="$resultunlocktype"
-return
-elif [[ $result2 == "false" ]];then
-netflix[ustatus]="${smedia[no]}"
-netflix[uregion]="${smedia[nodata]}"
-netflix[utype]="${smedia[nodata]}"
-return
-else
+local result1=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
+local result2=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
+local regiontmp=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fSsI -X GET --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1)
+if [[ $regiontmp == "curl"* ]];then
 netflix[ustatus]="${smedia[bad]}"
 netflix[uregion]="${smedia[nodata]}"
 netflix[utype]="${smedia[nodata]}"
 return
 fi
+local region=$(echo $regiontmp|cut -d '/' -f4|cut -d '-' -f1|tr [:lower:] [:upper:])
+if [[ -z $region ]];then
+region="US"
+fi
+if [[ $result1 == "404" ]]&&[[ $result2 == "404" ]];then
+netflix[ustatus]="${smedia[org]}"
+netflix[uregion]="  [$region]   "
+netflix[utype]="$resultunlocktype"
+return
+elif [[ $result1 == "403" ]]&&[[ $result2 == "403" ]];then
+netflix[ustatus]="${smedia[no]}"
+netflix[uregion]="${smedia[nodata]}"
+netflix[utype]="${smedia[nodata]}"
+return
+elif [[ $result1 == "200" ]]||[[ $result2 == "200" ]];then
+netflix[ustatus]="${smedia[yes]}"
+netflix[uregion]="  [$region]   "
+netflix[utype]="$resultunlocktype"
+return
+elif [[ $result1 == "000" ]];then
+netflix[ustatus]="${smedia[bad]}"
+netflix[uregion]="${smedia[nodata]}"
+netflix[utype]="${smedia[nodata]}"
+return
+fi
+netflix[ustatus]="${smedia[bad]}"
+netflix[uregion]="${smedia[nodata]}"
+netflix[utype]="${smedia[nodata]}"
 }
 function MediaUnlockTest_YouTube_Premium(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Youtube $Font_Suffix"
