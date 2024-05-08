@@ -64,4 +64,4 @@ bash <(curl -Ls IP.Check.Place) -l en
 <a href="https://github.com/xykt"><img src="https://avatars.githubusercontent.com/u/152045469?v=4" alt="@xykt" size="48" height="48" width="48" data-view-component="true"></img></a>
 
 **Stars History:**
-![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377dd77)
+![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377ff77)
