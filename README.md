@@ -47,6 +47,10 @@ bash <(curl -Ls IP.Check.Place) -l en
 
 2024/05/08 00:00 脚本发布
 
+2024/05/08 18:10 更新依赖程序dig检测及安装
+
+2024/05/08 23:00 修正Netflix澳洲检测结果不正确的bug
+
 ## 脚本贡献
 
 **Acknowledgments:**
