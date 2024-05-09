@@ -20,6 +20,7 @@ Back_Purple="\033[45m"
 Back_Cyan="\033[46m"
 Back_White="\033[47m"
 Font_Suffix="\033[0m"
+Font_LineClear="\033[2K"
 declare IP=""
 declare IPhide
 declare LANG="cn"
@@ -298,7 +299,7 @@ stail[stoday]="脚本今日运行次数："
 stail[stotal]="；总运行次数："
 stail[thanks]="。感谢使用xy系列脚本！"
 ;;
-*)echo -n -e "ERROR: Language not supported!"
+*)echo -ne "ERROR: Language not supported!"
 esac
 }
 countRunTimes(){
@@ -316,14 +317,14 @@ local bar="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 local n="${#bar}"
 while sleep 0.1;do
 if ! kill -0 $main_pid 2>/dev/null;then
-echo -n -e ""
+echo -ne ""
 exit
 fi
-echo -n -e "\r$1$Font_Cyan$Font_B$(printf '%*s' "$2" ''|tr ' ' '.') ${bar:ibar++%n:1} $(printf '%02d%%' $ibar_step) $Font_Suffix"
+echo -ne "\r$Font_Cyan$Font_B[$IP]# $1$Font_Cyan$Font_B$(printf '%*s' "$2" ''|tr ' ' '.') ${bar:ibar++%n:1} $(printf '%02d%%' $ibar_step) $Font_Suffix"
 done
 }
 kill_progress_bar(){
-kill "$bar_pid" 2>/dev/null&&echo -n -e "\r"
+kill "$bar_pid" 2>/dev/null&&echo -ne "\r"
 }
 install_dependencies(){
 if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1;then
@@ -348,6 +349,8 @@ alpine)install_packages "apk" "apk add"
 *)echo "Unsupported distribution: $ID"
 exit 1
 esac
+elif [ -n "$PREFIX" ];then
+install_packages "pkg" "pkg install"
 else
 echo "Cannot detect distribution because /etc/os-release is missing."
 exit 1
@@ -375,6 +378,9 @@ sudo $install_command jq curl bc gnu-netcat bind-tools
 ;;
 apk)sudo apk update
 sudo $install_command jq curl bc netcat-openbsd grep bind-tools
+;;
+pkg)$package_manager update
+$package_manager $install_command jq curl bc netcat dnsutils
 esac
 }
 declare -A browsers=(
@@ -418,7 +424,7 @@ return 1
 get_ipv4(){
 local response
 IPV4=$(ip -4 addr show|grep global|awk '{print $2}'|cut -d '/' -f1|head -n 1)
-if is_private_ipv4 "$IPV4";then
+if [[ -n $IPV4 ]];then
 IPV4=""
 local API_NET=("myip.check.place" "ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
 for p in "${API_NET[@]}";do
@@ -460,7 +466,7 @@ return 1
 get_ipv6(){
 local response
 IPV6=$(ip -6 addr show|grep global|awk '{print $2}'|cut -d '/' -f1|head -n 1)
-if is_private_ipv6 "$IPV6";then
+if [[ -n $IPV6 ]];then
 IPV6=""
 local API_NET=("myip.check.place" "ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
 for p in "${API_NET[@]}";do
@@ -563,11 +569,12 @@ echo "https://check.place/$lat,$lon,$zoom_level,$LANG"
 db_maxmind(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}Maxmind $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 maxmind=()
 local RESPONSE=$(curl -Ls -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 maxmind[asn]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemNumber')
 maxmind[org]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemOrganization')
 maxmind[city]=$(echo "$RESPONSE"|jq -r '.City.Name')
@@ -620,11 +627,12 @@ fi
 db_ipinfo(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPinfo $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-7-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipinfo=()
 local RESPONSE=$(curl -Ls -m 10 "https://ipinfo.io/widget/demo/$IP")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipinfo[usetype]=$(echo "$RESPONSE"|jq -r '.data.asn.type')
 ipinfo[comtype]=$(echo "$RESPONSE"|jq -r '.data.company.type')
 shopt -s nocasematch
@@ -660,7 +668,7 @@ ipinfo[server]=$(echo "$RESPONSE"|jq -r '.data.privacy.hosting')
 db_scamalytics(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}SCAMALYTICS $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-12-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 scamalytics=()
@@ -690,11 +698,12 @@ scamalytics[robot]=$(echo "$RESPONSE"|grep -A1 'Search Engine Robot'|tail -n1|gr
 db_ipregistry(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipregistry $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-11-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipregistry=()
 local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
 ipregistry[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
 shopt -s nocasematch
@@ -738,12 +747,13 @@ ipregistry[abuser]=$(echo "$RESPONSE"|jq -r '.security.is_abuser')
 db_ipapi(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipapi $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-6-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
 local RESPONSE=$(curl -sL -m 10 "https://api.ipapi.is/?q=$IP")
 [[ -z $RESPONSE ]]&&return 1
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
 shopt -s nocasematch
@@ -804,11 +814,12 @@ ipapi[robot]=$(echo "$RESPONSE"|jq -r '.is_crawler')
 db_abuseipdb(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}AbuseIPDB $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-10-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-10-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 abuseipdb=()
 local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=abuseipdb")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 abuseipdb[usetype]=$(echo "$RESPONSE"|jq -r '.data.usageType')
 shopt -s nocasematch
 case ${abuseipdb[usetype]} in
@@ -853,11 +864,12 @@ fi
 db_ip2location(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IP2LOCATION $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-12-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
 local RESPONSE=$(curl -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
 case ${ip2location[usetype]} in
@@ -906,11 +918,12 @@ ip2location[robot]="true"
 db_dbip(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}DB-IP $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-6-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 dbip=()
 local RESPONSE=$(curl -sL -m 10 "https://db-ip.com/demo/home.php?s=$IP")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 dbip[risktext]=$(echo "$RESPONSE"|jq -r '.demoInfo.threatLevel')
 shopt -s nocasematch
 case ${dbip[risktext]} in
@@ -928,7 +941,7 @@ shopt -u nocasematch
 db_ipwhois(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPWHOIS $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipwhois=()
@@ -942,6 +955,7 @@ local RESPONSE=$(curl -sL -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --com
 -H "Sec-Fetch-Mode: cors" \
 -H "Sec-Fetch-Site: same-origin" \
 -H "TE: trailers")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
 ipwhois[tor]=$(echo "$RESPONSE"|jq -r '.security.tor')
@@ -951,11 +965,12 @@ ipwhois[server]=$(echo "$RESPONSE"|jq -r '.security.hosting')
 db_ipdata(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipdata $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-7-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipdata=()
 local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipdata")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipdata[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipdata[proxy]=$(echo "$RESPONSE"|jq -r '.threat.is_proxy')
 ipdata[tor]=$(echo "$RESPONSE"|jq -r '.threat.is_tor')
@@ -969,11 +984,12 @@ ipdata[abuser]="true"
 db_ipqs(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPQS $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-5-${sinfo[ldatabase]}))&
+show_progress_bar "$temp_info" $((40-5-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipqs=()
 local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipqs[score]=$(echo "$RESPONSE"|jq -r '.fraud_score')
 if [[ ${ipqs[score]} -lt 75 ]];then
 ipqs[risk]="${sscore[low]}"
@@ -1113,7 +1129,7 @@ echo "${smedia[native]}"
 function MediaUnlockTest_TikTok(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}TikTok $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-7-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-7-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 tiktok=()
@@ -1152,7 +1168,7 @@ fi
 function MediaUnlockTest_DisneyPlus(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Disney+ $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 disney=()
@@ -1168,6 +1184,12 @@ disney[uregion]="${smedia[nodata]}"
 disney[utype]="${smedia[nodata]}"
 return
 elif [[ $PreAssertion == "curl"* ]];then
+disney[ustatus]="${smedia[bad]}"
+disney[uregion]="${smedia[nodata]}"
+disney[utype]="${smedia[nodata]}"
+return
+fi
+if ! (echo "$PreAssertion"|jq . >/dev/null 2>&1&&echo "$TokenContent"|jq . >/dev/null 2>&1);then
 disney[ustatus]="${smedia[bad]}"
 disney[uregion]="${smedia[nodata]}"
 disney[utype]="${smedia[nodata]}"
@@ -1189,6 +1211,12 @@ local fakecontent=$(echo "$Media_Cookie"|sed -n '8p')
 local refreshToken=$(echo $TokenContent|jq -r '.refresh_token')
 local disneycontent=$(echo $fakecontent|sed "s/ILOVEDISNEY/$refreshToken/g")
 local tmpresult=$(curl -$1 --user-agent "$UA_Browser" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycontent" 2>&1)
+if ! (echo "$tmpresult"|jq . >/dev/null 2>&1);then
+disney[ustatus]="${smedia[bad]}"
+disney[uregion]="${smedia[nodata]}"
+disney[utype]="${smedia[nodata]}"
+return
+fi
 local previewcheck=$(curl -$1 -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com"|grep preview)
 local isUnabailable=$(echo $previewcheck|grep 'unavailable')
 local region=$(echo $tmpresult|jq -r '.extensions.sdk.session.location.countryCode')
@@ -1228,7 +1256,7 @@ fi
 function MediaUnlockTest_Netflix(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Netflix $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 netflix=()
@@ -1278,7 +1306,7 @@ netflix[utype]="${smedia[nodata]}"
 function MediaUnlockTest_YouTube_Premium(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Youtube $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 youtube=()
@@ -1327,7 +1355,7 @@ fi
 function MediaUnlockTest_PrimeVideo_Region(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Amazon $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-7-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-7-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 amazon=()
@@ -1358,7 +1386,7 @@ fi
 function MediaUnlockTest_Spotify(){
 local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Spotify $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 spotify=()
@@ -1397,7 +1425,7 @@ fi
 function OpenAITest(){
 local temp_info="$Font_Cyan$Font_B${sinfo[ai]}${Font_I}ChatGPT $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-8-${sinfo[lai]}))&
+show_progress_bar "$temp_info" $((40-8-${sinfo[lai]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 chatgpt=()
@@ -1516,7 +1544,7 @@ services=("Gmail" "Outlook" "Yahoo" "Apple" "QQ" "MailRU" "AOL" "GMX" "MailCOM" 
 for service in "${services[@]}";do
 local temp_info="$Font_Cyan$Font_B${sinfo[mail]}$Font_I$service $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((50-1-${#service}-${sinfo[lmail]}))&
+show_progress_bar "$temp_info" $((40-1-${#service}-${sinfo[lmail]}))&
 bar_pid="$!"&&disown "$bar_pid"
 check_email_service $service
 kill_progress_bar
@@ -1525,8 +1553,8 @@ fi
 }
 check_dnsbl(){
 local temp_info="$Font_Cyan$Font_B${sinfo[dnsbl]} $Font_Suffix"
-((ibar_step+=5))
-show_progress_bar "$temp_info" $((50-1-${sinfo[ldnsbl]}))&
+((ibar_step=95))
+show_progress_bar "$temp_info" $((40-1-${sinfo[ldnsbl]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip_to_check=$1
@@ -1535,10 +1563,6 @@ smail[t]=0
 smail[c]=0
 smail[m]=0
 smail[b]=0
-if [[ -z $ip_to_check || -z $parallel_jobs ]];then
-echo "必须提供IP地址和并行线程数"
-return 1
-fi
 reversed_ip=$(echo "$ip_to_check"|awk -F. '{print $4"."$3"."$2"."$1}')
 local total=0
 local clean=0
@@ -1557,32 +1581,34 @@ smail[t]="$total"
 smail[c]="$clean"
 smail[m]="$other"
 smail[b]="$blacklisted"
-echo -n -e "\r$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix\n"
+echo -ne "$Font_LineClear"
+echo -ne "\r$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix\n"
 }
 }
 show_head(){
-echo -n -e "\r$(printf '%72s'|tr ' ' '#')\n"
+echo -ne "$Font_LineClear"
+echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
 calc_padding "${shead[title]}: $IPhide" 72
-echo -n -e "\r$PADDING$Font_B${shead[title]}: $Font_Cyan$IPhide$Font_Suffix$PADDING\n"
+echo -ne "\r$PADDING$Font_B${shead[title]}: $Font_Cyan$IPhide$Font_Suffix$PADDING\n"
 calc_padding "${shead[bash]}" 72
-echo -n -e "\r$PADDING${shead[bash]}$PADDING\n"
+echo -ne "\r$PADDING${shead[bash]}$PADDING\n"
 calc_padding "${shead[git]}" 72
-echo -n -e "\r$PADDING$Font_U${shead[git]}$Font_Suffix$PADDING\n"
+echo -ne "\r$PADDING$Font_U${shead[git]}$Font_Suffix$PADDING\n"
 calc_padding "${shead[time]}  ${shead[ver]}" 72
-echo -n -e "\r$PADDING${shead[time]}  ${shead[ver]}$PADDING\n"
-echo -n -e "\r$(printf '%72s'|tr ' ' '#')\n"
+echo -ne "\r$PADDING${shead[time]}  ${shead[ver]}$PADDING\n"
+echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
 }
 show_basic(){
-echo -n -e "\r${sbasic[title]}\n"
+echo -ne "\r${sbasic[title]}\n"
 if [[ -n ${maxmind[asn]} && ${maxmind[asn]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[asn]}${Font_Green}AS${maxmind[asn]}$Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${sbasic[org]}$Font_Green${maxmind[org]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[asn]}${Font_Green}AS${maxmind[asn]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[org]}$Font_Green${maxmind[org]}$Font_Suffix\n"
 else
-echo -n -e "\r$Font_Cyan${sbasic[asn]}${sbasic[noasn]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[asn]}${sbasic[noasn]}$Font_Suffix\n"
 fi
 if [[ ${maxmind[dms]} != "null" && ${maxmind[map]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[location]}$Font_Green${maxmind[dms]}$Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${sbasic[map]}$Font_U$Font_Green${maxmind[map]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[location]}$Font_Green${maxmind[dms]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[map]}$Font_U$Font_Green${maxmind[map]}$Font_Suffix\n"
 fi
 local city_info=""
 if [[ -n ${maxmind[sub]} && ${maxmind[sub]} != "null" ]];then
@@ -1597,37 +1623,37 @@ if [[ -n ${maxmind[post]} && ${maxmind[post]} != "null" ]];then
 city_info+="${maxmind[post]}"
 fi
 if [[ -n $city_info ]];then
-echo -n -e "\r$Font_Cyan${sbasic[city]}$Font_Green$city_info$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[city]}$Font_Green$city_info$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[countrycode]} && ${maxmind[countrycode]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[country]}$Font_Green[${maxmind[countrycode]}]${maxmind[country]}$Font_Suffix"
+echo -ne "\r$Font_Cyan${sbasic[country]}$Font_Green[${maxmind[countrycode]}]${maxmind[country]}$Font_Suffix"
 if [[ -n ${maxmind[continentcode]} && ${maxmind[continentcode]} != "null" ]];then
-echo -n -e "$Font_Green, [${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
+echo -ne "$Font_Green, [${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
 else
-echo -n -e "\n"
+echo -ne "\n"
 fi
 elif [[ -n ${maxmind[continentcode]} && ${maxmind[continentcode]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[continent]}$Font_Green[${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[continent]}$Font_Green[${maxmind[continentcode]}]${maxmind[continent]}$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[regcountrycode]} && ${maxmind[regcountrycode]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[regcountry]}$Font_Green[${maxmind[regcountrycode]}]${maxmind[regcountry]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[regcountry]}$Font_Green[${maxmind[regcountrycode]}]${maxmind[regcountry]}$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[timezone]} && ${maxmind[timezone]} != "null" ]];then
-echo -n -e "\r$Font_Cyan${sbasic[timezone]}$Font_Green${maxmind[timezone]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[timezone]}$Font_Green${maxmind[timezone]}$Font_Suffix\n"
 fi
 if [[ -n ${maxmind[countrycode]} && ${maxmind[countrycode]} != "null" ]];then
 if [ "${maxmind[countrycode]}" == "${maxmind[regcountrycode]}" ];then
-echo -n -e "\r$Font_Cyan${sbasic[type]}$Back_Green$Font_B$Font_White${sbasic[type0]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[type]}$Back_Green$Font_B$Font_White${sbasic[type0]}$Font_Suffix\n"
 else
-echo -n -e "\r$Font_Cyan${sbasic[type]}$Back_Red$Font_B$Font_White${sbasic[type1]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[type]}$Back_Red$Font_B$Font_White${sbasic[type1]}$Font_Suffix\n"
 fi
 fi
 }
 show_type(){
-echo -n -e "\r${stype[title]}\n"
-echo -n -e "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2LOCATION $Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${abuseipdb[susetype]}${ip2location[susetype]}\n"
-echo -n -e "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[susetype]}${ipapi[susetype]}\n"
+echo -ne "\r${stype[title]}\n"
+echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2LOCATION $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${abuseipdb[susetype]}${ip2location[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[susetype]}${ipapi[susetype]}\n"
 }
 sscore_text(){
 local text="$1"
@@ -1657,25 +1683,25 @@ sscore[text3]="${tmp1:33-p6:16}"
 sscore[text4]="${tmp1:49-p6}"
 }
 show_score(){
-echo -n -e "\r${sscore[title]}\n"
-echo -n -e "\r${sscore[range]}\n"
+echo -ne "\r${sscore[title]}\n"
+echo -ne "\r${sscore[range]}\n"
 if [[ -n ${scamalytics[score]} ]];then
 sscore_text "${scamalytics[score]}" ${scamalytics[score]} 25 50 100 13
-echo -n -e "\r${Font_Cyan}SCAMALYTICS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
+echo -ne "\r${Font_Cyan}SCAMALYTICS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
 fi
 if [[ -n ${ipapi[score]} ]];then
 local tmp_score=$(echo "${ipapi[scorenum]} * 10000 / 1"|bc)
 sscore_text "${ipapi[score]}" $tmp_score 85 300 10000 7
-echo -n -e "\r${Font_Cyan}ipapi${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipapi[risk]}\n"
+echo -ne "\r${Font_Cyan}ipapi${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipapi[risk]}\n"
 fi
 sscore_text "${abuseipdb[score]}" ${abuseipdb[score]} 25 25 100 11
-echo -n -e "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
-if [[ -n ${ipqs[score]} ]];then
+echo -ne "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
+if [ -n "${ipqs[score]}" ]&&[ "${ipqs[score]}" != "null" ];then
 sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
-echo -n -e "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
+echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
 fi
 sscore_text " " ${dbip[score]} 33 66 100 7
-[[ -n ${dbip[risk]} ]]&&echo -n -e "\r${Font_Cyan}DB-IP${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${dbip[risk]}\n"
+[[ -n ${dbip[risk]} ]]&&echo -ne "\r${Font_Cyan}DB-IP${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${dbip[risk]}\n"
 }
 format_factor(){
 local tmp_txt="  "
@@ -1762,41 +1788,41 @@ echo "$tmp_txt"
 }
 show_factor(){
 local tmp_factor=""
-echo -n -e "\r${sfactor[title]}\n"
-echo -n -e "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2LOCATION ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS$Font_Suffix\n"
+echo -ne "\r${sfactor[title]}\n"
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2LOCATION ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS$Font_Suffix\n"
 tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
-echo -n -e "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
-echo -n -e "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${ipregistry[tor]}" "${ipqs[tor]}" "${scamalytics[tor]}" "${ipdata[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
-echo -n -e "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipqs[vpn]}" "${scamalytics[vpn]}" "${ipdata[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
-echo -n -e "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${ipregistry[server]}" "${ipqs[server]}" "${scamalytics[server]}" "${ipdata[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
-echo -n -e "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipqs[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
-echo -n -e "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${ipqs[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
-echo -n -e "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
+echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
-echo -n -e "\r${smedia[title]}\n"
-echo -n -e "\r$Font_Cyan${smedia[meida]}$Font_I TikTok   Disney+  Netflix Youtube  AmazonPV  Spotify  ChatGPT $Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${smedia[status]}${tiktok[ustatus]}${disney[ustatus]}${netflix[ustatus]}${youtube[ustatus]}${amazon[ustatus]}${spotify[ustatus]}${chatgpt[ustatus]}$Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${smedia[region]}$Font_Green${tiktok[uregion]}${disney[uregion]}${netflix[uregion]}${youtube[uregion]}${amazon[uregion]}${spotify[uregion]}${chatgpt[uregion]}$Font_Suffix\n"
-echo -n -e "\r$Font_Cyan${smedia[type]}${tiktok[utype]}${disney[utype]}${netflix[utype]}${youtube[utype]}${amazon[utype]}${spotify[utype]}${chatgpt[utype]}$Font_Suffix\n"
+echo -ne "\r${smedia[title]}\n"
+echo -ne "\r$Font_Cyan${smedia[meida]}$Font_I TikTok   Disney+  Netflix Youtube  AmazonPV  Spotify  ChatGPT $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[status]}${tiktok[ustatus]}${disney[ustatus]}${netflix[ustatus]}${youtube[ustatus]}${amazon[ustatus]}${spotify[ustatus]}${chatgpt[ustatus]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[region]}$Font_Green${tiktok[uregion]}${disney[uregion]}${netflix[uregion]}${youtube[uregion]}${amazon[uregion]}${spotify[uregion]}${chatgpt[uregion]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[type]}${tiktok[utype]}${disney[utype]}${netflix[utype]}${youtube[utype]}${amazon[utype]}${spotify[utype]}${chatgpt[utype]}$Font_Suffix\n"
 }
 show_mail(){
-echo -n -e "\r${smail[title]}\n"
+echo -ne "\r${smail[title]}\n"
 if [ ${smail[local]} -eq 1 ];then
-echo -n -e "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[yes]}\n"
-echo -n -e "$Font_Cyan${smail[provider]}$Font_Suffix"
+echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[yes]}\n"
+echo -ne "$Font_Cyan${smail[provider]}$Font_Suffix"
 for service in "${services[@]}";do
-echo -n -e "${smail[$service]} "
+echo -ne "${smail[$service]} "
 done
 echo ""
 else
-echo -n -e "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
+echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
 fi
 [[ $1 -eq 4 ]]&&check_dnsbl "$IP" 50
 }
@@ -1835,7 +1861,7 @@ esac
 done
 }
 show_help(){
-echo -n -e "\r$shelp\n"
+echo -ne "\r$shelp\n"
 exit 0
 }
 check_IP(){
@@ -1881,7 +1907,7 @@ get_opts "$@"
 clear
 set_language
 if [[ $ERRORcode -ne 0 ]];then
-echo -n -e "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
+echo -ne "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
 exit $ERRORcode
 fi
 if [[ $IPV4test == "" && $IPV6test == "" ]];then
