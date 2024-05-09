@@ -6,7 +6,7 @@
 
 ## IP质量体检脚本  -  [IP Quality Check Script (EN)](https://github.com/xykt/IPQuality/blob/main/README_EN.md)
 
-**支持OS/Platform：Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux**
+**支持OS/Platform：Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine | Termux**
 
 - 中英文双语言支持
 - 支持IPv4/IPv6双栈查询
@@ -45,11 +45,13 @@ bash <(curl -Ls IP.Check.Place) -l en
 
 ## 脚本更新
 
-2024/05/08 00:00 脚本发布
+2024/05/09 15:00 更新安卓Termux系统支持，修正不规范内网IP导致的错误，修正其他若干bug
+
+2024/05/08 23:00 修正Netflix澳洲检测结果不正确的bug
 
 2024/05/08 18:10 更新依赖程序dig检测及安装
 
-2024/05/08 23:00 修正Netflix澳洲检测结果不正确的bug
+2024/05/08 00:00 脚本发布
 
 ## 脚本贡献
 
