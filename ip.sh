@@ -327,7 +327,7 @@ kill_progress_bar(){
 kill "$bar_pid" 2>/dev/null&&echo -ne "\r"
 }
 install_dependencies(){
-if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1;then
+if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1||! ip -Version >/dev/null 2>&1;then
 echo "Detecting Linux distribution..."
 if [ -f /etc/os-release ];then
 . /etc/os-release
@@ -363,24 +363,24 @@ local install_command=$2
 echo "Using package manager: $package_manager"
 case $package_manager in
 apt)sudo apt update
-sudo $install_command jq curl bc netcat-openbsd dnsutils
+sudo $install_command jq curl bc netcat-openbsd dnsutils iproute2
 ;;
 dnf)sudo dnf install epel-release -y
 sudo $package_manager makecache
-sudo $install_command jq curl bc nmap-ncat bind-utils
+sudo $install_command jq curl bc nmap-ncat bind-utils iproute
 ;;
 yum)sudo yum install epel-release -y
 sudo $package_manager makecache
-sudo $install_command jq curl bc nmap-ncat bind-utils
+sudo $install_command jq curl bc nmap-ncat bind-utils iproute
 ;;
 pacman)sudo pacman -Sy
-sudo $install_command jq curl bc gnu-netcat bind-tools
+sudo $install_command jq curl bc gnu-netcat bind-tools iproute2
 ;;
 apk)sudo apk update
-sudo $install_command jq curl bc netcat-openbsd grep bind-tools
+sudo $install_command jq curl bc netcat-openbsd grep bind-tools iproute2
 ;;
 pkg)$package_manager update
-$package_manager $install_command jq curl bc netcat dnsutils
+$package_manager $install_command jq curl bc netcat dnsutils iproute
 esac
 }
 declare -A browsers=(
