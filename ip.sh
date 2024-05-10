@@ -82,6 +82,7 @@ set_language(){
 case "$LANG" in
 "en"|"jp"|"es"|"de"|"fr"|"ru"|"pt")swarn[1]="ERROR: Unsupported parameters!"
 swarn[2]="ERROR: IP address format error!"
+swarn[3]="ERROR: Dependent programs are missing. Please run as root or install sudo!"
 swarn[4]="ERROR: Parameter -4 conflicts with -i or -6!"
 swarn[6]="ERROR: Parameter -6 conflicts with -i or -4!"
 swarn[7]="ERROR: The specified network interface is invalid or does not exist!"
@@ -99,7 +100,7 @@ sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT"
-shead[ver]="Version: v2024-05-10"
+shead[ver]="Version: v2024-05-09"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time：%Y-%m-%d %H:%M:%S UTC")
@@ -195,6 +196,7 @@ stail[thanks]=". Thanks for running xy scripts!"
 ;;
 "cn")swarn[1]="错误：不支持的参数！"
 swarn[2]="错误：IP地址格式错误！"
+swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安装sudo命令！"
 swarn[4]="错误：参数-4与-i/-6冲突！"
 swarn[6]="错误：参数-6与-i/-4冲突！"
 swarn[7]="错误：指定的网卡不存在！"
@@ -212,7 +214,7 @@ sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告"
-shead[ver]="脚本版本：v2024-05-10"
+shead[ver]="脚本版本：v2024-05-09"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间: %Y-%m-%d %H:%M:%S CST")
@@ -338,6 +340,9 @@ if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --vers
 echo "Detecting Linux distribution..."
 if [ -f /etc/os-release ];then
 . /etc/os-release
+if [ $(id -u) -ne 0 ]&&! command -v sudo >/dev/null 2>&1;then
+ERRORcode=3
+fi
 case $ID in
 ubuntu|debian|linuxmint)install_packages "apt" "apt-get install -y"
 ;;
@@ -368,26 +373,31 @@ install_packages(){
 local package_manager=$1
 local install_command=$2
 echo "Using package manager: $package_manager"
+if [ $(id -u) -eq 0 ];then
+local usesudo=""
+else
+local usesudo="sudo"
+fi
 case $package_manager in
-apt)sudo apt update
-sudo $install_command jq curl bc netcat-openbsd dnsutils iproute2
+apt)$usesudo apt update
+$usesudo $install_command jq curl bc netcat-openbsd dnsutils iproute2
 ;;
-dnf)sudo dnf install epel-release -y
-sudo $package_manager makecache
-sudo $install_command jq curl bc nmap-ncat bind-utils iproute
+dnf)$usesudo dnf install epel-release -y
+$usesudo $package_manager makecache
+$usesudo $install_command jq curl bc nmap-ncat bind-utils iproute
 ;;
-yum)sudo yum install epel-release -y
-sudo $package_manager makecache
-sudo $install_command jq curl bc nmap-ncat bind-utils iproute
+yum)$usesudo yum install epel-release -y
+$usesudo $package_manager makecache
+$usesudo $install_command jq curl bc nmap-ncat bind-utils iproute
 ;;
-pacman)sudo pacman -Sy
-sudo $install_command jq curl bc gnu-netcat bind-tools iproute2
+pacman)$usesudo pacman -Sy
+$usesudo $install_command jq curl bc gnu-netcat bind-tools iproute2
 ;;
-apk)sudo apk update
-sudo $install_command jq curl bc netcat-openbsd grep bind-tools iproute2
+apk)$usesudo apk update
+$usesudo $install_command jq curl bc netcat-openbsd grep bind-tools iproute2
 ;;
-pkg)$package_manager update
-$package_manager $install_command jq curl bc netcat dnsutils iproute
+pkg)$usesudo $package_manager update
+$usesudo $package_manager $install_command jq curl bc netcat dnsutils iproute
 esac
 }
 declare -A browsers=(
