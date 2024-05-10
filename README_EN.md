@@ -6,7 +6,7 @@
 
 ## IP Quality Check Script  -  [IP质量体检脚本 (中文)](https://github.com/xykt/IPQuality/blob/main/README.md)
 
-**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine**
+**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux**
 
 - Bilingual support in English and Chinese
 - Supports dual-stack queries for IPv4/IPv6
@@ -23,9 +23,9 @@
 
 ## How to Use
 
-##### Default dual-stack test:
+##### English version of dual-stack test:
 ````bash
-bash <(curl -Ls IP.Check.Place)
+bash <(curl -Ls IP.Check.Place) -l en
 ````
 
 ##### IPv4 only test:
@@ -38,12 +38,21 @@ bash <(curl -Ls IP.Check.Place) -4
 bash <(curl -Ls IP.Check.Place) -6
 ````
 
-##### Set script language to English:
+##### Specify network interface
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en
+bash <(curl -Ls IP.Check.Place) -i eth0
+````
+
+##### Specify proxy server
+````bash
+bash <(curl -Ls IP.Check.Place) -x http://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
 ````
 
 ## Script Updates
+
+2024/05/10 11:00 Added support for specified network interface and proxy server
 
 2024/05/09 15:00 Corrected errors caused by non-standard private IP addresses, and fixed several other bugs
 
