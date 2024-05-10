@@ -38,16 +38,21 @@ bash <(curl -Ls IP.Check.Place) -4
 bash <(curl -Ls IP.Check.Place) -6
 ````
 
-##### Specify network interface
+##### Specify network interface:
 ````bash
 bash <(curl -Ls IP.Check.Place) -i eth0
 ````
 
-##### Specify proxy server
+##### Specify proxy server:
 ````bash
 bash <(curl -Ls IP.Check.Place) -x http://username:password@proxyserver:port
 bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
 bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
+````
+
+##### Basic information multi-language support:
+````bash
+bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
