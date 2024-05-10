@@ -38,6 +38,18 @@ bash <(curl -Ls IP.Check.Place) -4
 bash <(curl -Ls IP.Check.Place) -6
 ````
 
+##### 指定检测网卡
+````bash
+bash <(curl -Ls IP.Check.Place) -i eth0
+````
+
+##### 指定代理服务器
+````bash
+bash <(curl -Ls IP.Check.Place) -x http://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
+````
+
 ##### 选择脚本语言为英文：
 ````bash
 bash <(curl -Ls IP.Check.Place) -l en
