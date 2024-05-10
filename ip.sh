@@ -99,7 +99,7 @@ sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT"
-shead[ver]="Version: v2024-05-09"
+shead[ver]="Version: v2024-05-10"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time：%Y-%m-%d %H:%M:%S UTC")
@@ -212,7 +212,7 @@ sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告"
-shead[ver]="脚本版本：v2024-05-09"
+shead[ver]="脚本版本：v2024-05-10"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间: %Y-%m-%d %H:%M:%S CST")
