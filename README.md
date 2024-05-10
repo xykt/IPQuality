@@ -55,7 +55,14 @@ bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
 bash <(curl -Ls IP.Check.Place) -l en
 ````
 
+##### 基础信息多语言支持：
+````bash
+bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
+````
+
 ## 脚本更新
+
+2024/05/10 17:50 修复未安装sudo系统无法正常安装依赖的bug
 
 2024/05/10 11:00 增加指定网卡及代理服务器检测支持
 
