@@ -65,8 +65,11 @@ declare bar_pid
 declare ibar_step=0
 declare main_pid=$$
 declare PADDING=""
+declare useNIC=""
+declare usePROXY=""
+declare CurlARG=""
 declare UA_Browser
-declare Media_Cookie=$(curl -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
+declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
 declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT"
@@ -81,6 +84,8 @@ case "$LANG" in
 swarn[2]="ERROR: IP address format error!"
 swarn[4]="ERROR: Parameter -4 conflicts with -i or -6!"
 swarn[6]="ERROR: Parameter -6 conflicts with -i or -4!"
+swarn[7]="ERROR: The specified network interface is invalid or does not exist!"
+swarn[8]="ERROR: The specified proxy parameter is invalid or not working!"
 swarn[40]="ERROR: IPv4 is not available!"
 swarn[60]="ERROR: IPv6 is not available!"
 sinfo[database]="Checking IP database "
@@ -192,6 +197,8 @@ stail[thanks]=". Thanks for running xy scripts!"
 swarn[2]="错误：IP地址格式错误！"
 swarn[4]="错误：参数-4与-i/-6冲突！"
 swarn[6]="错误：参数-6与-i/-4冲突！"
+swarn[7]="错误：指定的网卡不存在！"
+swarn[8]="错误: 指定的代理服务器不可用！"
 swarn[40]="错误：IPV4不可用！"
 swarn[60]="错误：IPV6不可用！"
 sinfo[database]="正在检测IP数据库 "
@@ -308,7 +315,7 @@ count_file=$(mktemp)
 else
 count_file=$(mktemp --suffix=RRC)
 fi
-RunTimes=$(curl -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fip.check.place&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" >"$count_file")
+RunTimes=$(curl $CurlARG -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fip.check.place&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" >"$count_file")
 stail[today]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $5}')
 stail[total]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $7}')
 }
@@ -428,7 +435,7 @@ if [[ -n $IPV4 ]];then
 IPV4=""
 local API_NET=("myip.check.place" "ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
 for p in "${API_NET[@]}";do
-response=$(curl -s4 --max-time 8 "$p")
+response=$(curl $CurlARG -s4 --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
 IPV4="$response"
 break
@@ -470,7 +477,7 @@ if [[ -n $IPV6 ]];then
 IPV6=""
 local API_NET=("myip.check.place" "ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
 for p in "${API_NET[@]}";do
-response=$(curl -s6k --max-time 8 "$p")
+response=$(curl $CurlARG -s6k --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
 IPV6="$response"
 break
@@ -573,7 +580,7 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 maxmind=()
-local RESPONSE=$(curl -Ls -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
+local RESPONSE=$(curl $CurlARG -Ls -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 maxmind[asn]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemNumber')
 maxmind[org]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemOrganization')
@@ -596,7 +603,7 @@ maxmind[country]=$(echo "$RESPONSE"|jq -r '.Country.Name')
 maxmind[regcountrycode]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.IsoCode')
 maxmind[regcountry]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.Name')
 if [[ $LANG != "en" ]];then
-local backup_response=$(curl -s -m 10 "http://ipinfo.check.place/$IP?lang=en")
+local backup_response=$(curl $CurlARG -s -m 10 "http://ipinfo.check.place/$IP?lang=en")
 [[ ${maxmind[asn]} == "null" ]]&&maxmind[asn]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemNumber')
 [[ ${maxmind[org]} == "null" ]]&&maxmind[org]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemOrganization')
 [[ ${maxmind[city]} == "null" ]]&&maxmind[city]=$(echo "$backup_response"|jq -r '.City.Name')
@@ -631,7 +638,7 @@ show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipinfo=()
-local RESPONSE=$(curl -Ls -m 10 "https://ipinfo.io/widget/demo/$IP")
+local RESPONSE=$(curl $CurlARG -Ls -m 10 "https://ipinfo.io/widget/demo/$IP")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipinfo[usetype]=$(echo "$RESPONSE"|jq -r '.data.asn.type')
 ipinfo[comtype]=$(echo "$RESPONSE"|jq -r '.data.company.type')
@@ -672,7 +679,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 scamalytics=()
-local RESPONSE=$(curl -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
+local RESPONSE=$(curl $CurlARG -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
 [[ -z $RESPONSE ]]&&return 1
 local tmpscore=$(echo "$RESPONSE"|grep -oP '(?<=>Fraud Score: )[^<]+')
 scamalytics[score]=$(echo "$tmpscore"|bc)
@@ -702,7 +709,7 @@ show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipregistry=()
-local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
 ipregistry[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -751,7 +758,7 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
-local RESPONSE=$(curl -sL -m 10 "https://api.ipapi.is/?q=$IP")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://api.ipapi.is/?q=$IP")
 [[ -z $RESPONSE ]]&&return 1
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
@@ -818,7 +825,7 @@ show_progress_bar "$temp_info" $((40-10-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 abuseipdb=()
-local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=abuseipdb")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=abuseipdb")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 abuseipdb[usetype]=$(echo "$RESPONSE"|jq -r '.data.usageType')
 shopt -s nocasematch
@@ -868,7 +875,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
-local RESPONSE=$(curl -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+local RESPONSE=$(curl $CurlARG -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
@@ -922,7 +929,7 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 dbip=()
-local RESPONSE=$(curl -sL -m 10 "https://db-ip.com/demo/home.php?s=$IP")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://db-ip.com/demo/home.php?s=$IP")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 dbip[risktext]=$(echo "$RESPONSE"|jq -r '.demoInfo.threatLevel')
 shopt -s nocasematch
@@ -945,7 +952,7 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipwhois=()
-local RESPONSE=$(curl -sL -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --compressed \
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --compressed \
 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0" \
 -H "Accept: */*" \
 -H "Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2" \
@@ -969,7 +976,7 @@ show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipdata=()
-local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipdata")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipdata")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipdata[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipdata[proxy]=$(echo "$RESPONSE"|jq -r '.threat.is_proxy')
@@ -988,7 +995,7 @@ show_progress_bar "$temp_info" $((40-5-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipqs=()
-local RESPONSE=$(curl -sL -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipqs[score]=$(echo "$RESPONSE"|jq -r '.fraud_score')
 if [[ ${ipqs[score]} -lt 75 ]];then
@@ -1137,7 +1144,7 @@ local checkunlockurl="tiktok.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local Ftmpresult=$(curl --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
+local Ftmpresult=$(curl $CurlARG --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
 if [[ $Ftmpresult == "curl"* ]];then
 tiktok[ustatus]="${smedia[no]}"
 tiktok[uregion]="${smedia[nodata]}"
@@ -1151,7 +1158,7 @@ tiktok[uregion]="  [$FRegion]   "
 tiktok[utype]="$resultunlocktype"
 return
 fi
-local STmpresult=$(curl --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
+local STmpresult=$(curl $CurlARG --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
 local SRegion=$(echo $STmpresult|grep '"region":'|sed 's/.*"region"//'|cut -f2 -d'"')
 if [ -n "$SRegion" ];then
 tiktok[ustatus]="${smedia[idc]}"
@@ -1177,7 +1184,7 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result2=$(Check_DNS_2 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
-local PreAssertion=$(curl -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
+local PreAssertion=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
 if [[ $PreAssertion == "curl"* ]]&&[[ $1 == "6" ]];then
 disney[ustatus]="${smedia[bad]}"
 disney[uregion]="${smedia[nodata]}"
@@ -1198,7 +1205,7 @@ fi
 local assertion=$(echo $PreAssertion|jq -r '.assertion')
 local PreDisneyCookie=$(echo "$Media_Cookie"|sed -n '1p')
 local disneycookie=$(echo $PreDisneyCookie|sed "s/DISNEYASSERTION/$assertion/g")
-local TokenContent=$(curl -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycookie" 2>&1)
+local TokenContent=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycookie" 2>&1)
 local isBanned=$(echo $TokenContent|jq -r 'select(.error_description == "forbidden-location") | .error_description')
 local is403=$(echo $TokenContent|grep '403 ERROR')
 if [ -n "$isBanned" ]||[ -n "$is403" ];then
@@ -1210,14 +1217,14 @@ fi
 local fakecontent=$(echo "$Media_Cookie"|sed -n '8p')
 local refreshToken=$(echo $TokenContent|jq -r '.refresh_token')
 local disneycontent=$(echo $fakecontent|sed "s/ILOVEDISNEY/$refreshToken/g")
-local tmpresult=$(curl -$1 --user-agent "$UA_Browser" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycontent" 2>&1)
+local tmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "$disneycontent" 2>&1)
 if ! (echo "$tmpresult"|jq . >/dev/null 2>&1);then
 disney[ustatus]="${smedia[bad]}"
 disney[uregion]="${smedia[nodata]}"
 disney[utype]="${smedia[nodata]}"
 return
 fi
-local previewcheck=$(curl -$1 -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com"|grep preview)
+local previewcheck=$(curl $CurlARG -$1 -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com"|grep preview)
 local isUnabailable=$(echo $previewcheck|grep 'unavailable')
 local region=$(echo $tmpresult|jq -r '.extensions.sdk.session.location.countryCode')
 local inSupportedLocation=$(echo $tmpresult|jq -r '.extensions.sdk.session.inSupportedLocation')
@@ -1265,9 +1272,9 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result2=$(Check_DNS_2 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
-local result1=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
-local result2=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
-local regiontmp=$(curl $curlArgs -$1 --user-agent "$UA_Browser" -fSsI -X GET --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1)
+local result1=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
+local result2=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsLI -X GET --write-out %{http_code} --output /dev/null --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
+local regiontmp=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fSsI -X GET --max-time 10 --write-out %{redirect_url} --output /dev/null --tlsv1.3 "https://www.netflix.com/login" 2>&1)
 if [[ $regiontmp == "curl"* ]];then
 netflix[ustatus]="${smedia[bad]}"
 netflix[uregion]="${smedia[nodata]}"
@@ -1314,7 +1321,7 @@ local checkunlockurl="www.youtube.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local tmpresult=$(curl -$1 --max-time 10 -sSL -H "Accept-Language: en" -b "YSC=BiCUU3-5Gdk; CONSENT=YES+cb.20220301-11-p0.en+FX+700; GPS=1; VISITOR_INFO1_LIVE=4VwPMkB7W5A; PREF=tz=Asia.Shanghai; _gcl_au=1.1.1809531354.1646633279" "https://www.youtube.com/premium" 2>&1)
+local tmpresult=$(curl $CurlARG -$1 --max-time 10 -sSL -H "Accept-Language: en" -b "YSC=BiCUU3-5Gdk; CONSENT=YES+cb.20220301-11-p0.en+FX+700; GPS=1; VISITOR_INFO1_LIVE=4VwPMkB7W5A; PREF=tz=Asia.Shanghai; _gcl_au=1.1.1809531354.1646633279" "https://www.youtube.com/premium" 2>&1)
 if [[ $tmpresult == "curl"* ]];then
 youtube[ustatus]="${smedia[bad]}"
 youtube[uregion]="${smedia[nodata]}"
@@ -1363,7 +1370,7 @@ local checkunlockurl="www.primevideo.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local tmpresult=$(curl -$1 --user-agent "$UA_Browser" -sL --max-time 10 "https://www.primevideo.com" 2>&1)
+local tmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL --max-time 10 "https://www.primevideo.com" 2>&1)
 if [[ $tmpresult == "curl"* ]];then
 amazon[ustatus]="${smedia[bad]}"
 amazon[uregion]="${smedia[nodata]}"
@@ -1394,7 +1401,7 @@ local checkunlockurl="spclient.wg.spotify.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local tmpresult=$(curl -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://spclient.wg.spotify.com/signup/public/v1/account" -d "birth_day=11&birth_month=11&birth_year=2000&collect_personal_info=undefined&creation_flow=&creation_point=https%3A%2F%2Fwww.spotify.com%2Fhk-en%2F&displayname=Gay%20Lord&gender=male&iagree=1&key=a1e486e2729f46d6bb368d6b2bcda326&platform=www&referrer=&send-email=0&thirdpartyemail=0&identifier_token=AgE6YTvEzkReHNfJpO114514" -H "Accept-Language: en" 2>&1)
+local tmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://spclient.wg.spotify.com/signup/public/v1/account" -d "birth_day=11&birth_month=11&birth_year=2000&collect_personal_info=undefined&creation_flow=&creation_point=https%3A%2F%2Fwww.spotify.com%2Fhk-en%2F&displayname=Gay%20Lord&gender=male&iagree=1&key=a1e486e2729f46d6bb368d6b2bcda326&platform=www&referrer=&send-email=0&thirdpartyemail=0&identifier_token=AgE6YTvEzkReHNfJpO114514" -H "Accept-Language: en" 2>&1)
 if echo "$tmpresult"|jq . >/dev/null 2>&1;then
 local region=$(echo $tmpresult|jq -r '.country')
 local isLaunched=$(echo $tmpresult|jq -r '.is_country_launched')
@@ -1441,11 +1448,11 @@ local checkunlockurl="api.openai.com"
 local result7=$(Check_DNS_1 $checkunlockurl)
 local result8=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3 $result4 $result5 $result6 $result7 $result8)
-local tmpresult1=$(curl -$1 -sS --max-time 10 'https://api.openai.com/compliance/cookie_requirements' -H 'authority: api.openai.com' -H 'accept: */*' -H 'accept-language: zh-CN,zh;q=0.9' -H 'authorization: Bearer null' -H 'content-type: application/json' -H 'origin: https://platform.openai.com' -H 'referer: https://platform.openai.com/' -H 'sec-ch-ua: "Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-site' -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0' 2>&1)
-local tmpresult2=$(curl -$1 -sS --max-time 10 'https://ios.chat.openai.com/' -H 'authority: ios.chat.openai.com' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' -H 'accept-language: zh-CN,zh;q=0.9' -H 'sec-ch-ua: "Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: document' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-site: none' -H 'sec-fetch-user: ?1' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0' 2>&1)
+local tmpresult1=$(curl $CurlARG -$1 -sS --max-time 10 'https://api.openai.com/compliance/cookie_requirements' -H 'authority: api.openai.com' -H 'accept: */*' -H 'accept-language: zh-CN,zh;q=0.9' -H 'authorization: Bearer null' -H 'content-type: application/json' -H 'origin: https://platform.openai.com' -H 'referer: https://platform.openai.com/' -H 'sec-ch-ua: "Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-site' -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0' 2>&1)
+local tmpresult2=$(curl $CurlARG -$1 -sS --max-time 10 'https://ios.chat.openai.com/' -H 'authority: ios.chat.openai.com' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' -H 'accept-language: zh-CN,zh;q=0.9' -H 'sec-ch-ua: "Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: document' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-site: none' -H 'sec-fetch-user: ?1' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0' 2>&1)
 local result1=$(echo $tmpresult1|grep unsupported_country)
 local result2=$(echo $tmpresult2|grep VPN)
-local countryCode="$(curl --max-time 10 -sS https://chat.openai.com/cdn-cgi/trace|grep "loc="|awk -F= '{print $2}')"
+local countryCode="$(curl $CurlARG --max-time 10 -sS https://chat.openai.com/cdn-cgi/trace|grep "loc="|awk -F= '{print $2}')"
 if [ -z "$result2" ]&&[ -z "$result1" ]&&[[ $tmpresult1 != "curl"* ]]&&[[ $tmpresult2 != "curl"* ]];then
 chatgpt[ustatus]="${smedia[yes]}"
 chatgpt[uregion]="  [$countryCode]   "
@@ -1568,7 +1575,7 @@ local total=0
 local clean=0
 local blacklisted=0
 local other=0
-curl -s "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/dnsbl.list"|sort -u|xargs -P "$parallel_jobs" -I {} bash -c "result=\$(dig +short \"$reversed_ip.{}\" A); if [[ -z \"\$result\" ]]; then echo 'Clean'; elif [[ \"\$result\" == '127.0.0.2' ]]; then echo 'Blacklisted'; else echo 'Other'; fi"|{
+curl $CurlARG -s "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/dnsbl.list"|sort -u|xargs -P "$parallel_jobs" -I {} bash -c "result=\$(dig +short \"$reversed_ip.{}\" A); if [[ -z \"\$result\" ]]; then echo 'Clean'; elif [[ \"\$result\" == '127.0.0.2' ]]; then echo 'Blacklisted'; else echo 'Other'; fi"|{
 while IFS= read -r line;do
 ((total++))
 case "$line" in
@@ -1832,10 +1839,8 @@ echo -e "$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]}${
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:h46" opt;do
+while getopts "i:l:x:h46" opt;do
 case $opt in
-l)LANG=$OPTARG
-;;
 4)if
 [[ $IPV4test == "" && $IPV6test == "" ]]
 then
@@ -1856,9 +1861,27 @@ fi
 ;;
 h)show_help
 ;;
+i)iface="$OPTARG"
+useNIC=" --interface $iface"
+if [[ -n $iface && -d "/sys/class/net/$iface" ]];then
+useNIC=" --interface $iface"
+else
+ERRORcode=7
+fi
+;;
+l)LANG=$OPTARG
+;;
+x)xproxy="$OPTARG"
+if [[ -z $xproxy ]]||! curl -sL -x "$xproxy" --connect-timeout 5 --max-time 10 https://myip.check.place -o /dev/null;then
+ERRORcode=8
+else
+usePROXY=" -x $xproxy"
+fi
+;;
 \?)ERRORcode=1
 esac
 done
+CurlARG="$useNIC$usePROXY"
 }
 show_help(){
 echo -ne "\r$shelp\n"
@@ -1904,12 +1927,12 @@ get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
 get_opts "$@"
-clear
 set_language
 if [[ $ERRORcode -ne 0 ]];then
 echo -ne "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
 exit $ERRORcode
 fi
+clear
 if [[ $IPV4test == "" && $IPV6test == "" ]];then
 [[ $IPV4work -ne 0 ]]&&IPV4test=$IPV4
 [[ $IPV6work -ne 0 ]]&&IPV6test=$IPV6
