@@ -1154,7 +1154,7 @@ local checkunlockurl="tiktok.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local Ftmpresult=$(curl $CurlARG --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
+local Ftmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
 if [[ $Ftmpresult == "curl"* ]];then
 tiktok[ustatus]="${smedia[no]}"
 tiktok[uregion]="${smedia[nodata]}"
@@ -1168,7 +1168,7 @@ tiktok[uregion]="  [$FRegion]   "
 tiktok[utype]="$resultunlocktype"
 return
 fi
-local STmpresult=$(curl $CurlARG --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
+local STmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
 local SRegion=$(echo $STmpresult|grep '"region":'|sed 's/.*"region"//'|cut -f2 -d'"')
 if [ -n "$SRegion" ];then
 tiktok[ustatus]="${smedia[idc]}"
