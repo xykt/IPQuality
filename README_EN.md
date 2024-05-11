@@ -57,6 +57,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2024/05/11 23:20 Fixed mail detection taking too long due to gateway blocking port 25, fix inaccurate Tiktok IPv6 results
+
 2024/05/10 17:50 Fix dependency installation issue with no sudo installed
 
 2024/05/10 11:00 Added support for specified network interface and proxy server
