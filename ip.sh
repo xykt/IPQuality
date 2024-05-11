@@ -100,7 +100,7 @@ sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT"
-shead[ver]="Version: v2024-05-09"
+shead[ver]="Version: v2024-05-11"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time：%Y-%m-%d %H:%M:%S UTC")
@@ -214,7 +214,7 @@ sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告"
-shead[ver]="脚本版本：v2024-05-09"
+shead[ver]="脚本版本：v2024-05-11"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间: %Y-%m-%d %H:%M:%S CST")
@@ -1525,8 +1525,8 @@ case $service in
 "QQ")domain="qq.com";;
 "MailRU")domain="mail.ru";;
 "AOL")domain="aol.com";;
-"GMX")host="smtp.gmx.com";;
-"MailCOM")host="smtp.mail.com";;
+"GMX")domain="gmx.com";;
+"MailCOM")domain="mail.com";;
 "163")domain="163.com";;
 "Sohu")domain="sohu.com";;
 "Sina")domain="sina.com";;
@@ -1535,7 +1535,7 @@ esac
 if [[ -z $host ]];then
 local mx_hosts=($(get_sorted_mx_records $domain))
 for host in "${mx_hosts[@]}";do
-response=$(echo -e "QUIT\r\n"|nc -w5 $host $port 2>&1)
+response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -w4 $host $port 2>&1")
 smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
@@ -1544,7 +1544,7 @@ break
 fi
 done
 else
-response=$(echo -e "QUIT\r\n"|nc -w5 $host $port 2>&1)
+response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -w4 $host $port 2>&1")
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
@@ -1568,12 +1568,7 @@ kill_progress_bar
 done
 fi
 }
-check_dnsbl(){
-local temp_info="$Font_Cyan$Font_B${sinfo[dnsbl]} $Font_Suffix"
-((ibar_step=95))
-show_progress_bar "$temp_info" $((40-1-${sinfo[ldnsbl]}))&
-bar_pid="$!"&&disown "$bar_pid"
-trap "kill_progress_bar" RETURN
+check_dnsbl_parallel(){
 ip_to_check=$1
 parallel_jobs=$2
 smail[t]=0
@@ -1598,9 +1593,16 @@ smail[t]="$total"
 smail[c]="$clean"
 smail[m]="$other"
 smail[b]="$blacklisted"
-echo -ne "$Font_LineClear"
-echo -ne "\r$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix\n"
+echo "$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix"
 }
+}
+check_dnsbl(){
+local temp_info="$Font_Cyan$Font_B${sinfo[dnsbl]} $Font_Suffix"
+((ibar_step=95))
+show_progress_bar "$temp_info" $((40-1-${sinfo[ldnsbl]}))&
+bar_pid="$!"&&disown "$bar_pid"
+trap "kill_progress_bar" RETURN
+smail[sdnsbl]=$(check_dnsbl_parallel "$IP" 50)
 }
 show_head(){
 echo -ne "$Font_LineClear"
@@ -1841,7 +1843,7 @@ echo ""
 else
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
 fi
-[[ $1 -eq 4 ]]&&check_dnsbl "$IP" 50
+echo -ne "\r${smail[sdnsbl]}\n"
 }
 show_tail(){
 echo -e "$(printf '%72s'|tr ' ' '=')"
@@ -1899,6 +1901,7 @@ exit 0
 }
 check_IP(){
 IP=$1
+ibar_step=0
 [[ $2 -eq 4 ]]&&hide_ipv4 $IP
 [[ $2 -eq 6 ]]&&hide_ipv6 $IP
 db_maxmind
@@ -1920,6 +1923,8 @@ MediaUnlockTest_PrimeVideo_Region $2
 MediaUnlockTest_Spotify $2
 OpenAITest $2
 check_mail
+[[ $2 -eq 4 ]]&&check_dnsbl "$IP" 50
+echo -ne "$Font_LineClear"
 show_head
 show_basic
 show_type
@@ -1948,5 +1953,4 @@ if [[ $IPV4test == "" && $IPV6test == "" ]];then
 [[ $IPV6work -ne 0 ]]&&IPV6test=$IPV6
 fi
 [[ -n $IPV4test ]]&&check_IP "$IPV4test" 4
-ibar_step=0
 [[ -n $IPV6test ]]&&check_IP "$IPV6test" 6
