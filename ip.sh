@@ -1,4 +1,5 @@
 #!/bin/bash
+script_version="v2024-05-12"
 Font_B="\033[1m"
 Font_D="\033[2m"
 Font_I="\033[3m"
@@ -100,7 +101,7 @@ sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT"
-shead[ver]="Version: v2024-05-11"
+shead[ver]="Version: $script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time：%Y-%m-%d %H:%M:%S UTC")
@@ -214,7 +215,7 @@ sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告"
-shead[ver]="脚本版本：v2024-05-11"
+shead[ver]="脚本版本：$script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间: %Y-%m-%d %H:%M:%S CST")
@@ -769,7 +770,6 @@ bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
 local RESPONSE=$(curl $CurlARG -sL -m 10 "https://api.ipapi.is/?q=$IP")
-[[ -z $RESPONSE ]]&&return 1
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -804,6 +804,7 @@ case ${ipapi[comtype]} in
 ;;
 *)ipapi[scomtype]="${stype[other]}"
 esac
+[[ -z $RESPONSE ]]&&return 1
 ipapi[scoretext]=$(echo "$RESPONSE"|jq -r '.company.abuser_score')
 ipapi[scorenum]=$(echo "${ipapi[scoretext]}"|awk '{print $1}')
 ipapi[risktext]=$(echo "${ipapi[scoretext]}"|awk -F'[()]' '{print $2}')
@@ -1462,7 +1463,7 @@ local tmpresult1=$(curl $CurlARG -$1 -sS --max-time 10 'https://api.openai.com/c
 local tmpresult2=$(curl $CurlARG -$1 -sS --max-time 10 'https://ios.chat.openai.com/' -H 'authority: ios.chat.openai.com' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' -H 'accept-language: zh-CN,zh;q=0.9' -H 'sec-ch-ua: "Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: document' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-site: none' -H 'sec-fetch-user: ?1' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0' 2>&1)
 local result1=$(echo $tmpresult1|grep unsupported_country)
 local result2=$(echo $tmpresult2|grep VPN)
-local countryCode="$(curl $CurlARG --max-time 10 -sS https://chat.openai.com/cdn-cgi/trace|grep "loc="|awk -F= '{print $2}')"
+local countryCode="$(curl $CurlARG --max-time 10 -sS https://chat.openai.com/cdn-cgi/trace 2>&1|grep "loc="|awk -F= '{print $2}')"
 if [ -z "$result2" ]&&[ -z "$result1" ]&&[[ $tmpresult1 != "curl"* ]]&&[[ $tmpresult2 != "curl"* ]];then
 chatgpt[ustatus]="${smedia[yes]}"
 chatgpt[uregion]="  [$countryCode]   "
