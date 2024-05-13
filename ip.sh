@@ -347,7 +347,7 @@ fi
 case $ID in
 ubuntu|debian|linuxmint)install_packages "apt" "apt-get install -y"
 ;;
-fedora|rhel|centos)if
+fedora|rhel|centos|almalinux|rocky)if
 [ "$(echo $VERSION_ID|cut -d '.' -f1)" -ge 8 ]
 then
 install_packages "dnf" "dnf install -y"
