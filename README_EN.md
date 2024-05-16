@@ -1,12 +1,12 @@
 <p align="center">
-<img src="https://hits.seeyoufarm.com/api/count/keep/badge.svg?url=https%3A%2F%2Fip.check.place&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=runs&edge_flat=false"/> 
-<img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxykt%2FIPQuality&count_bg=%233DC8C0&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visits&edge_flat=false"/> 
+<img src="https://hits.seeyoufarm.com/api/count/keep/badge.svg?url=https%3A%2F%2Fip.check.place&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Runs&edge_flat=false"/> 
+<img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxykt%2FIPQuality&count_bg=%233DC8C0&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Visits&edge_flat=false"/> 
 <a href="/LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="license" /></a>  
 </p>
 
 ## IP Quality Check Script  -  [IP质量体检脚本 (中文)](https://github.com/xykt/IPQuality/blob/main/README.md)
 
-**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux**
+**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux | AlmaLinux | Rocky Linux**
 
 - Bilingual support in English and Chinese
 - Supports dual-stack queries for IPv4/IPv6
@@ -19,7 +19,7 @@
 - Over 400 IP address blacklist database checks
 
 ##### Screenshots
-![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_ipv4.png)
+![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_IPv4.svg)
 
 ## How to Use
 
@@ -56,6 +56,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
+
+2024/05/17 00:45 Add report svg image sharing link and fix some layout problems
 
 2024/05/11 23:20 Fixed mail detection taking too long due to gateway blocking port 25, fix inaccurate Tiktok IPv6 results
 
