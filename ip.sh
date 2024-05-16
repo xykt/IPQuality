@@ -1438,6 +1438,11 @@ spotify[ustatus]="${smedia[yes]}"
 spotify[uregion]="  [$region]   "
 spotify[utype]="$resultunlocktype"
 return
+else
+spotify[ustatus]="${smedia[bad]}"
+spotify[uregion]="${smedia[nodata]}"
+spotify[utype]="${smedia[nodata]}"
+return
 fi
 else
 spotify[ustatus]="${smedia[bad]}"
@@ -1848,7 +1853,7 @@ echo ""
 else
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
 fi
-echo -ne "\r${smail[sdnsbl]}\n"
+[[ $1 -eq 4 ]]&&echo -ne "\r${smail[sdnsbl]}\n"
 }
 show_tail(){
 echo -ne "\r$(printf '%72s'|tr ' ' '=')\n"
