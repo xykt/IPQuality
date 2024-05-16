@@ -1943,7 +1943,7 @@ show_factor
 show_media
 show_mail $2
 show_tail)
-local report_link=$(curl -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
+local report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
 echo -ne "\r$ip_report\n"
 [[ $report_link == *"https"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 echo -ne "\r\n"
