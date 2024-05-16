@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-05-12"
+script_version="v2024-05-17"
 Font_B="\033[1m"
 Font_D="\033[2m"
 Font_I="\033[3m"
@@ -100,23 +100,25 @@ sinfo[lmedia]=22
 sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
-shead[title]="IP QUALITY CHECK REPORT"
+shead[title]="IP QUALITY CHECK REPORT: "
 shead[ver]="Version: $script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
-shead[time]=$(date -u +"Report Time：%Y-%m-%d %H:%M:%S UTC")
+shead[time]=$(date -u +"Report Time: %Y-%m-%d %H:%M:%S UTC")
+shead[ltitle]=25
+shead[ptime]=$(printf '%7s' '')
 sbasic[title]="1. Basic Information (${Font_I}Maxmind Database$Font_Suffix)"
-sbasic[asn]="ASN:\t\t\t"
+sbasic[asn]="ASN:                    "
 sbasic[noasn]="Not Assigned"
-sbasic[org]="Organization:\t\t"
-sbasic[location]="Location:\t\t"
-sbasic[map]="Map:\t\t\t"
-sbasic[city]="City:\t\t\t"
-sbasic[country]="Actual Region:\t\t"
-sbasic[regcountry]="Registered Region:\t"
-sbasic[continent]="Continent:\t\t"
-sbasic[timezone]="Time Zone:\t\t"
-sbasic[type]="IP Type:\t\t"
+sbasic[org]="Organization:           "
+sbasic[location]="Location:               "
+sbasic[map]="Map:                    "
+sbasic[city]="City:                   "
+sbasic[country]="Actual Region:          "
+sbasic[regcountry]="Registered Region:      "
+sbasic[continent]="Continent:              "
+sbasic[timezone]="Time Zone:              "
+sbasic[type]="IP Type:                "
 sbasic[type0]=" Geo-consistent "
 sbasic[type1]=" Geo-discrepant "
 stype[business]=" $Back_Yellow$Font_White$Font_B Business $Font_Suffix "
@@ -194,6 +196,7 @@ smail[blacklisted]="$Font_Suffix${Font_Red}Blacklisted $Font_B"
 stail[stoday]="Script runs today: "
 stail[stotal]="; Total: "
 stail[thanks]=". Thanks for running xy scripts!"
+stail[link]="${Font_I}Report Link: $Font_U"
 ;;
 "cn")swarn[1]="错误：不支持的参数！"
 swarn[2]="错误：IP地址格式错误！"
@@ -214,23 +217,25 @@ sinfo[lmedia]=21
 sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
-shead[title]="IP质量体检报告"
+shead[title]="IP质量体检报告："
 shead[ver]="脚本版本：$script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
-shead[time]=$(TZ="Asia/Shanghai" date +"报告时间: %Y-%m-%d %H:%M:%S CST")
+shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
+shead[ltitle]=16
+shead[ptime]=$(printf '%8s' '')
 sbasic[title]="一、基础信息（${Font_I}Maxmind 数据库$Font_Suffix）"
-sbasic[asn]="自治系统号：\t\t"
+sbasic[asn]="自治系统号：            "
 sbasic[noasn]="未分配"
-sbasic[org]="组织:\t\t\t"
-sbasic[location]="坐标：\t\t\t"
-sbasic[map]="地图：\t\t\t"
-sbasic[city]="城市：\t\t\t"
-sbasic[country]="使用地：\t\t"
-sbasic[regcountry]="注册地：\t\t"
-sbasic[continent]="洲际：\t\t\t"
-sbasic[timezone]="时区：\t\t\t"
-sbasic[type]="IP类型：\t\t"
+sbasic[org]="组织：                  "
+sbasic[location]="坐标：                  "
+sbasic[map]="地图：                  "
+sbasic[city]="城市：                  "
+sbasic[country]="使用地：                "
+sbasic[regcountry]="注册地：                "
+sbasic[continent]="洲际：                  "
+sbasic[timezone]="时区：                  "
+sbasic[type]="IP类型：                "
 sbasic[type0]=" 原生IP "
 sbasic[type1]=" 广播IP "
 stype[business]="   $Back_Yellow$Font_White$Font_B 商业 $Font_Suffix   "
@@ -308,6 +313,7 @@ smail[blacklisted]="$Font_Suffix$Font_Red黑名单 $Font_B"
 stail[stoday]="脚本今日运行次数："
 stail[stotal]="；总运行次数："
 stail[thanks]="。感谢使用xy系列脚本！"
+stail[link]="$Font_I报告链接：$Font_U"
 ;;
 *)echo -ne "ERROR: Language not supported!"
 esac
@@ -1606,16 +1612,14 @@ trap "kill_progress_bar" RETURN
 smail[sdnsbl]=$(check_dnsbl_parallel "$IP" 50)
 }
 show_head(){
-echo -ne "$Font_LineClear"
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
-calc_padding "${shead[title]}: $IPhide" 72
-echo -ne "\r$PADDING$Font_B${shead[title]}: $Font_Cyan$IPhide$Font_Suffix$PADDING\n"
+calc_padding "$(printf '%*s' "${shead[ltitle]}" '')$IPhide" 72
+echo -ne "\r$PADDING$Font_B${shead[title]}$Font_Cyan$IPhide$Font_Suffix\n"
 calc_padding "${shead[bash]}" 72
-echo -ne "\r$PADDING${shead[bash]}$PADDING\n"
+echo -ne "\r$PADDING${shead[bash]}\n"
 calc_padding "${shead[git]}" 72
-echo -ne "\r$PADDING$Font_U${shead[git]}$Font_Suffix$PADDING\n"
-calc_padding "${shead[time]}  ${shead[ver]}" 72
-echo -ne "\r$PADDING${shead[time]}  ${shead[ver]}$PADDING\n"
+echo -ne "\r$PADDING$Font_U${shead[git]}$Font_Suffix\n"
+echo -ne "\r${shead[ptime]}${shead[time]}  ${shead[ver]}\n"
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
 }
 show_basic(){
@@ -1836,7 +1840,7 @@ show_mail(){
 echo -ne "\r${smail[title]}\n"
 if [ ${smail[local]} -eq 1 ];then
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[yes]}\n"
-echo -ne "$Font_Cyan${smail[provider]}$Font_Suffix"
+echo -ne "\r$Font_Cyan${smail[provider]}$Font_Suffix"
 for service in "${services[@]}";do
 echo -ne "${smail[$service]} "
 done
@@ -1847,8 +1851,8 @@ fi
 echo -ne "\r${smail[sdnsbl]}\n"
 }
 show_tail(){
-echo -e "$(printf '%72s'|tr ' ' '=')"
-echo -e "$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]}${stail[thanks]} $Font_Suffix"
+echo -ne "\r$(printf '%72s'|tr ' ' '=')\n"
+echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]}${stail[thanks]} $Font_Suffix\n"
 echo -e ""
 }
 get_opts(){
@@ -1926,14 +1930,18 @@ OpenAITest $2
 check_mail
 [[ $2 -eq 4 ]]&&check_dnsbl "$IP" 50
 echo -ne "$Font_LineClear"
-show_head
+local ip_report=$(show_head
 show_basic
 show_type
 show_score
 show_factor
 show_media
 show_mail $2
-show_tail
+show_tail)
+local report_link=$(curl -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
+echo -ne "\r$ip_report\n"
+[[ $report_link == *"https"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
+echo -ne "\r\n"
 }
 install_dependencies
 generate_random_user_agent
