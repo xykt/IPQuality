@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-05-17"
+script_version="v2024-05-28"
 Font_B="\033[1m"
 Font_D="\033[2m"
 Font_I="\033[3m"
@@ -45,10 +45,10 @@ declare -A spotify
 declare -A chatgpt
 declare IPV4
 declare IPV6
+declare IPV4check=1
+declare IPV6check=1
 declare IPV4work=0
 declare IPV6work=0
-declare IPV4test=""
-declare IPV6test=""
 declare ERRORcode=0
 declare shelp
 declare -A swarn
@@ -198,122 +198,122 @@ stail[stotal]="; Total: "
 stail[thanks]=". Thanks for running xy scripts!"
 stail[link]="${Font_I}Report Link: $Font_U"
 ;;
-"cn")swarn[1]="错误：不支持的参数！"
-swarn[2]="错误：IP地址格式错误！"
-swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安装sudo命令！"
-swarn[4]="错误：参数-4与-i/-6冲突！"
-swarn[6]="错误：参数-6与-i/-4冲突！"
-swarn[7]="错误：指定的网卡不存在！"
-swarn[8]="错误: 指定的代理服务器不可用！"
-swarn[40]="错误：IPV4不可用！"
-swarn[60]="错误：IPV6不可用！"
-sinfo[database]="正在检测IP数据库 "
-sinfo[media]="正在检测流媒体服务商 "
-sinfo[ai]="正在检测AI服务商 "
-sinfo[mail]="正在连接邮件服务商 "
-sinfo[dnsbl]="正在检测黑名单数据库 "
+"cn")swarn[1]="閿欒锛氫笉鏀寔鐨勫弬鏁帮紒"
+swarn[2]="閿欒锛欼P鍦板潃鏍煎紡閿欒锛?"
+swarn[3]="閿欒锛氭湭瀹夎渚濊禆绋嬪簭锛岃浠oot鎵ц姝よ剼鏈紝鎴栬€呭畨瑁卻udo鍛戒护锛?"
+swarn[4]="閿欒锛氬弬鏁?-4涓?-i/-6鍐茬獊锛?"
+swarn[6]="閿欒锛氬弬鏁?-6涓?-i/-4鍐茬獊锛?"
+swarn[7]="閿欒锛氭寚瀹氱殑缃戝崱涓嶅瓨鍦紒"
+swarn[8]="閿欒: 鎸囧畾鐨勪唬鐞嗘湇鍔″櫒涓嶅彲鐢紒"
+swarn[40]="閿欒锛欼PV4涓嶅彲鐢紒"
+swarn[60]="閿欒锛欼PV6涓嶅彲鐢紒"
+sinfo[database]="姝ｅ湪妫€娴婭P鏁版嵁搴? "
+sinfo[media]="姝ｅ湪妫€娴嬫祦濯掍綋鏈嶅姟鍟? "
+sinfo[ai]="姝ｅ湪妫€娴婣I鏈嶅姟鍟? "
+sinfo[mail]="姝ｅ湪杩炴帴閭欢鏈嶅姟鍟? "
+sinfo[dnsbl]="姝ｅ湪妫€娴嬮粦鍚嶅崟鏁版嵁搴? "
 sinfo[ldatabase]=17
 sinfo[lmedia]=21
 sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
-shead[title]="IP质量体检报告："
-shead[ver]="脚本版本：$script_version"
+shead[title]="IP璐ㄩ噺浣撴鎶ュ憡锛?"
+shead[ver]="鑴氭湰鐗堟湰锛?$script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
-shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
+shead[time]=$(TZ="Asia/Shanghai" date +"鎶ュ憡鏃堕棿锛?%Y-%m-%d %H:%M:%S CST")
 shead[ltitle]=16
 shead[ptime]=$(printf '%8s' '')
-sbasic[title]="一、基础信息（${Font_I}Maxmind 数据库$Font_Suffix）"
-sbasic[asn]="自治系统号：            "
-sbasic[noasn]="未分配"
-sbasic[org]="组织：                  "
-sbasic[location]="坐标：                  "
-sbasic[map]="地图：                  "
-sbasic[city]="城市：                  "
-sbasic[country]="使用地：                "
-sbasic[regcountry]="注册地：                "
-sbasic[continent]="洲际：                  "
-sbasic[timezone]="时区：                  "
-sbasic[type]="IP类型：                "
-sbasic[type0]=" 原生IP "
-sbasic[type1]=" 广播IP "
-stype[business]="   $Back_Yellow$Font_White$Font_B 商业 $Font_Suffix   "
-stype[isp]="   $Back_Green$Font_White$Font_B 家宽 $Font_Suffix   "
-stype[hosting]="   $Back_Red$Font_White$Font_B 机房 $Font_Suffix   "
-stype[education]="   $Back_Yellow$Font_White$Font_B 教育 $Font_Suffix   "
-stype[government]="   $Back_Yellow$Font_White$Font_B 政府 $Font_Suffix   "
-stype[banking]="   $Back_Yellow$Font_White$Font_B 银行 $Font_Suffix   "
-stype[organization]="   $Back_Yellow$Font_White$Font_B 组织 $Font_Suffix   "
-stype[military]="   $Back_Yellow$Font_White$Font_B 军队 $Font_Suffix   "
-stype[library]="  $Back_Yellow$Font_White$Font_B 图书馆 $Font_Suffix  "
+sbasic[title]="涓€銆佸熀纭€淇℃伅锛?${Font_I}Maxmind 鏁版嵁搴?$Font_Suffix锛?"
+sbasic[asn]="鑷不绯荤粺鍙凤細            "
+sbasic[noasn]="鏈垎閰?"
+sbasic[org]="缁勭粐锛?                  "
+sbasic[location]="鍧愭爣锛?                  "
+sbasic[map]="鍦板浘锛?                  "
+sbasic[city]="鍩庡競锛?                  "
+sbasic[country]="浣跨敤鍦帮細                "
+sbasic[regcountry]="娉ㄥ唽鍦帮細                "
+sbasic[continent]="娲查檯锛?                  "
+sbasic[timezone]="鏃跺尯锛?                  "
+sbasic[type]="IP绫诲瀷锛?                "
+sbasic[type0]=" 鍘熺敓IP "
+sbasic[type1]=" 骞挎挱IP "
+stype[business]="   $Back_Yellow$Font_White$Font_B 鍟嗕笟 $Font_Suffix   "
+stype[isp]="   $Back_Green$Font_White$Font_B 瀹跺 $Font_Suffix   "
+stype[hosting]="   $Back_Red$Font_White$Font_B 鏈烘埧 $Font_Suffix   "
+stype[education]="   $Back_Yellow$Font_White$Font_B 鏁欒偛 $Font_Suffix   "
+stype[government]="   $Back_Yellow$Font_White$Font_B 鏀垮簻 $Font_Suffix   "
+stype[banking]="   $Back_Yellow$Font_White$Font_B 閾惰 $Font_Suffix   "
+stype[organization]="   $Back_Yellow$Font_White$Font_B 缁勭粐 $Font_Suffix   "
+stype[military]="   $Back_Yellow$Font_White$Font_B 鍐涢槦 $Font_Suffix   "
+stype[library]="  $Back_Yellow$Font_White$Font_B 鍥句功棣? $Font_Suffix  "
 stype[cdn]="   $Back_Red$Font_White$Font_B CDN $Font_Suffix    "
-stype[lineisp]="   $Back_Green$Font_White$Font_B 家宽 $Font_Suffix   "
-stype[mobile]="   $Back_Green$Font_White$Font_B 手机 $Font_Suffix   "
-stype[spider]="   $Back_Red$Font_White$Font_B 蜘蛛 $Font_Suffix   "
-stype[reserved]="   $Back_Yellow$Font_White$Font_B 保留 $Font_Suffix   "
-stype[other]="   $Back_Yellow$Font_White$Font_B 其他 $Font_Suffix   "
-stype[title]="二、IP类型属性"
-stype[db]="数据库：   "
-stype[usetype]="使用类型： "
-stype[comtype]="公司类型： "
-sscore[verylow]="$Font_Green$Font_B极低风险$Font_Suffix"
-sscore[low]="$Font_Green$Font_B低风险$Font_Suffix"
-sscore[medium]="$Font_Yellow$Font_B中风险$Font_Suffix"
-sscore[high]="$Font_Red$Font_B高风险$Font_Suffix"
-sscore[veryhigh]="$Font_Red$Font_B极高风险$Font_Suffix"
-sscore[elevated]="$Font_Yellow$Font_B较高风险$Font_Suffix"
-sscore[suspicious]="$Font_Yellow$Font_B可疑IP$Font_Suffix"
-sscore[risky]="$Font_Red$Font_B存在风险$Font_Suffix"
-sscore[highrisk]="$Font_Red$Font_B高风险$Font_Suffix"
-sscore[dos]="$Font_Red$Font_B建议封禁$Font_Suffix"
-sscore[colon]="："
-sscore[title]="三、风险评分"
-sscore[range]="$Font_Cyan风险等级：      $Font_I$Font_White$Back_Green极低         低 $Back_Yellow      中等      $Back_Red 高         极高$Font_Suffix"
-sfactor[title]="四、风险因子"
-sfactor[factor]="库： "
-sfactor[countrycode]="地区：  "
-sfactor[proxy]="代理：  "
-sfactor[tor]="Tor：   "
-sfactor[vpn]="VPN：   "
-sfactor[server]="服务器："
-sfactor[abuser]="滥用：  "
-sfactor[robot]="机器人："
-sfactor[yes]="$Font_Red$Font_B 是 $Font_Suffix"
-sfactor[no]="$Font_Green$Font_B 否 $Font_Suffix"
-sfactor[na]="$Font_Green$Font_B 无 $Font_Suffix"
-smedia[yes]=" $Back_Green$Font_White 解锁 $Font_Suffix  "
-smedia[no]=" $Back_Red$Font_White 屏蔽 $Font_Suffix  "
-smedia[bad]=" $Back_Red$Font_White 失败 $Font_Suffix  "
-smedia[pending]="$Back_Yellow$Font_White 待支持 $Font_Suffix "
-smedia[cn]=" $Back_Red$Font_White 中国 $Font_Suffix  "
-smedia[noprem]="$Back_Red$Font_White 禁会员 $Font_Suffix "
-smedia[org]="$Back_Yellow$Font_White 仅自制 $Font_Suffix "
-smedia[web]="$Back_Yellow$Font_White 仅网页 $Font_Suffix "
-smedia[app]=" $Back_Yellow$Font_White 仅APP $Font_Suffix "
-smedia[idc]=" $Back_Yellow$Font_White 机房 $Font_Suffix  "
-smedia[native]=" $Back_Green$Font_White 原生 $Font_Suffix  "
+stype[lineisp]="   $Back_Green$Font_White$Font_B 瀹跺 $Font_Suffix   "
+stype[mobile]="   $Back_Green$Font_White$Font_B 鎵嬫満 $Font_Suffix   "
+stype[spider]="   $Back_Red$Font_White$Font_B 铚樿洓 $Font_Suffix   "
+stype[reserved]="   $Back_Yellow$Font_White$Font_B 淇濈暀 $Font_Suffix   "
+stype[other]="   $Back_Yellow$Font_White$Font_B 鍏朵粬 $Font_Suffix   "
+stype[title]="浜屻€両P绫诲瀷灞炴€?"
+stype[db]="鏁版嵁搴擄細   "
+stype[usetype]="浣跨敤绫诲瀷锛? "
+stype[comtype]="鍏徃绫诲瀷锛? "
+sscore[verylow]="$Font_Green$Font_B鏋佷綆椋庨櫓$Font_Suffix"
+sscore[low]="$Font_Green$Font_B浣庨闄?$Font_Suffix"
+sscore[medium]="$Font_Yellow$Font_B涓闄?$Font_Suffix"
+sscore[high]="$Font_Red$Font_B楂橀闄?$Font_Suffix"
+sscore[veryhigh]="$Font_Red$Font_B鏋侀珮椋庨櫓$Font_Suffix"
+sscore[elevated]="$Font_Yellow$Font_B杈冮珮椋庨櫓$Font_Suffix"
+sscore[suspicious]="$Font_Yellow$Font_B鍙枒IP$Font_Suffix"
+sscore[risky]="$Font_Red$Font_B瀛樺湪椋庨櫓$Font_Suffix"
+sscore[highrisk]="$Font_Red$Font_B楂橀闄?$Font_Suffix"
+sscore[dos]="$Font_Red$Font_B寤鸿灏佺$Font_Suffix"
+sscore[colon]="锛?"
+sscore[title]="涓夈€侀闄╄瘎鍒?"
+sscore[range]="$Font_Cyan椋庨櫓绛夌骇锛?      $Font_I$Font_White$Back_Green鏋佷綆         浣? $Back_Yellow      涓瓑      $Back_Red 楂?         鏋侀珮$Font_Suffix"
+sfactor[title]="鍥涖€侀闄╁洜瀛?"
+sfactor[factor]="搴擄細 "
+sfactor[countrycode]="鍦板尯锛?  "
+sfactor[proxy]="浠ｇ悊锛?  "
+sfactor[tor]="Tor锛?   "
+sfactor[vpn]="VPN锛?   "
+sfactor[server]="鏈嶅姟鍣細"
+sfactor[abuser]="婊ョ敤锛?  "
+sfactor[robot]="鏈哄櫒浜猴細"
+sfactor[yes]="$Font_Red$Font_B 鏄? $Font_Suffix"
+sfactor[no]="$Font_Green$Font_B 鍚? $Font_Suffix"
+sfactor[na]="$Font_Green$Font_B 鏃? $Font_Suffix"
+smedia[yes]=" $Back_Green$Font_White 瑙ｉ攣 $Font_Suffix  "
+smedia[no]=" $Back_Red$Font_White 灞忚斀 $Font_Suffix  "
+smedia[bad]=" $Back_Red$Font_White 澶辫触 $Font_Suffix  "
+smedia[pending]="$Back_Yellow$Font_White 寰呮敮鎸? $Font_Suffix "
+smedia[cn]=" $Back_Red$Font_White 涓浗 $Font_Suffix  "
+smedia[noprem]="$Back_Red$Font_White 绂佷細鍛? $Font_Suffix "
+smedia[org]="$Back_Yellow$Font_White 浠呰嚜鍒? $Font_Suffix "
+smedia[web]="$Back_Yellow$Font_White 浠呯綉椤? $Font_Suffix "
+smedia[app]=" $Back_Yellow$Font_White 浠匒PP $Font_Suffix "
+smedia[idc]=" $Back_Yellow$Font_White 鏈烘埧 $Font_Suffix  "
+smedia[native]=" $Back_Green$Font_White 鍘熺敓 $Font_Suffix  "
 smedia[dns]="  $Back_Yellow$Font_White DNS $Font_Suffix  "
 smedia[nodata]="         "
-smedia[title]="五、流媒体及AI服务解锁检测"
-smedia[meida]="服务商： "
-smedia[status]="状态：   "
-smedia[region]="地区：   "
-smedia[type]="方式：   "
-smail[title]="六、邮局连通性及黑名单检测"
-smail[port]="本地25端口："
-smail[yes]="$Font_Green可用$Font_Suffix"
-smail[no]="$Font_Red阻断$Font_Suffix"
-smail[provider]="通信："
-smail[dnsbl]="IP地址黑名单数据库："
-smail[available]="$Font_Suffix$Font_Cyan有效 $Font_B"
-smail[clean]="$Font_Suffix$Font_Green正常 $Font_B"
-smail[marked]="$Font_Suffix$Font_Yellow已标记 $Font_B"
-smail[blacklisted]="$Font_Suffix$Font_Red黑名单 $Font_B"
-stail[stoday]="脚本今日运行次数："
-stail[stotal]="；总运行次数："
-stail[thanks]="。感谢使用xy系列脚本！"
-stail[link]="$Font_I报告链接：$Font_U"
+smedia[title]="浜斻€佹祦濯掍綋鍙夾I鏈嶅姟瑙ｉ攣妫€娴?"
+smedia[meida]="鏈嶅姟鍟嗭細 "
+smedia[status]="鐘舵€侊細   "
+smedia[region]="鍦板尯锛?   "
+smedia[type]="鏂瑰紡锛?   "
+smail[title]="鍏€侀偖灞€杩為€氭€у強榛戝悕鍗曟娴?"
+smail[port]="鏈湴25绔彛锛?"
+smail[yes]="$Font_Green鍙敤$Font_Suffix"
+smail[no]="$Font_Red闃绘柇$Font_Suffix"
+smail[provider]="閫氫俊锛?"
+smail[dnsbl]="IP鍦板潃榛戝悕鍗曟暟鎹簱锛?"
+smail[available]="$Font_Suffix$Font_Cyan鏈夋晥 $Font_B"
+smail[clean]="$Font_Suffix$Font_Green姝ｅ父 $Font_B"
+smail[marked]="$Font_Suffix$Font_Yellow宸叉爣璁? $Font_B"
+smail[blacklisted]="$Font_Suffix$Font_Red榛戝悕鍗? $Font_B"
+stail[stoday]="鑴氭湰浠婃棩杩愯娆℃暟锛?"
+stail[stotal]="锛涙€昏繍琛屾鏁帮細"
+stail[thanks]="銆傛劅璋娇鐢▁y绯诲垪鑴氭湰锛?"
+stail[link]="$Font_I鎶ュ憡閾炬帴锛?$Font_U"
 ;;
 *)echo -ne "ERROR: Language not supported!"
 esac
@@ -329,7 +329,7 @@ stail[today]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $5}')
 stail[total]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $7}')
 }
 show_progress_bar(){
-local bar="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+local bar="鉅嬧牂鉅光牳鉅尖牬鉅︹牕鉅団爮"
 local n="${#bar}"
 while sleep 0.1;do
 if ! kill -0 $main_pid 2>/dev/null;then
@@ -427,7 +427,15 @@ Edge)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (K
 esac
 }
 is_valid_ipv4(){
-if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]];then
+local ip=$1
+if [[ $ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]];then
+IFS='.' read -r -a octets <<<"$ip"
+for octet in "${octets[@]}";do
+if ((octet<0||octet>255));then
+IPV4work=0
+return 1
+fi
+done
 IPV4work=1
 return 0
 else
@@ -447,9 +455,6 @@ return 1
 }
 get_ipv4(){
 local response
-IPV4=$(ip -4 addr show|grep global|awk '{print $2}'|cut -d '/' -f1|head -n 1)
-if [[ -n $IPV4 ]];then
-IPV4=""
 local API_NET=("myip.check.place" "ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 8 "$p")
@@ -458,7 +463,6 @@ IPV4="$response"
 break
 fi
 done
-fi
 }
 hide_ipv4(){
 if [[ -n $1 ]];then
@@ -469,7 +473,8 @@ IPhide=""
 fi
 }
 is_valid_ipv6(){
-if [[ $1 =~ ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$ ]];then
+local ip=$1
+if [[ $ip =~ ^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,7}:$ || $ip =~ ^:([0-9a-fA-F]{1,4}:){1,7}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}$ || $ip =~ ^[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})$ || $ip =~ ^:((:[0-9a-fA-F]{1,4}){1,7}|:)$ || $ip =~ ^fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}$ || $ip =~ ^::(ffff(:0{1,4}){0,1}:){0,1}(([0-9]{1,3}\.){3}[0-9]{1,3})$ || $ip =~ ^([0-9a-fA-F]{1,4}:){1,4}:(([0-9]{1,3}\.){3}[0-9]{1,3})$ ]];then
 IPV6work=1
 return 0
 else
@@ -489,9 +494,6 @@ return 1
 }
 get_ipv6(){
 local response
-IPV6=$(ip -6 addr show|grep global|awk '{print $2}'|cut -d '/' -f1|head -n 1)
-if [[ -n $IPV6 ]];then
-IPV6=""
 local API_NET=("myip.check.place" "ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 8 "$p")
@@ -500,7 +502,6 @@ IPV6="$response"
 break
 fi
 done
-fi
 }
 hide_ipv6(){
 if [[ -n $1 ]];then
@@ -556,7 +557,7 @@ local fractional="0.$(echo "$fixed_coord"|cut -d'.' -f2)"
 local minutes=$(echo "$fractional * 60"|bc -l|cut -d'.' -f1)
 local seconds_fractional="0.$(echo "$fractional * 60"|bc -l|cut -d'.' -f2)"
 local seconds=$(echo "$seconds_fractional * 60"|bc -l|awk '{printf "%.0f", $1}')
-echo "$degrees°$minutes′$seconds″$direction"
+echo "$degrees掳$minutes鈥?$seconds鈥?$direction"
 }
 local lat_dir='N'
 if [[ $(echo "$lat < 0"|bc -l) -eq 1 ]];then
@@ -1510,8 +1511,8 @@ fi
 check_local_port_25(){
 local host=$1
 local port=$2
-nc -z -w5 $host $port >/dev/null 2>&1
-if [ $? -eq 0 ];then
+nc -s "$IP" -z -w5 $host $port >/dev/null 2>&1
+if [ $? -eq 0 ]&&[ -z "$usePROXY" ];then
 smail[local]=1
 else
 smail[local]=0
@@ -1547,7 +1548,7 @@ esac
 if [[ -z $host ]];then
 local mx_hosts=($(get_sorted_mx_records $domain))
 for host in "${mx_hosts[@]}";do
-response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -w4 $host $port 2>&1")
+response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
 smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
@@ -1556,7 +1557,7 @@ break
 fi
 done
 else
-response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -w4 $host $port 2>&1")
+response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
@@ -1864,19 +1865,17 @@ get_opts(){
 while getopts "i:l:x:h46" opt;do
 case $opt in
 4)if
-[[ $IPV4test == "" && $IPV6test == "" ]]
+[[ IPV4check -ne 0 ]]
 then
-IPV4test=$IPV4
-[[ $IPV4work -eq 0 ]]&&ERRORcode=40
+IPV6check=0
 else
 ERRORcode=4
 fi
 ;;
 6)if
-[[ $IPV4test == "" && $IPV6test == "" ]]
+[[ IPV6check -ne 0 ]]
 then
-IPV6test=$IPV6
-[[ $IPV6work -eq 0 ]]&&ERRORcode=60
+IPV4check=0
 else
 ERRORcode=6
 fi
@@ -1887,6 +1886,11 @@ i)iface="$OPTARG"
 useNIC=" --interface $iface"
 if [[ -n $iface && -d "/sys/class/net/$iface" ]];then
 useNIC=" --interface $iface"
+CurlARG="$useNIC"
+get_ipv4
+get_ipv6
+is_valid_ipv4 $IPV4
+is_valid_ipv6 $IPV6
 else
 ERRORcode=7
 fi
@@ -1898,11 +1902,18 @@ if [[ -z $xproxy ]]||! curl -sL -x "$xproxy" --connect-timeout 5 --max-time 10 h
 ERRORcode=8
 else
 usePROXY=" -x $xproxy"
+CurlARG="$usePROXY"
+get_ipv4
+get_ipv6
+is_valid_ipv4 $IPV4
+is_valid_ipv6 $IPV6
 fi
 ;;
 \?)ERRORcode=1
 esac
 done
+[[ $IPV4check -eq 1 && $IPV6check -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=40
+[[ $IPV4check -eq 0 && $IPV6check -eq 1 && $IPV6work -eq 0 ]]&&ERRORcode=60
 CurlARG="$useNIC$usePROXY"
 }
 show_help(){
@@ -1962,9 +1973,5 @@ echo -ne "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
 exit $ERRORcode
 fi
 clear
-if [[ $IPV4test == "" && $IPV6test == "" ]];then
-[[ $IPV4work -ne 0 ]]&&IPV4test=$IPV4
-[[ $IPV6work -ne 0 ]]&&IPV6test=$IPV6
-fi
-[[ -n $IPV4test ]]&&check_IP "$IPV4test" 4
-[[ -n $IPV6test ]]&&check_IP "$IPV6test" 6
+[[ $IPV4work -ne 0 && $IPV4check -ne 0 ]]&&check_IP "$IPV4" 4
+[[ $IPV6work -ne 0 && $IPV6check -ne 0 ]]&&check_IP "$IPV6" 6
