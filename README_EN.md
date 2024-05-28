@@ -57,6 +57,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2024/05/28 18:00 Fixed bug where default IP was detected for specified network interface/proxy server
+
 2024/05/17 00:45 Add report svg image sharing link and fix some layout problems
 
 2024/05/11 23:20 Fixed mail detection taking too long due to gateway blocking port 25, fix inaccurate Tiktok IPv6 results
@@ -80,10 +82,6 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 - Thanks to [lmc999](https://github.com/lmc999/RegionRestrictionCheck) for portions of the original streaming media unlocking script referenced in this script.
 
 - Thanks to [spiritLHLS](https://github.com/spiritLHLS/ecs) for portions of the integration monster review script referenced in this script.
-
-**Contributors:**
-
-<a href="https://github.com/xykt"><img src="https://avatars.githubusercontent.com/u/152045469?v=4" alt="@xykt" size="48" height="48" width="48" data-view-component="true"></img></a>
 
 **Stars History:**
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377dd77)
