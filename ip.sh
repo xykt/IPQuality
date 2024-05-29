@@ -1,5 +1,15 @@
 #!/bin/bash
-script_version="v2024-05-28"
+script_version="v2024-05-30"
+check_bash(){
+current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
+if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
+echo "ERROR: Bash version is lower than 4.0!"
+echo "Tips: Run the following script to automatically upgrade Bash."
+echo "bash <(curl -sL https://raw.githubusercontent.com/xykt/IPQuality/main/ref/upgrade_bash.sh)"
+exit 0
+fi
+}
+check_bash
 Font_B="\033[1m"
 Font_D="\033[2m"
 Font_I="\033[3m"
@@ -199,16 +209,16 @@ stail[thanks]=". Thanks for running xy scripts!"
 stail[link]="${Font_I}Report Link: $Font_U"
 ;;
 "cn")swarn[1]="错误：不支持的参数！"
-swarn[2]="错误：IP地址格式错误！"
-swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安装sudo命令！"
-swarn[4]="错误：参数-4与-i/-6冲突！"
-swarn[6]="错误：参数-6与-i/-4冲突！"
+swarn[2]="错误：IP地址格式错误???"
+swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安装sudo命令???"
+swarn[4]="错误：参???-4???-i/-6冲突???"
+swarn[6]="错误：参???-6???-i/-4冲突???"
 swarn[7]="错误：指定的网卡不存在！"
 swarn[8]="错误: 指定的代理服务器不可用！"
 swarn[40]="错误：IPV4不可用！"
 swarn[60]="错误：IPV6不可用！"
-sinfo[database]="正在检测IP数据库 "
-sinfo[media]="正在检测流媒体服务商 "
+sinfo[database]="正在检测IP数据??? "
+sinfo[media]="正在检测流媒体服务??? "
 sinfo[ai]="正在检测AI服务商 "
 sinfo[mail]="正在连接邮件服务商 "
 sinfo[dnsbl]="正在检测黑名单数据库 "
@@ -343,9 +353,11 @@ kill_progress_bar(){
 kill "$bar_pid" 2>/dev/null&&echo -ne "\r"
 }
 install_dependencies(){
-if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1||! ip -Version >/dev/null 2>&1;then
-echo "Detecting Linux distribution..."
-if [ -f /etc/os-release ];then
+if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1;then
+echo "Detecting operating system..."
+if [ "$(uname)" == "Darwin" ];then
+install_packages "brew" "brew install" "no_sudo"
+elif [ -f /etc/os-release ];then
 . /etc/os-release
 if [ $(id -u) -ne 0 ]&&! command -v sudo >/dev/null 2>&1;then
 ERRORcode=3
@@ -379,8 +391,9 @@ fi
 install_packages(){
 local package_manager=$1
 local install_command=$2
+local no_sudo=$3
 echo "Using package manager: $package_manager"
-if [ $(id -u) -eq 0 ];then
+if [ "$no_sudo" == "no_sudo" ]||[ $(id -u) -eq 0 ];then
 local usesudo=""
 else
 local usesudo="sudo"
@@ -405,6 +418,9 @@ $usesudo $install_command jq curl bc netcat-openbsd grep bind-tools iproute2
 ;;
 pkg)$usesudo $package_manager update
 $usesudo $package_manager $install_command jq curl bc netcat dnsutils iproute
+;;
+brew)eval "$(/opt/homebrew/bin/brew shellenv)"
+$install_command jq curl bc netcat bind
 esac
 }
 declare -A browsers=(
@@ -455,7 +471,7 @@ return 1
 }
 get_ipv4(){
 local response
-local API_NET=("myip.check.place" "ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
+local API_NET=("ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
@@ -494,7 +510,7 @@ return 1
 }
 get_ipv6(){
 local response
-local API_NET=("myip.check.place" "ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
+local API_NET=("ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
@@ -522,7 +538,7 @@ local length=0
 local char
 for ((i=0; i<${#string}; i++));do
 char=${string:i:1}
-if LC_CTYPE=C printf '%s' "$char"|grep -qP '[\x80-\xFF]';then
+if echo "$char"|awk 'BEGIN { ORS=""; } { if (match($0, /[\x80-\xFF]/)) exit 0; else exit 1; }';then
 length=$((length+2))
 else
 length=$((length+1))
@@ -699,7 +715,7 @@ trap "kill_progress_bar" RETURN
 scamalytics=()
 local RESPONSE=$(curl $CurlARG -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
 [[ -z $RESPONSE ]]&&return 1
-local tmpscore=$(echo "$RESPONSE"|grep -oP '(?<=>Fraud Score: )[^<]+')
+local tmpscore=$(echo "$RESPONSE"|grep -oE 'Fraud Score: [0-9]+'|awk -F': ' '{print $2}')
 scamalytics[score]=$(echo "$tmpscore"|bc)
 if [[ ${scamalytics[score]} -lt 25 ]];then
 scamalytics[risk]="${sscore[low]}"
@@ -710,15 +726,15 @@ scamalytics[risk]="${sscore[high]}"
 elif [[ ${scamalytics[score]} -ge 75 ]];then
 scamalytics[risk]="${sscore[veryhigh]}"
 fi
-scamalytics[countrycode]=$(echo "$RESPONSE"|grep -A1 "<th>Country Code</th>"|awk -F'</?td>' '/<td>/ {print $2}')
-scamalytics[vpn]=$(echo "$RESPONSE"|grep -A1 'Anonymizing VPN'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
-scamalytics[tor]=$(echo "$RESPONSE"|grep -A1 'Tor Exit Node'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
-scamalytics[server]=$(echo "$RESPONSE"|grep -A1 'Server'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
-scamalytics[proxy1]=$(echo "$RESPONSE"|grep -A1 'Public Proxy'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
-scamalytics[proxy2]=$(echo "$RESPONSE"|grep -A1 'Web Proxy'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
+scamalytics[countrycode]=$(echo "$RESPONSE"|awk -F'</?td>' '/<th>Country Code<\/th>/ {getline; print $2}')
+scamalytics[vpn]=$(echo "$RESPONSE"|awk '/<th>Anonymizing VPN<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
+scamalytics[tor]=$(echo "$RESPONSE"|awk '/<th>Tor Exit Node<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
+scamalytics[server]=$(echo "$RESPONSE"|awk '/<th>Server<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
+scamalytics[proxy1]=$(echo "$RESPONSE"|awk '/<th>Public Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
+scamalytics[proxy2]=$(echo "$RESPONSE"|awk '/<th>Web Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 scamalytics[proxy]="true"
 [[ ${scamalytics[proxy1]} == "false" && ${scamalytics[proxy2]} == "false" ]]&&scamalytics[proxy]="false"
-scamalytics[robot]=$(echo "$RESPONSE"|grep -A1 'Search Engine Robot'|tail -n1|grep -oP '>(Yes|No)<'|sed 's/>Yes</true/;s/>No</false/')
+scamalytics[robot]=$(echo "$RESPONSE"|awk '/<th>Search Engine Robot<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 }
 db_ipregistry(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipregistry $Font_Suffix"
