@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-05-30"
+script_version="v2024-06-05"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -203,7 +203,7 @@ smail[available]="$Font_Suffix${Font_Cyan}Active $Font_B"
 smail[clean]="$Font_Suffix${Font_Green}Clean $Font_B"
 smail[marked]="$Font_Suffix${Font_Yellow}Marked $Font_B"
 smail[blacklisted]="$Font_Suffix${Font_Red}Blacklisted $Font_B"
-stail[stoday]="Script runs today: "
+stail[stoday]="Today's IP Checks: "
 stail[stotal]="; Total: "
 stail[thanks]=". Thanks for running xy scripts!"
 stail[link]="${Font_I}Report Link: $Font_U"
@@ -320,8 +320,8 @@ smail[available]="$Font_Suffix$Font_Cyan有效 $Font_B"
 smail[clean]="$Font_Suffix$Font_Green正常 $Font_B"
 smail[marked]="$Font_Suffix$Font_Yellow已标记 $Font_B"
 smail[blacklisted]="$Font_Suffix$Font_Red黑名单 $Font_B"
-stail[stoday]="脚本今日运行次数："
-stail[stotal]="；总运行次数："
+stail[stoday]="今日IP检测量："
+stail[stotal]="；总检测量："
 stail[thanks]="。感谢使用xy系列脚本！"
 stail[link]="$Font_I报告链接：$Font_U"
 ;;
@@ -471,7 +471,7 @@ return 1
 }
 get_ipv4(){
 local response
-local API_NET=("ipv4.ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org")
+local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
@@ -510,7 +510,7 @@ return 1
 }
 get_ipv6(){
 local response
-local API_NET=("ipv6.ip.sb" "https://ipget.net" "ipv6.ping0.cc" "https://api.my-ip.io/ip" "https://ipv6.icanhazip.com")
+local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 8 "$p")
 if [[ $? -eq 0 && ! $response =~ error ]];then
@@ -1941,6 +1941,7 @@ IP=$1
 ibar_step=0
 [[ $2 -eq 4 ]]&&hide_ipv4 $IP
 [[ $2 -eq 6 ]]&&hide_ipv6 $IP
+countRunTimes
 db_maxmind
 db_ipinfo
 db_scamalytics
@@ -1977,7 +1978,6 @@ echo -ne "\r\n"
 }
 install_dependencies
 generate_random_user_agent
-countRunTimes
 get_ipv4
 get_ipv6
 is_valid_ipv4 $IPV4
