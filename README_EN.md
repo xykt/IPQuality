@@ -30,24 +30,24 @@ bash <(curl -Ls IP.Check.Place) -l en
 
 ##### IPv4 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -4
+bash <(curl -Ls IP.Check.Place) -l en -4
 ````
 
 ##### IPv6 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -6
+bash <(curl -Ls IP.Check.Place) -l en -6
 ````
 
 ##### Specify network interface:
 ````bash
-bash <(curl -Ls IP.Check.Place) -i eth0
+bash <(curl -Ls IP.Check.Place) -l en -i eth0
 ````
 
 ##### Specify proxy server:
 ````bash
-bash <(curl -Ls IP.Check.Place) -x http://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
+bash <(curl -Ls IP.Check.Place) -l en -x http://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -l en -x https://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -l en -x socks5://username:password@socksproxy:port
 ````
 
 ##### Basic information multi-language support:
