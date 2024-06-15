@@ -1,13 +1,16 @@
 #!/bin/bash
 script_version="v2024-06-05"
-check_bash(){
-current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
-if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
-echo "ERROR: Bash version is lower than 4.0!"
-echo "Tips: Run the following script to automatically upgrade Bash."
-echo "bash <(curl -sL https://raw.githubusercontent.com/xykt/IPQuality/main/ref/upgrade_bash.sh)"
-exit 0
-fi
+check_bash() {
+  # Get the major version of bash using parameter expansion and cut
+  current_bash_version=$(bash --version | head -n 1 | awk '{print $4}' | cut -d '.' -f 1)
+
+  # Check if major version is less than 4 using a single comparison
+  if [[ $current_bash_version -lt 4 ]]; then
+    echo "ERROR: Bash version is lower than 4.0!"
+    echo "Tips: Run the following script to automatically upgrade Bash."
+    echo "bash <(curl -sL https://raw.githubusercontent.com/xykt/IPQuality/main/ref/upgrade_bash.sh)"
+    exit 0
+  fi
 }
 check_bash
 Font_B="\033[1m"
