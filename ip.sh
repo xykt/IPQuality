@@ -498,15 +498,15 @@ IPV6work=0
 return 1
 fi
 }
-is_private_ipv6(){
-local address=$1
-if [[ -z $address ]];then
-return 0
-fi
-if [[ $address =~ ^fe80: ]]||[[ $address =~ ^fc00: ]]||[[ $address =~ ^fd00: ]]||[[ $address =~ ^2001:db8: ]]||[[ $address == ::1 ]]||[[ $address =~ ^::ffff: ]]||[[ $address =~ ^2002: ]]||[[ $address =~ ^2001: ]];then
-return 0
-fi
-return 1
+is_private_ipv6() {
+  local address="$1"
+
+  # Check if the IP address starts with any of the private IPv6 address ranges
+  if [[ $address =~ ^fe80:|^fc00:|^fd00:|^2001:db8:|^::1|^::ffff:|^2002:|^2001: ]]; then
+    return 0  # Private IP address
+  fi
+
+  return 1  # Public IP address (or invalid input)
 }
 get_ipv6(){
 local response
