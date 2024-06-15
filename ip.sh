@@ -459,15 +459,15 @@ IPV4work=0
 return 1
 fi
 }
-is_private_ipv4(){
-local ip_address=$1
-if [[ -z $ip_address ]];then
-return 0
-fi
-if [[ $ip_address =~ ^10\. ]]||[[ $ip_address =~ ^172\.(1[6-9]|2[0-9]|3[0-1])\. ]]||[[ $ip_address =~ ^192\.168\. ]]||[[ $ip_address =~ ^127\. ]]||[[ $ip_address =~ ^0\. ]]||[[ $ip_address =~ ^22[4-9]\. ]]||[[ $ip_address =~ ^23[0-9]\. ]];then
-return 0
-fi
-return 1
+is_private_ipv4() {
+  local ip_address="$1"
+
+  # Check if the IP address starts with any of the private IP address ranges
+  if [[ $ip_address =~ ^10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|127\.|0\.|22[4-9]\.|23[0-9]\. ]]; then
+    return 0  # Private IP address
+  fi
+
+  return 1  # Public IP address (or invalid input)
 }
 get_ipv4(){
 local response
