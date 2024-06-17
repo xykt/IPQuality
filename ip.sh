@@ -14,25 +14,34 @@ check_bash() {
 }
 check_bash
 Font_B="\033[1m"
-Font_D="\033[2m"
+# Unused variable
+#Font_D="\033[2m"
 Font_I="\033[3m"
 Font_U="\033[4m"
-Font_Black="\033[30m"
+# Unused variable
+#Font_Black="\033[30m"
 Font_Red="\033[31m"
 Font_Green="\033[32m"
 Font_Yellow="\033[33m"
-Font_Blue="\033[34m"
-Font_Purple="\033[35m"
+# Unused variable
+#Font_Blue="\033[34m"
+# Unused variable
+#Font_Purple="\033[35m"
 Font_Cyan="\033[36m"
 Font_White="\033[37m"
-Back_Black="\033[40m"
+# Unused variable
+#Back_Black="\033[40m"
 Back_Red="\033[41m"
 Back_Green="\033[42m"
 Back_Yellow="\033[43m"
-Back_Blue="\033[44m"
-Back_Purple="\033[45m"
-Back_Cyan="\033[46m"
-Back_White="\033[47m"
+# Unused variable
+#Back_Blue="\033[44m"
+# Unused variable
+#Back_Purple="\033[45m"
+# Unused variable
+#Back_Cyan="\033[46m"
+# Unused variable
+#Back_White="\033[47m"
 Font_Suffix="\033[0m"
 Font_LineClear="\033[2K"
 declare IP=""
@@ -84,7 +93,8 @@ declare usePROXY=""
 declare CurlARG=""
 declare UA_Browser
 declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
-declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
+# Unused variable
+#declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT"
 "Usage: bash <(curl -sL IP.Check.Place) [-4] [-6] [-l cn|en|jp|es|de|fr|ru|pt]"
@@ -1054,12 +1064,13 @@ ipqs[robot]=$(echo "$RESPONSE"|jq -r '.bot_status')
 function check_ip_valide(){
 local IPPattern='^(\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>\.){3}\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>$'
 IP="$1"
-for special_ip in ${special_ips[@]};do
-local ret=$(echo $IP|grep $special_ip)
-if [ -n "$ret" ];then
-return 1
-fi
-done
+# Unused ${special_ips} array and related code
+#for special_ip in ${special_ips[@]};do
+#local ret=$(echo $IP|grep $special_ip)
+#if [ -n "$ret" ];then
+#return 1
+#fi
+#done
 if [[ $IP =~ $IPPattern ]];then
 return 0
 else
@@ -1568,7 +1579,8 @@ if [[ -z $host ]];then
 local mx_hosts=($(get_sorted_mx_records $domain))
 for host in "${mx_hosts[@]}";do
 response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
-smail_response[$service]=$response
+# Unused variable
+#smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
