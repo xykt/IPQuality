@@ -365,7 +365,7 @@ fi
 case $ID in
 ubuntu|debian|linuxmint)install_packages "apt" "apt-get install -y"
 ;;
-fedora|rhel|centos|almalinux|rocky)if
+rhel|centos|almalinux|rocky|anolis)if
 [ "$(echo $VERSION_ID|cut -d '.' -f1)" -ge 8 ]
 then
 install_packages "dnf" "dnf install -y"
@@ -376,6 +376,12 @@ fi
 arch|manjaro)install_packages "pacman" "pacman -S --noconfirm"
 ;;
 alpine)install_packages "apk" "apk add"
+;;
+fedora)install_packages "dnf" "dnf install -y"
+;;
+alinux)install_packages "yum" "yum install -y"
+;;
+suse|opensuse*)install_packages "zypper" "zypper install -y"
 ;;
 *)echo "Unsupported distribution: $ID"
 exit 1
@@ -421,6 +427,9 @@ $usesudo $package_manager $install_command jq curl bc netcat dnsutils iproute
 ;;
 brew)eval "$(/opt/homebrew/bin/brew shellenv)"
 $install_command jq curl bc netcat bind
+;;
+zypper)$usesudo zypper refresh
+$usesudo $install_command jq curl bc netcat bind-utils iproute2
 esac
 }
 declare -A browsers=(
@@ -1051,12 +1060,6 @@ ipqs[robot]=$(echo "$RESPONSE"|jq -r '.bot_status')
 function check_ip_valide(){
 local IPPattern='^(\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>\.){3}\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>$'
 IP="$1"
-for special_ip in ${special_ips[@]};do
-local ret=$(echo $IP|grep $special_ip)
-if [ -n "$ret" ];then
-return 1
-fi
-done
 if [[ $IP =~ $IPPattern ]];then
 return 0
 else
