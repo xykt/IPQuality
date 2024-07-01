@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-06-27"
+script_version="v2024-07-02"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -546,9 +546,10 @@ local string="$1"
 local length=0
 local char
 for ((i=0; i<${#string}; i++));do
-char=${string:i:1}
-if echo "$char"|awk 'BEGIN { ORS=""; } { if (match($0, /[\x80-\xFF]/)) exit 0; else exit 1; }';then
+char=$(echo "$string"|od -An -N1 -tx1 -j $((i))|tr -d ' ')
+if [ "$(printf '%d\n' 0x$char)" -gt 127 ];then
 length=$((length+2))
+i=$((i+1))
 else
 length=$((length+1))
 fi
