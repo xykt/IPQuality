@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-07-02"
+script_version="v2024-07-21"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -60,6 +60,8 @@ declare IPV6check=1
 declare IPV4work=0
 declare IPV6work=0
 declare ERRORcode=0
+declare asponsor
+declare aad1
 declare shelp
 declare -A swarn
 declare -A sinfo
@@ -1940,6 +1942,12 @@ show_help(){
 echo -ne "\r$shelp\n"
 exit 0
 }
+show_ad(){
+asponsor=$(curl -sL --max-time 5 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/sponsor.ans")
+aad1=$(curl -sL --max-time 5 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/ad1.ans")
+echo -e "$asponsor"
+echo -e "$aad1"
+}
 check_IP(){
 IP=$1
 ibar_step=0
@@ -1993,5 +2001,6 @@ echo -ne "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
 exit $ERRORcode
 fi
 clear
+show_ad
 [[ $IPV4work -ne 0 && $IPV4check -ne 0 ]]&&check_IP "$IPV4" 4
 [[ $IPV6work -ne 0 && $IPV6check -ne 0 ]]&&check_IP "$IPV6" 6
