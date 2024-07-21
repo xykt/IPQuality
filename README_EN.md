@@ -57,6 +57,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2024/07/22 01:50 Add prompt before installing dependent packages, fix Disney+ bug
+
 2024/06/27 01:00 Add Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE support
 
 2024/05/30 01:15 Add macOS support
