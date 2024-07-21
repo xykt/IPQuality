@@ -1,5 +1,6 @@
 #!/bin/bash
 script_version="v2024-07-21"
+ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -32,6 +33,7 @@ Back_Cyan="\033[46m"
 Back_White="\033[47m"
 Font_Suffix="\033[0m"
 Font_LineClear="\033[2K"
+Font_LineUp="\033[1A"
 declare IP=""
 declare IPhide
 declare LANG="cn"
@@ -401,6 +403,18 @@ local package_manager=$1
 local install_command=$2
 local no_sudo=$3
 echo "Using package manager: $package_manager"
+echo -e "Lacking necessary dependencies, $Font_I${Font_Cyan}jq curl bc netcat dnsutils iproute$Font_Suffix will be installed using $Font_I$Font_Cyan$package_manager$Font_Suffix."
+prompt=$(printf "Continue? (${Font_Green}y$Font_Suffix/${Font_Red}n$Font_Suffix): ")
+read -p "$prompt" choice
+case "$choice" in
+y|Y|yes|Yes|YES)echo "Continue to execute script..."
+;;
+n|N|no|No|NO)echo "Script exited."
+exit 0
+;;
+*)echo "Invalid input, script exited."
+exit 1
+esac
 if [ "$no_sudo" == "no_sudo" ]||[ $(id -u) -eq 0 ];then
 local usesudo=""
 else
@@ -1221,9 +1235,8 @@ trap "kill_progress_bar" RETURN
 disney=()
 local checkunlockurl="disneyplus.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
-local result2=$(Check_DNS_2 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
-local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
+local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
 local PreAssertion=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
 if [[ $PreAssertion == "curl"* ]]&&[[ $1 == "6" ]];then
 disney[ustatus]="${smedia[bad]}"
@@ -1975,6 +1988,12 @@ OpenAITest $2
 check_mail
 [[ $2 -eq 4 ]]&&check_dnsbl "$IP" 50
 echo -ne "$Font_LineClear"
+if [ $2 -eq 4 ]||[[ $IPV4work -eq 0 || $IPV4check -eq 0 ]];then
+for ((i=0; i<ADLines; i++));do
+echo -ne "$Font_LineUp"
+echo -ne "$Font_LineClear"
+done
+fi
 local ip_report=$(show_head
 show_basic
 show_type
