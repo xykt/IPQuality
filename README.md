@@ -62,6 +62,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本更新
 
+2024/07/22 01:50 安装依赖包前增加询问，修复Disney+解锁类型错误
+
 2024/06/27 01:00 增加Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE系统支持
 
 2024/05/30 01:15 增加macOS系统支持
