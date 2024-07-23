@@ -50,12 +50,19 @@ bash <(curl -Ls IP.Check.Place) -l en -x https://username:password@proxyserver:p
 bash <(curl -Ls IP.Check.Place) -l en -x socks5://username:password@socksproxy:port
 ````
 
+##### Show full IP on report:
+````bash
+bash <(curl -Ls IP.Check.Place) -l en -f
+````
+
 ##### Basic information multi-language support:
 ````bash
 bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
+
+2024/07/23 23:50 Add parameter -f to show full IP address on report
 
 2024/07/22 01:50 Add prompt before installing dependent packages, fix Disney+ bug
 
