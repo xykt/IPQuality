@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-07-22"
+script_version="v2024-07-23"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
@@ -36,6 +36,7 @@ Font_LineClear="\033[2K"
 Font_LineUp="\033[1A"
 declare IP=""
 declare IPhide
+declare fullIP=0
 declare LANG="cn"
 declare -A maxmind
 declare -A ipinfo
@@ -1654,8 +1655,13 @@ smail[sdnsbl]=$(check_dnsbl_parallel "$IP" 50)
 }
 show_head(){
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
+if [ $fullIP -eq 1 ];then
+calc_padding "$(printf '%*s' "${shead[ltitle]}" '')$IP" 72
+echo -ne "\r$PADDING$Font_B${shead[title]}$Font_Cyan$IP$Font_Suffix\n"
+else
 calc_padding "$(printf '%*s' "${shead[ltitle]}" '')$IPhide" 72
 echo -ne "\r$PADDING$Font_B${shead[title]}$Font_Cyan$IPhide$Font_Suffix\n"
+fi
 calc_padding "${shead[bash]}" 72
 echo -ne "\r$PADDING${shead[bash]}\n"
 calc_padding "${shead[git]}" 72
@@ -1897,7 +1903,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:x:h46" opt;do
+while getopts "i:l:x:fh46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -1914,6 +1920,8 @@ IPV4check=0
 else
 ERRORcode=6
 fi
+;;
+f)fullIP=1
 ;;
 h)show_help
 ;;
