@@ -55,12 +55,19 @@ bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
 bash <(curl -Ls IP.Check.Place) -l en
 ````
 
+##### 报告展示完整IP地址：
+````bash
+bash <(curl -Ls IP.Check.Place) -f
+````
+
 ##### 基础信息多语言支持：
 ````bash
 bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## 脚本更新
+
+2024/07/23 23:50 增加运行参数-f使报告显示完整IP地址
 
 2024/07/22 01:50 安装依赖包前增加询问，修复Disney+解锁类型错误
 
