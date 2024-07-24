@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-07-23"
+script_version="v2024-07-24"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
@@ -1062,7 +1062,7 @@ show_progress_bar "$temp_info" $((40-5-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipqs=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipqs[score]=$(echo "$RESPONSE"|jq -r '.fraud_score')
 if [[ ${ipqs[score]} -lt 75 ]];then
@@ -1991,7 +1991,7 @@ db_ip2location
 db_dbip
 db_ipwhois
 db_ipdata
-db_ipqs
+db_ipqs $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
 MediaUnlockTest_Netflix $2
