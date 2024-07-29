@@ -647,7 +647,7 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 maxmind=()
-local RESPONSE=$(curl $CurlARG -Ls -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
+local RESPONSE=$(curl $CurlARG -Ls -$1 -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 maxmind[asn]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemNumber')
 maxmind[org]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemOrganization')
@@ -670,7 +670,7 @@ maxmind[country]=$(echo "$RESPONSE"|jq -r '.Country.Name')
 maxmind[regcountrycode]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.IsoCode')
 maxmind[regcountry]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.Name')
 if [[ $LANG != "en" ]];then
-local backup_response=$(curl $CurlARG -s -m 10 "http://ipinfo.check.place/$IP?lang=en")
+local backup_response=$(curl $CurlARG -s -$1 -m 10 "http://ipinfo.check.place/$IP?lang=en")
 [[ ${maxmind[asn]} == "null" ]]&&maxmind[asn]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemNumber')
 [[ ${maxmind[org]} == "null" ]]&&maxmind[org]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemOrganization')
 [[ ${maxmind[city]} == "null" ]]&&maxmind[city]=$(echo "$backup_response"|jq -r '.City.Name')
@@ -776,7 +776,7 @@ show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipregistry=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
 ipregistry[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -892,7 +892,7 @@ show_progress_bar "$temp_info" $((40-10-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 abuseipdb=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=abuseipdb")
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=abuseipdb")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 abuseipdb[usetype]=$(echo "$RESPONSE"|jq -r '.data.usageType')
 shopt -s nocasematch
@@ -1043,7 +1043,7 @@ show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipdata=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipinfo.check.place/$IP?db=ipdata")
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipdata")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipdata[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipdata[proxy]=$(echo "$RESPONSE"|jq -r '.threat.is_proxy')
@@ -1981,16 +1981,16 @@ ibar_step=0
 [[ $2 -eq 4 ]]&&hide_ipv4 $IP
 [[ $2 -eq 6 ]]&&hide_ipv6 $IP
 countRunTimes
-db_maxmind
+db_maxmind $2
 db_ipinfo
 db_scamalytics
-db_ipregistry
+db_ipregistry $2
 db_ipapi
-db_abuseipdb
+db_abuseipdb $2
 db_ip2location
 db_dbip
 db_ipwhois
-db_ipdata
+db_ipdata $2
 db_ipqs $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
