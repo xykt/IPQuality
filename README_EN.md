@@ -21,6 +21,9 @@
 ##### Screenshots
 ![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_IPv4.svg)
 
+##### History of daily runs
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place)
+
 ## How to Use
 
 ##### English version of dual-stack test:
