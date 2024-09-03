@@ -21,6 +21,9 @@
 ##### 屏幕截图
 ![截图](https://raw.githubusercontent.com/xykt/IPQuality/main/img/cn_IPv4.svg)
 
+##### 运行量历史
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place)
+
 ## 使用方法
 
 ##### 默认双栈检测：
