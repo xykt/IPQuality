@@ -21,9 +21,6 @@
 ##### Screenshots
 ![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_IPv4.svg)
 
-##### History of daily runs
-![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place)
-
 ## How to Use
 
 ##### English version of dual-stack test:
@@ -65,6 +62,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2024/10/06 01:15 Fixed bug causing script errors in very rare cases
+
 2024/07/23 23:50 Add parameter -f to show full IP address on report
 
 2024/07/22 01:50 Add prompt before installing dependent packages, fix Disney+ bug
@@ -100,4 +99,9 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 - Thanks to [spiritLHLS](https://github.com/spiritLHLS/ecs) for portions of the integration monster review script referenced in this script.
 
 **Stars History:**
+
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377dd77)
+
+**History of daily runs:**
+
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241006)
