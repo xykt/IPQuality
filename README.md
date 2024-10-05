@@ -21,9 +21,6 @@
 ##### 屏幕截图
 ![截图](https://raw.githubusercontent.com/xykt/IPQuality/main/img/cn_IPv4.svg)
 
-##### 运行量历史
-![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place)
-
 ## 使用方法
 
 ##### 默认双栈检测：
@@ -70,6 +67,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本更新
 
+2024/10/06 01:15 修复极个别运行脚本报错问题
+
 2024/07/23 23:50 增加运行参数-f使报告显示完整IP地址
 
 2024/07/22 01:50 安装依赖包前增加询问，修复Disney+解锁类型错误
@@ -105,4 +104,9 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 - 感谢[spiritLHLS](https://github.com/spiritLHLS/ecs)，本脚本局部代码参考融合怪测评脚本
 
 **Stars History:**
+
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377ff77)
+
+**History of daily runs:**
+
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241006)
