@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-10-06"
+script_version="v2024-10-17"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
@@ -389,6 +389,8 @@ alinux)install_packages "yum" "yum install -y"
 ;;
 suse|opensuse*)install_packages "zypper" "zypper install -y"
 ;;
+void)install_packages "xbps" "xbps-install -Sy"
+;;
 *)echo "Unsupported distribution: $ID"
 exit 1
 esac
@@ -447,6 +449,9 @@ brew)eval "$(/opt/homebrew/bin/brew shellenv)"
 $install_command jq curl bc netcat bind
 ;;
 zypper)$usesudo zypper refresh
+$usesudo $install_command jq curl bc netcat bind-utils iproute2
+;;
+xbps)$usesudo xbps-install -Sy
 $usesudo $install_command jq curl bc netcat bind-utils iproute2
 esac
 }
