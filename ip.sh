@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-07-29"
+script_version="v2024-10-17"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
