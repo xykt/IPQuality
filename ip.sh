@@ -63,6 +63,7 @@ declare IPV6check=1
 declare IPV4work=0
 declare IPV6work=0
 declare ERRORcode=0
+declare saveResult=0
 declare asponsor
 declare aad1
 declare shelp
@@ -87,12 +88,14 @@ declare CurlARG=""
 declare UA_Browser
 declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
 declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
+declare resultFile="ip_quality_result_v%s.txt"
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT"
 "Usage: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-i eth0] [-l cn|en|jp|es|de|fr|ru|pt] [-x http://usr:pwd@proxyurl:p]"
 "            -4                             Test IPv4"
 "            -6                             Test IPv6"
 "            -f                             Show full IP on reports"
+"            -s                             Save result to file"
 "            -h                             Help information"
 "            -i eth0                        Specify network interface"
 "            -l cn|en|jp|es|de|fr|ru|pt     Specify script language"
@@ -1914,7 +1917,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:x:fh46" opt;do
+while getopts "i:l:x:fhs46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -1962,6 +1965,8 @@ get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
 fi
+;;
+s)saveResult=1
 ;;
 \?)ERRORcode=1
 esac
@@ -2023,6 +2028,7 @@ show_mail $2
 show_tail)
 local report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
 echo -ne "\r$ip_report\n"
+[[ $saveResult -ne 0 ]] && echo -ne "\r$ip_report\n" > "$(printf "$resultFile" "$2")"
 [[ $report_link == *"https"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 echo -ne "\r\n"
 }
