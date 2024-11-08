@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2024-10-17"
+script_version="v2024-11-09"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
@@ -49,6 +49,7 @@ declare -A dbip
 declare -A ipwhois
 declare -A ipdata
 declare -A ipqs
+declare -A cloudflare
 declare -A tiktok
 declare -A disney
 declare -A netflix
@@ -951,7 +952,8 @@ local RESPONSE=$(curl $CurlARG -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
-case ${ip2location[usetype]} in
+local first_use="${ip2location[usetype]%%/*}"
+case $first_use in
 "COM")ip2location[susetype]="${stype[business]}"
 ;;
 "DCH")ip2location[susetype]="${stype[hosting]}"
@@ -1085,6 +1087,26 @@ ipqs[tor]=$(echo "$RESPONSE"|jq -r '.tor')
 ipqs[vpn]=$(echo "$RESPONSE"|jq -r '.vpn')
 ipqs[abuser]=$(echo "$RESPONSE"|jq -r '.recent_abuse')
 ipqs[robot]=$(echo "$RESPONSE"|jq -r '.bot_status')
+}
+db_cloudflare(){
+local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}Cloudflare $Font_Suffix"
+((ibar_step+=3))
+show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
+bar_pid="$!"&&disown "$bar_pid"
+trap "kill_progress_bar" RETURN
+cloudflare=()
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ip.nodeget.com/json")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+cloudflare[score]=$(echo "$RESPONSE"|jq -r '.ip.riskScore')
+if [[ ${cloudflare[score]} -lt 10 ]];then
+cloudflare[risk]="${sscore[low]}"
+elif [[ ${cloudflare[score]} -lt 15 ]];then
+cloudflare[risk]="${sscore[medium]}"
+elif [[ ${cloudflare[score]} -lt 25 ]];then
+cloudflare[risk]="${sscore[risky]}"
+elif [[ ${cloudflare[score]} -ge 50 ]];then
+cloudflare[risk]="${sscore[veryhigh]}"
+fi
 }
 function check_ip_valide(){
 local IPPattern='^(\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>\.){3}\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>$'
@@ -1782,6 +1804,10 @@ if [ -n "${ipqs[score]}" ]&&[ "${ipqs[score]}" != "null" ];then
 sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
 echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
 fi
+if [ -n "${cloudflare[score]}" ]&&[ "${cloudflare[score]}" != "null" ];then
+sscore_text "${cloudflare[score]}" ${cloudflare[score]} 75 85 100 12
+echo -ne "\r${Font_Cyan}Cloudflare${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${cloudflare[risk]}\n"
+fi
 sscore_text " " ${dbip[score]} 33 66 100 7
 [[ -n ${dbip[risk]} ]]&&echo -ne "\r${Font_Cyan}DB-IP${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${dbip[risk]}\n"
 }
@@ -1997,6 +2023,7 @@ db_dbip
 db_ipwhois
 db_ipdata $2
 db_ipqs $2
+db_cloudflare $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
 MediaUnlockTest_Netflix $2
