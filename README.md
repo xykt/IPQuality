@@ -67,6 +67,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本更新
 
+2024/11/09 00:30 增加Cloudflare风险评分，修复IP2Location偶发IP类型判断BUG
+
 2024/10/06 01:15 修复极个别运行脚本报错问题
 
 2024/07/23 23:50 增加运行参数-f使报告显示完整IP地址
@@ -109,4 +111,4 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 **History of daily runs:**
 
-![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241017)
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241109)
