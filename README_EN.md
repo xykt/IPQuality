@@ -13,7 +13,7 @@
 - Beautifully formatted, intuitive display, optimized for single-screen multi-terminal display, facilitating screenshot sharing
 - Six modules: Basic Information, IP Type, Risk Score, Risk Factors, Streaming Media Unlocking, and Post Office Check
 - Basic data sourced from the *Maxmind* database
-- Risk information integrated from multiple databases: *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2LOCATION / IPQS / DB-IP / SCAMALYTICS / IPWHOIS*
+- Risk information integrated from multiple databases: *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2LOCATION / IPQS / DB-IP / SCAMALYTICS / IPWHOIS / Cloudflare*
 - Streaming and AI service providers' unlocking and type detection: *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Spotify / ChatGPT*
 - Connectivity tests for multiple email providers: *Gmail / Outlook / Yahoo / Apple / QQ / Mail.ru / AOL / GMX / Mail.com / 163 / Sohu / Sina*
 - Over 400 IP address blacklist database checks
@@ -62,6 +62,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2024/11/09 00:30 Add Cloudflare threat score, fix IP2Location IP type bug
+
 2024/10/06 01:15 Fixed bug causing script errors in very rare cases
 
 2024/07/23 23:50 Add parameter -f to show full IP address on report
@@ -104,4 +106,4 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 **History of daily runs:**
 
-![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241017)
+![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241109)
