@@ -1,7 +1,7 @@
 #!/bin/bash
 upgrade_bash() {
     # 检查当前的 Bash 版本
-    current_bash_version=$(bash --version | head -n 1 | awk '{print $4}' | cut -d'.' -f1)
+    current_bash_version=$(bash --version | head -n 1 | awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}' | cut -d . -f 1)
     if [ "$current_bash_version" -ge 4 ]; then
         echo "Bash version is 4.0 or higher. No need to upgrade."
         return 0
