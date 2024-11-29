@@ -2,7 +2,7 @@
 script_version="v2024-11-09"
 ADLines=25
 check_bash(){
-current_bash_version=$(bash --version|head -n 1|awk '{print $4}'|cut -d'.' -f1)
+current_bash_version=$(bash --version | head -n 1 | awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}' | cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
 echo "ERROR: Bash version is lower than 4.0!"
 echo "Tips: Run the following script to automatically upgrade Bash."
