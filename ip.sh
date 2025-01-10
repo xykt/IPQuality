@@ -1,8 +1,8 @@
 #!/bin/bash
-script_version="v2024-11-09"
+script_version="v2025-01-10"
 ADLines=25
 check_bash(){
-current_bash_version=$(bash --version | head -n 1 | awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}' | cut -d . -f 1)
+current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
 echo "ERROR: Bash version is lower than 4.0!"
 echo "Tips: Run the following script to automatically upgrade Bash."
@@ -771,7 +771,7 @@ scamalytics[tor]=$(echo "$RESPONSE"|awk '/<th>Tor Exit Node<\/th>/ {getline; get
 scamalytics[server]=$(echo "$RESPONSE"|awk '/<th>Server<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 scamalytics[proxy1]=$(echo "$RESPONSE"|awk '/<th>Public Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 scamalytics[proxy2]=$(echo "$RESPONSE"|awk '/<th>Web Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-scamalytics[proxy]="true"
+[[ ${scamalytics[proxy1]} == "true" || ${scamalytics[proxy2]} == "true" ]]&&scamalytics[proxy]="true"
 [[ ${scamalytics[proxy1]} == "false" && ${scamalytics[proxy2]} == "false" ]]&&scamalytics[proxy]="false"
 scamalytics[robot]=$(echo "$RESPONSE"|awk '/<th>Search Engine Robot<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 }
@@ -818,7 +818,7 @@ ipregistry[countrycode]=$(echo "$RESPONSE"|jq -r '.location.country.code')
 ipregistry[proxy]=$(echo "$RESPONSE"|jq -r '.security.is_proxy')
 ipregistry[tor1]=$(echo "$RESPONSE"|jq -r '.security.is_tor')
 ipregistry[tor2]=$(echo "$RESPONSE"|jq -r '.security.is_tor_exit')
-ipregistry[tor]="true"
+[[ ${ipregistry[tor1]} == "true" || ${ipregistry[tor2]} == "true" ]]&&ipregistry[tor]="true"
 [[ ${ipregistry[tor1]} == "false" && ${ipregistry[tor2]} == "false" ]]&&ipregistry[tor]="false"
 ipregistry[vpn]=$(echo "$RESPONSE"|jq -r '.security.is_vpn')
 ipregistry[server]=$(echo "$RESPONSE"|jq -r '.security.is_cloud_provider')
@@ -948,7 +948,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+local RESPONSE=$(curl $CurlARG -sL -m 10 --user-agent "$UA_Browser" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
@@ -984,7 +984,7 @@ shopt -u nocasematch
 ip2location[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ip2location[proxy1]=$(echo "$RESPONSE"|jq -r '.proxy.is_public_proxy')
 ip2location[proxy2]=$(echo "$RESPONSE"|jq -r '.proxy.is_web_proxy')
-ip2location[proxy]="true"
+[[ ${ip2location[proxy1]} == "true" || ${ip2location[proxy2]} == "true" ]]&&ip2location[proxy]="true"
 [[ ${ip2location[proxy1]} == "false" && ${ip2location[proxy2]} == "false" ]]&&ip2location[proxy]="false"
 ip2location[tor]=$(echo "$RESPONSE"|jq -r '.proxy.is_tor')
 ip2location[vpn]=$(echo "$RESPONSE"|jq -r '.proxy.is_vpn')
@@ -993,7 +993,7 @@ ip2location[abuser]=$(echo "$RESPONSE"|jq -r '.proxy.is_spammer')
 ip2location[robot1]=$(echo "$RESPONSE"|jq -r '.proxy.is_web_crawler')
 ip2location[robot2]=$(echo "$RESPONSE"|jq -r '.proxy.is_scanner')
 ip2location[robot3]=$(echo "$RESPONSE"|jq -r '.proxy.is_botnet')
-ip2location[robot]="true"
+[[ ${ip2location[robot1]} == "true" || ${ip2location[robot2]} == "true" || ${ip2location[robot3]} == "true" ]]&&ip2location[robot]="true"
 [[ ${ip2location[robot1]} == "false" && ${ip2location[robot2]} == "false" && ${ip2location[robot3]} == "false" ]]&&ip2location[robot]="false"
 }
 db_dbip(){
@@ -1059,7 +1059,7 @@ ipdata[server]=$(echo "$RESPONSE"|jq -r '.threat.is_datacenter')
 ipdata[abuser1]=$(echo "$RESPONSE"|jq -r '.threat.is_threat')
 ipdata[abuser2]=$(echo "$RESPONSE"|jq -r '.threat.is_known_abuser')
 ipdata[abuser3]=$(echo "$RESPONSE"|jq -r '.threat.is_known_attacker')
-ipdata[abuser]="true"
+[[ ${ipdata[abuser1]} == "true" || ${ipdata[abuser2]} == "true" || ${ipdata[abuser3]} == "true" ]]&&ipdata[abuser]="true"
 [[ ${ipdata[abuser1]} == "false" && ${ipdata[abuser2]} == "false" && ${ipdata[abuser3]} == "false" ]]&&ipdata[abuser]="false"
 }
 db_ipqs(){
