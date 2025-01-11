@@ -808,7 +808,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+local RESPONSE=$(curl $CurlARG -sL -m 10 --user-agent "$UA_Browser" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
