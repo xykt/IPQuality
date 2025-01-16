@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-01-10"
+script_version="v2025-01-16"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -429,11 +429,7 @@ case $package_manager in
 apt)$usesudo apt update
 $usesudo $install_command jq curl bc netcat-openbsd dnsutils iproute2
 ;;
-dnf)$usesudo dnf install epel-release -y
-$usesudo $package_manager makecache
-$usesudo $install_command jq curl bc nmap-ncat bind-utils iproute
-;;
-yum)$usesudo yum install epel-release -y
+dnf|yum)$usesudo $install_command epel-release
 $usesudo $package_manager makecache
 $usesudo $install_command jq curl bc nmap-ncat bind-utils iproute
 ;;
@@ -676,7 +672,7 @@ case ${ipinfo[comtype]} in
 *)ipinfo[scomtype]="${stype[other]}"
 esac
 shopt -u nocasematch
-local ISO3166=$(curl -sL -m 10 "https://raw.githubusercontent.com/xykt/IPQuality/refs/heads/main/ref/iso3166.json")
+local ISO3166=$(curl -sL -m 10 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/iso3166.json")
 ipinfo[countrycode]=$(echo "$RESPONSE"|jq -r '.data.country')
 ipinfo[proxy]=$(echo "$RESPONSE"|jq -r '.data.privacy.proxy')
 ipinfo[tor]=$(echo "$RESPONSE"|jq -r '.data.privacy.tor')
@@ -808,7 +804,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 --user-agent "$UA_Browser" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Language: en-US,en;q=0.9" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 --user-agent "IPQuality" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
@@ -1794,7 +1790,7 @@ countRunTimes
 db_ipinfo
 db_scamalytics
 db_ipapi
-db_ip2location
+db_ip2location $2
 db_dbip
 db_ipwhois
 db_cloudflare $2
