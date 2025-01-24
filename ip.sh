@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-01-16"
+script_version="v2025-01-24"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -351,14 +351,14 @@ stail[today]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $5}')
 stail[total]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $7}')
 }
 show_progress_bar(){
-local bar="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-local n="${#bar}"
+local bar="\u280B\u2819\u2839\u2838\u283C\u2834\u2826\u2827\u2807\u280F"
+local n=${#bar}
 while sleep 0.1;do
 if ! kill -0 $main_pid 2>/dev/null;then
 echo -ne ""
 exit
 fi
-echo -ne "\r$Font_Cyan$Font_B[$IP]# $1$Font_Cyan$Font_B$(printf '%*s' "$2" ''|tr ' ' '.') ${bar:ibar++%n:1} $(printf '%02d%%' $ibar_step) $Font_Suffix"
+echo -ne "\r$Font_Cyan$Font_B[$IP]# $1$Font_Cyan$Font_B$(printf '%*s' "$2" ''|tr ' ' '.') ${bar:ibar++*6%n:6} $(printf '%02d%%' $ibar_step) $Font_Suffix"
 done
 }
 kill_progress_bar(){
@@ -475,6 +475,10 @@ Firefox)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:${version%%.*})
 ;;
 Edge)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version%.*}.0.0 Safari/537.36 Edg/$version"
 esac
+}
+adapt_locale(){
+local ifunicode=$(printf '\u2800')
+[[ ${#ifunicode} -gt 3 ]]&&export LC_CTYPE=en_US.UTF-8 2>/dev/null
 }
 is_valid_ipv4(){
 local ip=$1
@@ -2051,6 +2055,7 @@ echo -ne "\r\n"
 }
 install_dependencies
 generate_random_user_agent
+adapt_locale
 get_ipv4
 get_ipv6
 is_valid_ipv4 $IPV4
