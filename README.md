@@ -99,6 +99,16 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本贡献
 
+**Server Sponsor:**
+
+| 赞助商| 商标 | 网址 | 
+| - | - | - | 
+| V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
+| BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
+| 丽萨主机 | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
+
+**仅接受长期稳定运营，信誉良好的商家*
+
 **Acknowledgments:**
 
 - 感谢[lmc999](https://github.com/lmc999/RegionRestrictionCheck)，本脚本局部代码参考原版流媒体解锁检测脚本
