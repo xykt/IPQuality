@@ -77,6 +77,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本更新
 
+2025/03/13 23:15 增加-y自动安装依赖，-n跳过操作系统及依赖检查
+
 2024/11/09 00:30 增加Cloudflare风险评分，修复IP2Location偶发IP类型判断BUG
 
 2024/10/06 01:15 修复极个别运行脚本报错问题
