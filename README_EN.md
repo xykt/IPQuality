@@ -50,6 +50,19 @@ bash <(curl -Ls IP.Check.Place) -l en -x https://username:password@proxyserver:p
 bash <(curl -Ls IP.Check.Place) -l en -x socks5://username:password@socksproxy:port
 ````
 
+##### Skip checking OS and dependencies:
+
+```bash
+bash <(curl -Ls Net.Check.Place) -n
+```
+
+##### Auto-install dependencies:
+
+```bash
+bash <(curl -Ls Net.Check.Place) -y
+```
+
+
 ##### Show full IP on report:
 ````bash
 bash <(curl -Ls IP.Check.Place) -l en -f
@@ -61,6 +74,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
+
+2025/03/13 23:15 Add -y -n for dependencies auto-install/skip
 
 2024/11/09 00:30 Add Cloudflare threat score, fix IP2Location IP type bug
 
