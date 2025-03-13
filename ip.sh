@@ -92,16 +92,18 @@ declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.git
 declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT"
-"Usage: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-i eth0] [-l cn|en|jp|es|de|fr|ru|pt] [-x http://usr:pwd@proxyurl:p]"
+"Usage: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-i eth0] [-l cn|en|jp|es|de|fr|ru|pt] [-n] [-x http://usr:pwd@proxyurl:p] [-y]"
 "            -4                             Test IPv4"
 "            -6                             Test IPv6"
 "            -f                             Show full IP on reports"
 "            -h                             Help information"
 "            -i eth0                        Specify network interface"
 "            -l cn|en|jp|es|de|fr|ru|pt     Specify script language"
+"            -n                             No OS or dependencies check"
 "            -x http://usr:pwd@proxyurl:p   Specify http proxy"
 "            -x https://usr:pwd@proxyurl:p  Specify https proxy"
-"            -x socks5://usr:pwd@proxyurl:p Specify socks5 proxy")
+"            -x socks5://usr:pwd@proxyurl:p Specify socks5 proxy"
+"            -y                             Install dependencies without interupt")
 shelp=$(printf "%s\n" "${shelp_lines[@]}")
 set_language(){
 case "$LANG" in
