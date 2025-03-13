@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-01-24"
+script_version="v2025-03-13"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -77,6 +77,8 @@ declare -A sfactor
 declare -A smedia
 declare -A smail
 declare -A stail
+declare mode_no=0
+declare mode_yes=0
 declare ibar=0
 declare bar_pid
 declare ibar_step=0
@@ -414,6 +416,7 @@ local install_command=$2
 local no_sudo=$3
 echo "Using package manager: $package_manager"
 echo -e "Lacking necessary dependencies, $Font_I${Font_Cyan}jq curl bc netcat dnsutils iproute$Font_Suffix will be installed using $Font_I$Font_Cyan$package_manager$Font_Suffix."
+if [[ $mode_yes -eq 0 ]];then
 prompt=$(printf "Continue? (${Font_Green}y$Font_Suffix/${Font_Red}n$Font_Suffix): ")
 read -p "$prompt" choice
 case "$choice" in
@@ -425,6 +428,9 @@ exit 0
 *)echo "Invalid input, script exited."
 exit 1
 esac
+else
+echo -e "Detected parameter $Font_Green-y$Font_Suffix. Continue installation..."
+fi
 if [ "$no_sudo" == "no_sudo" ]||[ $(id -u) -eq 0 ];then
 local usesudo=""
 else
@@ -1940,7 +1946,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:x:fh46" opt;do
+while getopts "i:l:x:fhny46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -1977,6 +1983,8 @@ fi
 ;;
 l)LANG=$OPTARG
 ;;
+n)mode_no=1
+;;
 x)xproxy="$OPTARG"
 if [[ -z $xproxy ]]||! curl -sL -x "$xproxy" --connect-timeout 5 --max-time 10 https://myip.check.place -o /dev/null;then
 ERRORcode=8
@@ -1988,6 +1996,8 @@ get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
 fi
+;;
+y)mode_yes=1
 ;;
 \?)ERRORcode=1
 esac
@@ -2053,7 +2063,6 @@ echo -ne "\r$ip_report\n"
 [[ $report_link == *"https"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 echo -ne "\r\n"
 }
-install_dependencies
 generate_random_user_agent
 adapt_locale
 get_ipv4
@@ -2061,6 +2070,7 @@ get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
 get_opts "$@"
+[[ mode_no -eq 0 ]]&&install_dependencies
 set_language
 if [[ $ERRORcode -ne 0 ]];then
 echo -ne "\r$Font_B$Font_Red${swarn[$ERRORcode]}$Font_Suffix\n"
