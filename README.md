@@ -55,6 +55,16 @@ bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
 bash <(curl -Ls IP.Check.Place) -l en
 ````
 
+##### 跳过检测系统及安装依赖：
+````bash
+bash <(curl -Ls Net.Check.Place) -n
+````
+
+##### 自动安装依赖：
+````bash
+bash <(curl -Ls Net.Check.Place) -y
+````
+
 ##### 报告展示完整IP地址：
 ````bash
 bash <(curl -Ls IP.Check.Place) -f
