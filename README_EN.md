@@ -116,6 +116,7 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 | V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
 | BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
 | LisaHost | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
+| DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_dreamcloud.png) | [https://as211392.com/](https://as211392.com/)|
 
 **Only accepting merchants with long-term stable operations and good reputation*
 
