@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-03-13"
+script_version="v2025-03-25"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -344,15 +344,10 @@ stail[link]="$Font_I报告链接：$Font_U"
 *)echo -ne "ERROR: Language not supported!"
 esac
 }
-countRunTimes(){
-if ! mktemp -u --suffix=RRC &>/dev/null;then
-count_file=$(mktemp)
-else
-count_file=$(mktemp --suffix=RRC)
-fi
-RunTimes=$(curl $CurlARG -s --max-time 10 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fip.check.place&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" >"$count_file")
-stail[today]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $5}')
-stail[total]=$(cat "$count_file"|tail -3|head -n 1|awk '{print $7}')
+countRunTimes() {
+local RunTimes=$(curl ${CurlARG} -s --max-time 10 "https://hits.xykt.de/ip?action=hit" 2>&1)
+stail[today]=$(echo "${RunTimes}"|jq '.daily')
+stail[total]=$(echo "${RunTimes}"|jq '.total')
 }
 show_progress_bar(){
 local bar="\u280B\u2819\u2839\u2838\u283C\u2834\u2826\u2827\u2807\u280F"
