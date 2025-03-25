@@ -131,7 +131,3 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 **Stars History:**
 
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377ff77)
-
-**History of daily runs:**
-
-![History of daily runs](https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://ip.check.place&date=20241109)
