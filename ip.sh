@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-03-25"
+script_version="v2025-04-18"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -79,6 +79,7 @@ declare -A smail
 declare -A stail
 declare mode_no=0
 declare mode_yes=0
+declare mode_lite=0
 declare ibar=0
 declare bar_pid
 declare ibar_step=0
@@ -127,13 +128,16 @@ sinfo[lai]=21
 sinfo[lmail]=24
 sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT: "
+shead[title_lite]="IP QUALITY CHECK REPORT(LITE): "
 shead[ver]="Version: $script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time: %Y-%m-%d %H:%M:%S UTC")
 shead[ltitle]=25
+shead[ltitle_lite]=31
 shead[ptime]=$(printf '%7s' '')
 sbasic[title]="1. Basic Information (${Font_I}Maxmind Database$Font_Suffix)"
+sbasic[title_lite]="1. Basic Information (${Font_I}IPinfo Database$Font_Suffix)"
 sbasic[asn]="ASN:                    "
 sbasic[noasn]="Not Assigned"
 sbasic[org]="Organization:           "
@@ -244,13 +248,16 @@ sinfo[lai]=17
 sinfo[lmail]=19
 sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告："
+shead[title_lite]="IP质量体检报告(Lite)："
 shead[ver]="脚本版本：$script_version"
 shead[bash]="bash <(curl -sL IP.Check.Place)"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
 shead[ltitle]=16
+shead[ltitle_lite]=22
 shead[ptime]=$(printf '%8s' '')
 sbasic[title]="一、基础信息（${Font_I}Maxmind 数据库$Font_Suffix）"
+sbasic[title_lite]="一、基础信息（${Font_I}IPinfo 数据库$Font_Suffix）"
 sbasic[asn]="自治系统号：            "
 sbasic[noasn]="未分配"
 sbasic[org]="组织：                  "
@@ -344,10 +351,10 @@ stail[link]="$Font_I报告链接：$Font_U"
 *)echo -ne "ERROR: Language not supported!"
 esac
 }
-countRunTimes() {
-local RunTimes=$(curl ${CurlARG} -s --max-time 10 "https://hits.xykt.de/ip?action=hit" 2>&1)
-stail[today]=$(echo "${RunTimes}"|jq '.daily')
-stail[total]=$(echo "${RunTimes}"|jq '.total')
+countRunTimes(){
+local RunTimes=$(curl $CurlARG -s --max-time 10 "https://hits.xykt.de/ip?action=hit" 2>&1)
+stail[today]=$(echo "$RunTimes"|jq '.daily')
+stail[total]=$(echo "$RunTimes"|jq '.total')
 }
 show_progress_bar(){
 local bar="\u280B\u2819\u2839\u2838\u283C\u2834\u2826\u2827\u2807\u280F"
@@ -658,6 +665,11 @@ trap "kill_progress_bar" RETURN
 maxmind=()
 local RESPONSE=$(curl $CurlARG -Ls -$1 -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+if [[ -z $RESPONSE ]];then
+mode_lite=1
+else
+mode_lite=0
+fi
 maxmind[asn]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemNumber')
 maxmind[org]=$(echo "$RESPONSE"|jq -r '.ASN.AutonomousSystemOrganization')
 maxmind[city]=$(echo "$RESPONSE"|jq -r '.City.Name')
@@ -747,6 +759,28 @@ ipinfo[proxy]=$(echo "$RESPONSE"|jq -r '.data.privacy.proxy')
 ipinfo[tor]=$(echo "$RESPONSE"|jq -r '.data.privacy.tor')
 ipinfo[vpn]=$(echo "$RESPONSE"|jq -r '.data.privacy.vpn')
 ipinfo[server]=$(echo "$RESPONSE"|jq -r '.data.privacy.hosting')
+local ISO3166=$(curl -sL -m 10 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/iso3166.json")
+ipinfo[asn]=$(echo "$RESPONSE"|jq -r '.data.asn.asn')
+ipinfo[org]=$(echo "$RESPONSE"|jq -r '.data.asn.name')
+ipinfo[city]=$(echo "$RESPONSE"|jq -r '.data.city')
+ipinfo[post]=$(echo "$RESPONSE"|jq -r '.data.postal')
+local tmp_str=$(echo "$RESPONSE"|jq -r '.data.loc')
+ipinfo[lat]=$(echo "$tmp_str"|cut -d',' -f1)
+ipinfo[lon]=$(echo "$tmp_str"|cut -d',' -f2)
+ipinfo[dms]=$(generate_dms "${ipinfo[lat]}" "${ipinfo[lon]}")
+ipinfo[map]=$(generate_googlemap_url "${ipinfo[lat]}" "${ipinfo[lon]}" "1001")
+ipinfo[countrycode]=$(echo "$RESPONSE"|jq -r '.data.country')
+ipinfo[country]=$(echo "$ISO3166"|jq --arg code "${ipinfo[countrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .name')
+ipinfo[continent]=$(echo "$ISO3166"|jq --arg code "${ipinfo[countrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .region')
+ipinfo[regcountrycode]=$(echo "$RESPONSE"|jq -r '.data.abuse.country')
+ipinfo[regcountry]=$(echo "$ISO3166"|jq --arg code "${ipinfo[regcountrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .name')
+if [[ ${maxmind[lat]} != "null" && ${maxmind[lon]} != "null" ]];then
+ipinfo[dms]=$(generate_dms "${ipinfo[lat]}" "${ipinfo[lon]}")
+ipinfo[map]=$(generate_googlemap_url "${ipinfo[lat]}" "${ipinfo[lon]}" "1001")
+else
+ipinfo[dms]="null"
+ipinfo[map]="null"
+fi
 }
 db_scamalytics(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}SCAMALYTICS $Font_Suffix"
@@ -1691,12 +1725,22 @@ smail[sdnsbl]=$(check_dnsbl_parallel "$IP" 50)
 }
 show_head(){
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
+if [[ $mode_lite -eq 0 ]];then
 if [ $fullIP -eq 1 ];then
 calc_padding "$(printf '%*s' "${shead[ltitle]}" '')$IP" 72
 echo -ne "\r$PADDING$Font_B${shead[title]}$Font_Cyan$IP$Font_Suffix\n"
 else
 calc_padding "$(printf '%*s' "${shead[ltitle]}" '')$IPhide" 72
 echo -ne "\r$PADDING$Font_B${shead[title]}$Font_Cyan$IPhide$Font_Suffix\n"
+fi
+else
+if [ $fullIP -eq 1 ];then
+calc_padding "$(printf '%*s' "${shead[ltitle_lite]}" '')$IP" 72
+echo -ne "\r$PADDING$Font_B${shead[title_lite]}$Font_Cyan$IP$Font_Suffix\n"
+else
+calc_padding "$(printf '%*s' "${shead[ltitle_lite]}" '')$IPhide" 72
+echo -ne "\r$PADDING$Font_B${shead[title_lite]}$Font_Cyan$IPhide$Font_Suffix\n"
+fi
 fi
 calc_padding "${shead[bash]}" 72
 echo -ne "\r$PADDING${shead[bash]}\n"
@@ -1756,11 +1800,68 @@ echo -ne "\r$Font_Cyan${sbasic[type]}$Back_Red$Font_B$Font_White${sbasic[type1]}
 fi
 fi
 }
+show_basic_lite(){
+echo -ne "\r${sbasic[title_lite]}\n"
+if [[ -n ${ipinfo[asn]} && ${ipinfo[asn]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[asn]}${Font_Green}AS${ipinfo[asn]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[org]}$Font_Green${ipinfo[org]}$Font_Suffix\n"
+else
+echo -ne "\r$Font_Cyan${sbasic[asn]}${sbasic[noasn]}$Font_Suffix\n"
+fi
+if [[ ${ipinfo[dms]} != "null" && ${ipinfo[map]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[location]}$Font_Green${ipinfo[dms]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sbasic[map]}$Font_U$Font_Green${ipinfo[map]}$Font_Suffix\n"
+fi
+local city_info=""
+if [[ -n ${ipinfo[sub]} && ${ipinfo[sub]} != "null" ]];then
+city_info+="${ipinfo[sub]}"
+fi
+if [[ -n ${ipinfo[city]} && ${ipinfo[city]} != "null" ]];then
+[[ -n $city_info ]]&&city_info+=", "
+city_info+="${ipinfo[city]}"
+fi
+if [[ -n ${ipinfo[post]} && ${ipinfo[post]} != "null" ]];then
+[[ -n $city_info ]]&&city_info+=", "
+city_info+="${ipinfo[post]}"
+fi
+if [[ -n $city_info ]];then
+echo -ne "\r$Font_Cyan${sbasic[city]}$Font_Green$city_info$Font_Suffix\n"
+fi
+if [[ -n ${ipinfo[countrycode]} && ${ipinfo[countrycode]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[country]}$Font_Green[${ipinfo[countrycode]}]${ipinfo[country]}$Font_Suffix"
+if [[ -n ${ipinfo[continent]} && ${ipinfo[continent]} != "null" ]];then
+echo -ne "$Font_Green, ${ipinfo[continent]}$Font_Suffix\n"
+else
+echo -ne "\n"
+fi
+elif [[ -n ${ipinfo[continent]} && ${ipinfo[continent]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[continent]}$Font_Green${ipinfo[continent]}$Font_Suffix\n"
+fi
+if [[ -n ${ipinfo[regcountrycode]} && ${ipinfo[regcountrycode]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[regcountry]}$Font_Green[${ipinfo[regcountrycode]}]${ipinfo[regcountry]}$Font_Suffix\n"
+fi
+if [[ -n ${ipinfo[timezone]} && ${ipinfo[timezone]} != "null" ]];then
+echo -ne "\r$Font_Cyan${sbasic[timezone]}$Font_Green${ipinfo[timezone]}$Font_Suffix\n"
+fi
+if [[ -n ${ipinfo[countrycode]} && ${ipinfo[countrycode]} != "null" ]];then
+if [ "${ipinfo[countrycode]}" == "${ipinfo[regcountrycode]}" ];then
+echo -ne "\r$Font_Cyan${sbasic[type]}$Back_Green$Font_B$Font_White${sbasic[type0]}$Font_Suffix\n"
+else
+echo -ne "\r$Font_Cyan${sbasic[type]}$Back_Red$Font_B$Font_White${sbasic[type1]}$Font_Suffix\n"
+fi
+fi
+}
 show_type(){
 echo -ne "\r${stype[title]}\n"
 echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2LOCATION $Font_Suffix\n"
 echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${abuseipdb[susetype]}${ip2location[susetype]}\n"
 echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[susetype]}${ipapi[susetype]}\n"
+}
+show_type_lite(){
+echo -ne "\r${stype[title]}\n"
+echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo      ipapi    IP2LOCATION $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipapi[susetype]}${ip2location[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipapi[susetype]}\n"
 }
 sscore_text(){
 local text="$1"
@@ -1801,11 +1902,13 @@ local tmp_score=$(echo "${ipapi[scorenum]} * 10000 / 1"|bc)
 sscore_text "${ipapi[score]}" $tmp_score 85 300 10000 7
 echo -ne "\r${Font_Cyan}ipapi${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipapi[risk]}\n"
 fi
+if [[ $mode_lite -eq 0 ]];then
 sscore_text "${abuseipdb[score]}" ${abuseipdb[score]} 25 25 100 11
 echo -ne "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
 if [ -n "${ipqs[score]}" ]&&[ "${ipqs[score]}" != "null" ];then
 sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
 echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
+fi
 fi
 if [ -n "${cloudflare[score]}" ]&&[ "${cloudflare[score]}" != "null" ];then
 sscore_text "${cloudflare[score]}" ${cloudflare[score]} 75 85 100 12
@@ -1865,6 +1968,7 @@ tmp_txt+="$Font_Green[$5]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
+if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $6 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -1895,6 +1999,7 @@ tmp_txt+="$Font_Green[$8]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
+fi
 echo "$tmp_txt"
 }
 show_factor(){
@@ -1914,6 +2019,25 @@ echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipqs[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${ipqs[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
+echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
+}
+show_factor_lite(){
+local tmp_factor=""
+echo -ne "\r${sfactor[title]}\n"
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2LOCATION ipapi SCAMALYTICS IPinfo IPWHOIS$Font_Suffix\n"
+tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${scamalytics[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${scamalytics[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
+echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${scamalytics[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
+echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${scamalytics[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
+echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${scamalytics[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
+echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${scamalytics[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
+echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
+tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${scamalytics[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2022,14 +2146,14 @@ countRunTimes
 db_maxmind $2
 db_ipinfo
 db_scamalytics
-db_ipregistry $2
+[[ $mode_lite -eq 0 ]]&&db_ipregistry $2
 db_ipapi
-db_abuseipdb $2
+[[ $mode_lite -eq 0 ]]&&db_abuseipdb $2
 db_ip2location $2
 db_dbip
 db_ipwhois
-db_ipdata $2
-db_ipqs $2
+[[ $mode_lite -eq 0 ]]&&db_ipdata $2
+[[ $mode_lite -eq 0 ]]&&db_ipqs $2
 db_cloudflare $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
@@ -2047,6 +2171,7 @@ echo -ne "$Font_LineUp"
 echo -ne "$Font_LineClear"
 done
 fi
+if [[ $mode_lite -eq 0 ]];then
 local ip_report=$(show_head
 show_basic
 show_type
@@ -2055,9 +2180,20 @@ show_factor
 show_media
 show_mail $2
 show_tail)
-local report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
+else
+local ip_report=$(show_head
+show_basic_lite
+show_type_lite
+show_score
+show_factor_lite
+show_media
+show_mail $2
+show_tail)
+fi
+local report_link=""
+[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
 echo -ne "\r$ip_report\n"
-[[ $report_link == *"https"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
+[[ $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 echo -ne "\r\n"
 }
 generate_random_user_agent
