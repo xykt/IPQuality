@@ -21,51 +21,56 @@
 ##### Screenshots
 ![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_IPv4.svg)
 
-## How to Use
+## Usage
 
-##### English version of dual-stack test:
+##### English version of dual-stack test (Either):
 ````bash
+bash <(curl -Ls IP.Check.Place) -E
 bash <(curl -Ls IP.Check.Place) -l en
 ````
 
 ##### IPv4 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en -4
+bash <(curl -Ls IP.Check.Place) -E4
 ````
 
 ##### IPv6 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en -6
+bash <(curl -Ls IP.Check.Place) -E6
 ````
 
 ##### Specify network interface:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en -i eth0
+bash <(curl -Ls IP.Check.Place) -E -i eth0
 ````
 
 ##### Specify proxy server:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en -x http://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -l en -x https://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -l en -x socks5://username:password@socksproxy:port
+bash <(curl -Ls IP.Check.Place) -E -x http://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -E -x https://username:password@proxyserver:port
+bash <(curl -Ls IP.Check.Place) -E -x socks5://username:password@socksproxy:port
 ````
 
 ##### Skip checking OS and dependencies:
 
 ```bash
-bash <(curl -Ls Net.Check.Place) -n
+bash <(curl -Ls Net.Check.Place) -En
 ```
 
 ##### Auto-install dependencies:
 
 ```bash
-bash <(curl -Ls Net.Check.Place) -y
+bash <(curl -Ls Net.Check.Place) -Ey
 ```
-
 
 ##### Show full IP on report:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l en -f
+bash <(curl -Ls IP.Check.Place) -Ef
+````
+
+##### JSON mode：
+````bash
+bash <(curl -Ls IP.Check.Place) -Ej
 ````
 
 ##### Basic information multi-language support:
@@ -74,6 +79,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
+
+2025/04/19 21:00 Add -y for JSON mode
 
 2025/03/13 23:15 Add -y -n for dependencies auto-install/skip
 
