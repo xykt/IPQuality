@@ -50,8 +50,9 @@ bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
 bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
 ````
 
-##### 选择脚本语言为英文：
+##### 选择脚本语言为英文（任选其一）：
 ````bash
+bash <(curl -Ls IP.Check.Place) -E
 bash <(curl -Ls IP.Check.Place) -l en
 ````
 
@@ -70,12 +71,19 @@ bash <(curl -Ls Net.Check.Place) -y
 bash <(curl -Ls IP.Check.Place) -f
 ````
 
+##### 输出JSON结果：
+````bash
+bash <(curl -Ls IP.Check.Place) -j
+````
+
 ##### 基础信息多语言支持：
 ````bash
 bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## 脚本更新
+
+2025/04/19 21:00 增加-y的JSON输出模式
 
 2025/03/13 23:15 增加-y自动安装依赖，-n跳过操作系统及依赖检查
 
