@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-04-18"
+script_version="v2025-04-19"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -37,7 +37,7 @@ Font_LineUp="\033[1A"
 declare IP=""
 declare IPhide
 declare fullIP=0
-declare LANG="cn"
+declare YY="cn"
 declare -A maxmind
 declare -A ipinfo
 declare -A scamalytics
@@ -76,10 +76,14 @@ declare -A sscore
 declare -A sfactor
 declare -A smedia
 declare -A smail
+declare -A smailstatus
 declare -A stail
 declare mode_no=0
 declare mode_yes=0
 declare mode_lite=0
+declare mode_json=0
+declare mode_menu=0
+declare ipjson
 declare ibar=0
 declare bar_pid
 declare ibar_step=0
@@ -92,22 +96,27 @@ declare UA_Browser
 declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
 declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
 shelp_lines=(
-"IP QUALITY CHECK SCRIPT"
-"Usage: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-i eth0] [-l cn|en|jp|es|de|fr|ru|pt] [-n] [-x http://usr:pwd@proxyurl:p] [-y]"
-"            -4                             Test IPv4"
-"            -6                             Test IPv6"
-"            -f                             Show full IP on reports"
-"            -h                             Help information"
-"            -i eth0                        Specify network interface"
-"            -l cn|en|jp|es|de|fr|ru|pt     Specify script language"
-"            -n                             No OS or dependencies check"
-"            -x http://usr:pwd@proxyurl:p   Specify http proxy"
-"            -x https://usr:pwd@proxyurl:p  Specify https proxy"
-"            -x socks5://usr:pwd@proxyurl:p Specify socks5 proxy"
-"            -y                             Install dependencies without interupt")
+"IP QUALITY CHECK SCRIPT IP质量体检脚本"
+"Interactive Interface:  bash <(curl -sL IP.Check.Place) -EM"
+"交互界面：              bash <(curl -sL IP.Check.Place) -M"
+"Parameters 参数运行: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-j] [-i iface] [-l language] [-n] [-x proxy] [-y] [-E] [-M]"
+"            -4                             Test IPv4                                  测试IPv4"
+"            -6                             Test IPv6                                  测试IPv6"
+"            -f                             Show full IP on reports                    报告展示完整IP地址"
+"            -h                             Help information                           帮助信息"
+"            -j                             JSON output                                JSON输出"
+"            -i eth0                        Specify network interface                  指定检测网卡"
+"            -l cn|en|jp|es|de|fr|ru|pt     Specify script language                    指定报告语言"
+"            -n                             No OS or dependencies check                跳过系统检测及依赖安装"
+"            -x http://usr:pwd@proxyurl:p   Specify http proxy                         指定http代理"
+"               https://usr:pwd@proxyurl:p  Specify https proxy                        指定https代理"
+"               socks5://usr:pwd@proxyurl:p Specify socks5 proxy                       指定socks5代理"
+"            -y                             Install dependencies without interupt      自动安装依赖"
+"            -E                             Specify English Output                     指定英文输出"
+"            -M                             Run with Interactive Interface             交互界面方式运行")
 shelp=$(printf "%s\n" "${shelp_lines[@]}")
 set_language(){
-case "$LANG" in
+case "$YY" in
 "en"|"jp"|"es"|"de"|"fr"|"ru"|"pt")swarn[1]="ERROR: Unsupported parameters!"
 swarn[2]="ERROR: IP address format error!"
 swarn[3]="ERROR: Dependent programs are missing. Please run as root or install sudo!"
@@ -130,7 +139,7 @@ sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT: "
 shead[title_lite]="IP QUALITY CHECK REPORT(LITE): "
 shead[ver]="Version: $script_version"
-shead[bash]="bash <(curl -sL IP.Check.Place)"
+shead[bash]="bash <(curl -sL Check.Place) -EI"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time: %Y-%m-%d %H:%M:%S UTC")
 shead[ltitle]=25
@@ -250,7 +259,7 @@ sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告："
 shead[title_lite]="IP质量体检报告(Lite)："
 shead[ver]="脚本版本：$script_version"
-shead[bash]="bash <(curl -sL IP.Check.Place)"
+shead[bash]="bash <(curl -sL Check.Place) -I"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
 shead[ltitle]=16
@@ -654,7 +663,7 @@ zoom_level=13
 elif [[ $radius -gt 250 ]];then
 zoom_level=14
 fi
-echo "https://check.place/$lat,$lon,$zoom_level,$LANG"
+echo "https://check.place/$lat,$lon,$zoom_level,$YY"
 }
 db_maxmind(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}Maxmind $Font_Suffix"
@@ -663,7 +672,7 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 maxmind=()
-local RESPONSE=$(curl $CurlARG -Ls -$1 -m 10 "https://ipinfo.check.place/$IP?lang=$LANG")
+local RESPONSE=$(curl $CurlARG -Ls -$1 -m 10 "https://ipinfo.check.place/$IP?lang=$YY")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 if [[ -z $RESPONSE ]];then
 mode_lite=1
@@ -677,11 +686,9 @@ maxmind[post]=$(echo "$RESPONSE"|jq -r '.City.PostalCode')
 maxmind[lat]=$(echo "$RESPONSE"|jq -r '.City.Latitude')
 maxmind[lon]=$(echo "$RESPONSE"|jq -r '.City.Longitude')
 maxmind[rad]=$(echo "$RESPONSE"|jq -r '.City.AccuracyRadius')
-maxmind[dms]=$(generate_dms "${maxmind[lat]}" "${maxmind[lon]}")
-maxmind[map]=$(generate_googlemap_url "${maxmind[lat]}" "${maxmind[lon]}" "${maxmind[rad]}")
 maxmind[continentcode]=$(echo "$RESPONSE"|jq -r '.City.Continent.Code')
 maxmind[continent]=$(echo "$RESPONSE"|jq -r '.City.Continent.Name')
-maxmind[citycountrycoad]=$(echo "$RESPONSE"|jq -r '.City.Country.IsoCode')
+maxmind[citycountrycode]=$(echo "$RESPONSE"|jq -r '.City.Country.IsoCode')
 maxmind[citycountry]=$(echo "$RESPONSE"|jq -r '.City.Country.Name')
 maxmind[timezone]=$(echo "$RESPONSE"|jq -r '.City.Location.TimeZone')
 maxmind[subcode]=$(echo "$RESPONSE"|jq -r 'if .City.Subdivisions | length > 0 then .City.Subdivisions[0].IsoCode else "N/A" end')
@@ -690,7 +697,7 @@ maxmind[countrycode]=$(echo "$RESPONSE"|jq -r '.Country.IsoCode')
 maxmind[country]=$(echo "$RESPONSE"|jq -r '.Country.Name')
 maxmind[regcountrycode]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.IsoCode')
 maxmind[regcountry]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.Name')
-if [[ $LANG != "en" ]];then
+if [[ $YY != "en" ]];then
 local backup_response=$(curl $CurlARG -s -$1 -m 10 "http://ipinfo.check.place/$IP?lang=en")
 [[ ${maxmind[asn]} == "null" ]]&&maxmind[asn]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemNumber')
 [[ ${maxmind[org]} == "null" ]]&&maxmind[org]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemOrganization')
@@ -701,7 +708,7 @@ local backup_response=$(curl $CurlARG -s -$1 -m 10 "http://ipinfo.check.place/$I
 [[ ${maxmind[rad]} == "null" ]]&&maxmind[rad]=$(echo "$backup_response"|jq -r '.City.AccuracyRadius')
 [[ ${maxmind[continentcode]} == "null" ]]&&maxmind[continentcode]=$(echo "$backup_response"|jq -r '.City.Continent.Code')
 [[ ${maxmind[continent]} == "null" ]]&&maxmind[continent]=$(echo "$backup_response"|jq -r '.City.Continent.Name')
-[[ ${maxmind[citycountrycoad]} == "null" ]]&&maxmind[citycountrycoad]=$(echo "$backup_response"|jq -r '.City.Country.IsoCode')
+[[ ${maxmind[citycountrycode]} == "null" ]]&&maxmind[citycountrycode]=$(echo "$backup_response"|jq -r '.City.Country.IsoCode')
 [[ ${maxmind[citycountry]} == "null" ]]&&maxmind[citycountry]=$(echo "$backup_response"|jq -r '.City.Country.Name')
 [[ ${maxmind[timezone]} == "null" ]]&&maxmind[timezone]=$(echo "$backup_response"|jq -r '.City.Location.TimeZone')
 [[ ${maxmind[subcode]} == "null" ]]&&maxmind[subcode]=$(echo "$backup_response"|jq -r 'if .City.Subdivisions | length > 0 then .City.Subdivisions[0].IsoCode else "N/A" end')
@@ -760,21 +767,20 @@ ipinfo[tor]=$(echo "$RESPONSE"|jq -r '.data.privacy.tor')
 ipinfo[vpn]=$(echo "$RESPONSE"|jq -r '.data.privacy.vpn')
 ipinfo[server]=$(echo "$RESPONSE"|jq -r '.data.privacy.hosting')
 local ISO3166=$(curl -sL -m 10 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/iso3166.json")
-ipinfo[asn]=$(echo "$RESPONSE"|jq -r '.data.asn.asn')
+ipinfo[asn]=$(echo "$RESPONSE"|jq -r '.data.asn.asn'|sed 's/^AS//')
 ipinfo[org]=$(echo "$RESPONSE"|jq -r '.data.asn.name')
 ipinfo[city]=$(echo "$RESPONSE"|jq -r '.data.city')
 ipinfo[post]=$(echo "$RESPONSE"|jq -r '.data.postal')
+ipinfo[timezone]=$(echo "$RESPONSE"|jq -r '.data.timezone')
 local tmp_str=$(echo "$RESPONSE"|jq -r '.data.loc')
 ipinfo[lat]=$(echo "$tmp_str"|cut -d',' -f1)
 ipinfo[lon]=$(echo "$tmp_str"|cut -d',' -f2)
-ipinfo[dms]=$(generate_dms "${ipinfo[lat]}" "${ipinfo[lon]}")
-ipinfo[map]=$(generate_googlemap_url "${ipinfo[lat]}" "${ipinfo[lon]}" "1001")
 ipinfo[countrycode]=$(echo "$RESPONSE"|jq -r '.data.country')
 ipinfo[country]=$(echo "$ISO3166"|jq --arg code "${ipinfo[countrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .name')
 ipinfo[continent]=$(echo "$ISO3166"|jq --arg code "${ipinfo[countrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .region')
 ipinfo[regcountrycode]=$(echo "$RESPONSE"|jq -r '.data.abuse.country')
 ipinfo[regcountry]=$(echo "$ISO3166"|jq --arg code "${ipinfo[regcountrycode]}" -r '.[] | select(.["alpha-2"] == $code) | .name')
-if [[ ${maxmind[lat]} != "null" && ${maxmind[lon]} != "null" ]];then
+if [[ ${ipinfo[lat]} != "null" && ${ipinfo[lon]} != "null" ]];then
 ipinfo[dms]=$(generate_dms "${ipinfo[lat]}" "${ipinfo[lon]}")
 ipinfo[map]=$(generate_googlemap_url "${ipinfo[lat]}" "${ipinfo[lon]}" "1001")
 else
@@ -1659,6 +1665,7 @@ smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
+smailstatus[$service]="true"
 break
 fi
 done
@@ -1667,10 +1674,12 @@ response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
+smailstatus[$service]="true"
 fi
 fi
 if [[ $success == "false" ]];then
 smail[$service]="$Back_Red$Font_White$Font_B$service$Font_Suffix"
+smailstatus[$service]="false"
 fi
 }
 check_mail(){
@@ -1684,6 +1693,11 @@ show_progress_bar "$temp_info" $((40-1-${#service}-${sinfo[lmail]}))&
 bar_pid="$!"&&disown "$bar_pid"
 check_email_service $service
 kill_progress_bar
+done
+else
+services=("Gmail" "Outlook" "Yahoo" "Apple" "QQ" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina")
+for service in "${services[@]}";do
+smailstatus[$service]="false"
 done
 fi
 }
@@ -1904,7 +1918,7 @@ echo -ne "\r${Font_Cyan}ipapi${sscore[colon]}$Font_White$Font_B${sscore[text1]}$
 fi
 if [[ $mode_lite -eq 0 ]];then
 sscore_text "${abuseipdb[score]}" ${abuseipdb[score]} 25 25 100 11
-echo -ne "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
+[[ -n ${abuseipdb[score]} ]]&&echo -ne "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
 if [ -n "${ipqs[score]}" ]&&[ "${ipqs[score]}" != "null" ];then
 sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
 echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
@@ -2067,7 +2081,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:x:fhny46" opt;do
+while getopts "i:l:x:fhjnyEM46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -2102,7 +2116,9 @@ else
 ERRORcode=7
 fi
 ;;
-l)LANG=$OPTARG
+j)mode_json=1
+;;
+l)YY=$(echo "$OPTARG"|tr '[:upper:]' '[:lower:]')
 ;;
 n)mode_no=1
 ;;
@@ -2120,9 +2136,21 @@ fi
 ;;
 y)mode_yes=1
 ;;
+E)YY="en"
+;;
+M)mode_menu=1
+;;
 \?)ERRORcode=1
 esac
 done
+if [[ $mode_menu -eq 1 ]];then
+if [[ $YY == "cn" ]];then
+eval "bash <(curl -sL Check.Place) -I"
+else
+eval "bash <(curl -sL Check.Place) -EI"
+fi
+exit 0
+fi
 [[ $IPV4check -eq 1 && $IPV6check -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=40
 [[ $IPV4check -eq 0 && $IPV6check -eq 1 && $IPV6work -eq 0 ]]&&ERRORcode=60
 CurlARG="$useNIC$usePROXY"
@@ -2137,9 +2165,224 @@ aad1=$(curl -sL --max-time 5 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/re
 echo -e "$asponsor"
 echo -e "$aad1"
 }
+clean_ansi(){
+local input="$1"
+input=$(echo "$input"|sed 's/\\033/\x1b/g')
+input=$(echo "$input"|sed 's/\x1b\[[0-9;]*m//g')
+input=$(echo "$input"|sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+echo -n "$input"
+}
+factor_bool(){
+local tmp_txt=""
+if [[ $1 == "true" ]];then
+tmp_txt+=".Factor |= map(. * { $3: { $2: true } }) | "
+elif [[ $1 == "false" ]];then
+tmp_txt+=".Factor |= map(. * { $3: { $2: false } }) | "
+elif [ ${#1} -eq 2 ];then
+tmp_txt+=".Factor |= map(. * { $3: { $2: \"$1\" } }) | "
+else
+tmp_txt+=".Factor |= map(. * { $3: { $2: null } }) | "
+fi
+[[ -z $tmp_txt ]]&&tmp_txt="null"
+echo "$tmp_txt"
+}
+save_json(){
+local head_updates=""
+local basic_updates=""
+local type_updates=""
+local score_updates=""
+local factor_updates=""
+local media_updates=""
+local mail_updates=""
+if [ $fullIP -eq 1 ];then
+head_updates+=".Head |= map(. + { IP: \"${IP:-null}\" }) | "
+else
+head_updates+=".Head |= map(. + { IP: \"${IPhide:-null}\" }) | "
+fi
+head_updates+=".Head |= map(. + { Command: \"${shead[bash]:-null}\" }) | "
+head_updates+=".Head |= map(. + { GitHub: \"${shead[git]:-null}\" }) | "
+head_updates+=".Head |= map(. + { Time: \"${shead[time]:-null}\" }) | "
+head_updates+=".Head |= map(. + { Version: \"${shead[ver]:-null}\" }) | "
+if [ $mode_lite -eq 0 ];then
+basic_updates+=".Info |= map(. + { ASN: \"${maxmind[asn]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Organization: \"${maxmind[org]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Latitude: \"${maxmind[lat]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Longitude: \"${maxmind[lon]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { DMS: \"${maxmind[dms]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Map: \"${maxmind[map]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { TimeZone: \"${maxmind[timezone]:-null}\" }) | "
+basic_updates+=".Info |= map(. * { City: { Name: \"${maxmind[city]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { City: { PostalCode: \"${maxmind[post]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { City: { SubCode: \"${maxmind[subcode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { City: { Subdivisions: \"${maxmind[sub]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { Region: { Code: \"${maxmind[countrycode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { Region: { Name: \"${maxmind[country]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { Continent: { Code: \"${maxmind[continentcode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { Continent: { Name: \"${maxmind[continent]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { RegisteredRegion: { Code: \"${maxmind[regcountrycode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { RegisteredRegion: { Name: \"${maxmind[regcountry]:-null}\" } }) | "
+if [[ -n ${maxmind[countrycode]} && ${maxmind[countrycode]} != "null" ]];then
+if [ "${maxmind[countrycode]}" == "${maxmind[regcountrycode]}" ];then
+basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" }) | "
+else
+basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" }) | "
+fi
+else
+basic_updates+='.Info |= map(. + { Type: "null" }) | '
+fi
+else
+basic_updates+=".Info |= map(. + { ASN: \"${ipinfo[asn]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Organization: \"${ipinfo[org]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Latitude: \"${ipinfo[lat]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Longitude: \"${ipinfo[lon]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { DMS: \"${ipinfo[dms]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { Map: \"${ipinfo[map]:-null}\" }) | "
+basic_updates+=".Info |= map(. + { TimeZone: \"${ipinfo[timezone]:-null}\" }) | "
+basic_updates+=".Info |= map(. * { City: { Name: \"${ipinfo[city]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { City: { PostalCode: \"${ipinfo[post]:-null}\" } }) | "
+basic_updates+='.Info |= map(. * { City: { SubCode: "null" } }) | '
+basic_updates+='.Info |= map(. * { City: { Subdivisions: "null" } }) | '
+basic_updates+=".Info |= map(. * { Region: { Code: \"${ipinfo[countrycode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { Region: { Name: \"${ipinfo[country]:-null}\" } }) | "
+basic_updates+='.Info |= map(. * { Continent: { Code: "null" } }) | '
+basic_updates+=".Info |= map(. * { Continent: { Name: \"${ipinfo[continent]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { RegisteredRegion: { Code: \"${ipinfo[regcountrycode]:-null}\" } }) | "
+basic_updates+=".Info |= map(. * { RegisteredRegion: { Name: \"${ipinfo[regcountry]:-null}\" } }) | "
+if [[ -n ${ipinfo[countrycode]} && ${ipinfo[countrycode]} != "null" ]];then
+if [ "${ipinfo[countrycode]}" == "${ipinfo[regcountrycode]}" ];then
+basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" }) | "
+else
+basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" }) | "
+fi
+else
+basic_updates+='.Info |= map(. + { Type: "null" }) | '
+fi
+fi
+type_updates+=".Type |= map(. * { Usage: { IPinfo: \"$(clean_ansi "${ipinfo[susetype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Usage: { ipregistry: \"$(clean_ansi "${ipregistry[susetype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Usage: { ipapi: \"$(clean_ansi "${ipapi[susetype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Usage: { AbuseIPDB: \"$(clean_ansi "${abuseipdb[susetype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Usage: { IP2LOCATION: \"$(clean_ansi "${ip2location[susetype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Company: { IPinfo: \"$(clean_ansi "${ipinfo[scomtype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Company: { ipregistry: \"$(clean_ansi "${ipregistry[scomtype]:-null}")\" } }) | "
+type_updates+=".Type |= map(. * { Company: { ipapi: \"$(clean_ansi "${ipapi[scomtype]:-null}")\" } }) | "
+score_updates+=".Score |= map(. + { SCAMALYTICS: \"${scamalytics[score]:-null}\" }) | "
+score_updates+=".Score |= map(. + { ipapi: \"${ipapi[score]:-null}\" }) | "
+score_updates+=".Score |= map(. + { AbuseIPDB: \"${abuseipdb[score]:-null}\" }) | "
+score_updates+=".Score |= map(. + { IPQS: \"${ipapi[ipqs]:-null}\" }) | "
+score_updates+=".Score |= map(. + { Cloudflare: \"${cloudflare[score]:-null}\" }) | "
+score_updates+=".Score |= map(. + { DBIP: \"${dbip[score]:-null}\" }) | "
+factor_updates+=$(factor_bool "${ip2location[countrycode]}" "IP2LOCATION" "CountryCode")
+factor_updates+=$(factor_bool "${ipapi[countrycode]}" "ipapi" "CountryCode")
+factor_updates+=$(factor_bool "${ipregistry[countrycode]}" "ipregistry" "CountryCode")
+factor_updates+=$(factor_bool "${ipqs[countrycode]}" "IPQS" "CountryCode")
+factor_updates+=$(factor_bool "${scamalytics[countrycode]}" "SCAMALYTICS" "CountryCode")
+factor_updates+=$(factor_bool "${ipdata[countrycode]}" "ipdata" "CountryCode")
+factor_updates+=$(factor_bool "${ipinfo[countrycode]}" "IPinfo" "CountryCode")
+factor_updates+=$(factor_bool "${ipwhois[countrycode]}" "IPWHOIS" "CountryCode")
+factor_updates+=$(factor_bool "${ip2location[proxy]}" "IP2LOCATION" "Proxy")
+factor_updates+=$(factor_bool "${ipapi[proxy]}" "ipapi" "Proxy")
+factor_updates+=$(factor_bool "${ipregistry[proxy]}" "ipregistry" "Proxy")
+factor_updates+=$(factor_bool "${ipqs[proxy]}" "IPQS" "Proxy")
+factor_updates+=$(factor_bool "${scamalytics[proxy]}" "SCAMALYTICS" "Proxy")
+factor_updates+=$(factor_bool "${ipdata[proxy]}" "ipdata" "Proxy")
+factor_updates+=$(factor_bool "${ipinfo[proxy]}" "IPinfo" "Proxy")
+factor_updates+=$(factor_bool "${ipwhois[proxy]}" "IPWHOIS" "Proxy")
+factor_updates+=$(factor_bool "${ip2location[tor]}" "IP2LOCATION" "Tor")
+factor_updates+=$(factor_bool "${ipapi[tor]}" "ipapi" "Tor")
+factor_updates+=$(factor_bool "${ipregistry[tor]}" "ipregistry" "Tor")
+factor_updates+=$(factor_bool "${ipqs[tor]}" "IPQS" "Tor")
+factor_updates+=$(factor_bool "${scamalytics[tor]}" "SCAMALYTICS" "Tor")
+factor_updates+=$(factor_bool "${ipdata[tor]}" "ipdata" "Tor")
+factor_updates+=$(factor_bool "${ipinfo[tor]}" "IPinfo" "Tor")
+factor_updates+=$(factor_bool "${ipwhois[tor]}" "IPWHOIS" "Tor")
+factor_updates+=$(factor_bool "${ip2location[vpn]}" "IP2LOCATION" "VPN")
+factor_updates+=$(factor_bool "${ipapi[vpn]}" "ipapi" "VPN")
+factor_updates+=$(factor_bool "${ipregistry[vpn]}" "ipregistry" "VPN")
+factor_updates+=$(factor_bool "${ipqs[vpn]}" "IPQS" "VPN")
+factor_updates+=$(factor_bool "${scamalytics[vpn]}" "SCAMALYTICS" "VPN")
+factor_updates+=$(factor_bool "${ipdata[vpn]}" "ipdata" "VPN")
+factor_updates+=$(factor_bool "${ipinfo[vpn]}" "IPinfo" "VPN")
+factor_updates+=$(factor_bool "${ipwhois[vpn]}" "IPWHOIS" "VPN")
+factor_updates+=$(factor_bool "${ip2location[server]}" "IP2LOCATION" "Server")
+factor_updates+=$(factor_bool "${ipapi[server]}" "ipapi" "Server")
+factor_updates+=$(factor_bool "${ipregistry[server]}" "ipregistry" "Server")
+factor_updates+=$(factor_bool "${ipqs[server]}" "IPQS" "Server")
+factor_updates+=$(factor_bool "${scamalytics[server]}" "SCAMALYTICS" "Server")
+factor_updates+=$(factor_bool "${ipdata[server]}" "ipdata" "Server")
+factor_updates+=$(factor_bool "${ipinfo[server]}" "IPinfo" "Server")
+factor_updates+=$(factor_bool "${ipwhois[server]}" "IPWHOIS" "Server")
+factor_updates+=$(factor_bool "${ip2location[abuser]}" "IP2LOCATION" "Abuser")
+factor_updates+=$(factor_bool "${ipapi[abuser]}" "ipapi" "Abuser")
+factor_updates+=$(factor_bool "${ipregistry[abuser]}" "ipregistry" "Abuser")
+factor_updates+=$(factor_bool "${ipqs[abuser]}" "IPQS" "Abuser")
+factor_updates+=$(factor_bool "${scamalytics[abuser]}" "SCAMALYTICS" "Abuser")
+factor_updates+=$(factor_bool "${ipdata[abuser]}" "ipdata" "Abuser")
+factor_updates+=$(factor_bool "${ipinfo[abuser]}" "IPinfo" "Abuser")
+factor_updates+=$(factor_bool "${ipwhois[abuser]}" "IPWHOIS" "Abuser")
+factor_updates+=$(factor_bool "${ip2location[robot]}" "IP2LOCATION" "Robot")
+factor_updates+=$(factor_bool "${ipapi[robot]}" "ipapi" "Robot")
+factor_updates+=$(factor_bool "${ipregistry[robot]}" "ipregistry" "Robot")
+factor_updates+=$(factor_bool "${ipqs[robot]}" "IPQS" "Robot")
+factor_updates+=$(factor_bool "${scamalytics[robot]}" "SCAMALYTICS" "Robot")
+factor_updates+=$(factor_bool "${ipdata[robot]}" "ipdata" "Robot")
+factor_updates+=$(factor_bool "${ipinfo[robot]}" "IPinfo" "Robot")
+factor_updates+=$(factor_bool "${ipwhois[robot]}" "IPWHOIS" "Robot")
+media_updates+=".Media |= map(. * { TikTok: { Status: \"$(clean_ansi "${tiktok[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { DisneyPlus: { Status: \"$(clean_ansi "${disney[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Netflix: { Status: \"$(clean_ansi "${netflix[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Youtube: { Status: \"$(clean_ansi "${youtube[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Status: \"$(clean_ansi "${amazon[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Spotify: { Status: \"$(clean_ansi "${spotify[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { ChatGPT: { Status: \"$(clean_ansi "${chatgpt[ustatus]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { TikTok: { Region: \"$(clean_ansi "${tiktok[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { DisneyPlus: { Region: \"$(clean_ansi "${disney[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { Netflix: { Region: \"$(clean_ansi "${netflix[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { Youtube: { Region: \"$(clean_ansi "${youtube[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Region: \"$(clean_ansi "${amazon[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { Spotify: { Region: \"$(clean_ansi "${spotify[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { ChatGPT: { Region: \"$(clean_ansi "${chatgpt[uregion]//[][]/}")\" } }) | "
+media_updates+=".Media |= map(. * { TikTok: { Type: \"$(clean_ansi "${tiktok[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { DisneyPlus: { Type: \"$(clean_ansi "${disney[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Netflix: { Type: \"$(clean_ansi "${netflix[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Youtube: { Type: \"$(clean_ansi "${youtube[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Type: \"$(clean_ansi "${amazon[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { Spotify: { Type: \"$(clean_ansi "${spotify[utype]:-null}")\" } }) | "
+media_updates+=".Media |= map(. * { ChatGPT: { Type: \"$(clean_ansi "${chatgpt[utype]:-null}")\" } }) | "
+if [ ${smail[local]} -eq 1 ];then
+mail_updates+=".Mail |= map(. + { Port25: true }) | "
+for service in "${services[@]}";do
+if [[ ${smailstatus[$service]} == "true" ]];then
+mail_updates+=".Mail |= map(. + { $service: true }) | "
+else
+mail_updates+=".Mail |= map(. + { $service: false }) | "
+fi
+done
+echo ""
+else
+mail_updates+=".Mail |= map(. + { Port25: false }) | "
+for service in "${services[@]}";do
+mail_updates+=".Mail |= map(. + { \"$service\": false }) | "
+done
+fi
+mail_updates+=".Mail |= map(. * { DNSBlacklist: { Total: ${smail[t]:-null} } }) | "
+mail_updates+=".Mail |= map(. * { DNSBlacklist: { Clean: ${smail[c]:-null} } }) | "
+mail_updates+=".Mail |= map(. * { DNSBlacklist: { Marked: ${smail[m]:-null} } }) | "
+mail_updates+=".Mail |= map(. * { DNSBlacklist: { Blacklisted: ${smail[b]:-null} } }) | "
+ipjson=$(echo "$ipjson"|jq "$head_updates$basic_updates$type_updates$score_updates$factor_updates$media_updates$mail_updates.")
+}
 check_IP(){
 IP=$1
 ibar_step=0
+ipjson='{
+      "Head": [{}],
+      "Info": [{}],
+      "Type": [{}],
+      "Score": [{}],
+      "Factor": [{}],
+      "Media": [{}],
+      "Mail": [{}]
+    }'
 [[ $2 -eq 4 ]]&&hide_ipv4 $IP
 [[ $2 -eq 6 ]]&&hide_ipv6 $IP
 countRunTimes
@@ -2192,8 +2435,10 @@ show_tail)
 fi
 local report_link=""
 [[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
-echo -ne "\r$ip_report\n"
-[[ $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
+[[ mode_json -eq 0 ]]&&echo -ne "\r$ip_report\n"
+[[ mode_json -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
+[[ mode_json -eq 1 ]]&&save_json
+[[ mode_json -eq 1 ]]&&echo -ne "\r$ipjson\n"
 echo -ne "\r\n"
 }
 generate_random_user_agent
