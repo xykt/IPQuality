@@ -93,8 +93,9 @@ declare useNIC=""
 declare usePROXY=""
 declare CurlARG=""
 declare UA_Browser
-declare Media_Cookie=$(curl $CurlARG -s --retry 3 --max-time 10 "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/cookies.txt")
-declare IATA_Database="https://raw.githubusercontent.com/xykt/IPQuality/main/ref/iata-icao.csv"
+declare rawgithub
+declare Media_Cookie
+declare IATA_Database
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT IP质量体检脚本"
 "Interactive Interface:  bash <(curl -sL IP.Check.Place) -EM"
@@ -499,6 +500,19 @@ adapt_locale(){
 local ifunicode=$(printf '\u2800')
 [[ ${#ifunicode} -gt 3 ]]&&export LC_CTYPE=en_US.UTF-8 2>/dev/null
 }
+check_connectivity(){
+local url="https://www.google.com/generate_204"
+local timeout=2
+local http_code
+http_code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout "$timeout" "$url" 2>/dev/null)
+if [[ $http_code == "204" ]];then
+rawgithub="https://github.com/xykt/IPQuality/raw/"
+return 0
+else
+rawgithub="https://testingcf.jsdelivr.net/gh/xykt/IPQuality@"
+return 1
+fi
+}
 is_valid_ipv4(){
 local ip=$1
 if [[ $ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]];then
@@ -766,7 +780,7 @@ ipinfo[proxy]=$(echo "$RESPONSE"|jq -r '.data.privacy.proxy')
 ipinfo[tor]=$(echo "$RESPONSE"|jq -r '.data.privacy.tor')
 ipinfo[vpn]=$(echo "$RESPONSE"|jq -r '.data.privacy.vpn')
 ipinfo[server]=$(echo "$RESPONSE"|jq -r '.data.privacy.hosting')
-local ISO3166=$(curl -sL -m 10 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/iso3166.json")
+local ISO3166=$(curl -sL -m 10 "${rawgithub}main/ref/iso3166.json")
 ipinfo[asn]=$(echo "$RESPONSE"|jq -r '.data.asn.asn'|sed 's/^AS//')
 ipinfo[org]=$(echo "$RESPONSE"|jq -r '.data.asn.name')
 ipinfo[city]=$(echo "$RESPONSE"|jq -r '.data.city')
@@ -1713,7 +1727,7 @@ local total=0
 local clean=0
 local blacklisted=0
 local other=0
-curl $CurlARG -s "https://raw.githubusercontent.com/xykt/IPQuality/main/ref/dnsbl.list"|sort -u|xargs -P "$parallel_jobs" -I {} bash -c "result=\$(dig +short \"$reversed_ip.{}\" A); if [[ -z \"\$result\" ]]; then echo 'Clean'; elif [[ \"\$result\" == '127.0.0.2' ]]; then echo 'Blacklisted'; else echo 'Other'; fi"|{
+curl $CurlARG -sL "${rawgithub}main/ref/dnsbl.list"|sort -u|xargs -P "$parallel_jobs" -I {} bash -c "result=\$(dig +short \"$reversed_ip.{}\" A); if [[ -z \"\$result\" ]]; then echo 'Clean'; elif [[ \"\$result\" == '127.0.0.2' ]]; then echo 'Blacklisted'; else echo 'Other'; fi"|{
 while IFS= read -r line;do
 ((total++))
 case "$line" in
@@ -2160,10 +2174,14 @@ echo -ne "\r$shelp\n"
 exit 0
 }
 show_ad(){
-asponsor=$(curl -sL --max-time 5 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/sponsor.ans")
-aad1=$(curl -sL --max-time 5 "https://cdn.jsdelivr.net/gh/xykt/IPQuality@main/ref/ad1.ans")
+asponsor=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
+aad1=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
 echo -e "$asponsor"
 echo -e "$aad1"
+}
+read_ref(){
+Media_Cookie=$(curl $CurlARG -sL --retry 3 --max-time 10 "${rawgithub}main/ref/cookies.txt")
+IATA_Database="${rawgithub}main/ref/iata-icao.csv"
 }
 clean_ansi(){
 local input="$1"
@@ -2434,15 +2452,17 @@ show_mail $2
 show_tail)
 fi
 local report_link=""
-[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "content=$ip_report")
+save_json
+[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "json=$ipjson" --data-urlencode "content=$ip_report")
 [[ mode_json -eq 0 ]]&&echo -ne "\r$ip_report\n"
 [[ mode_json -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
-[[ mode_json -eq 1 ]]&&save_json
 [[ mode_json -eq 1 ]]&&echo -ne "\r$ipjson\n"
 echo -ne "\r\n"
 }
 generate_random_user_agent
 adapt_locale
+check_connectivity
+read_ref
 get_ipv4
 get_ipv6
 is_valid_ipv4 $IPV4
