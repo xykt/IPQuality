@@ -80,7 +80,7 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
-2025/04/19 21:00 Add -y for JSON mode
+2025/04/19 21:00 Add -j for JSON mode
 
 2025/03/13 23:15 Add -y -n for dependencies auto-install/skip
 
