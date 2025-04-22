@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-04-19"
+script_version="v2025-04-22"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -367,6 +367,9 @@ stail[today]=$(echo "$RunTimes"|jq '.daily')
 stail[total]=$(echo "$RunTimes"|jq '.total')
 }
 show_progress_bar(){
+show_progress_bar_ "$@" 1>&2
+}
+show_progress_bar_(){
 local bar="\u280B\u2819\u2839\u2838\u283C\u2834\u2826\u2827\u2807\u280F"
 local n=${#bar}
 while sleep 0.1;do
@@ -2176,8 +2179,8 @@ exit 0
 show_ad(){
 asponsor=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
 aad1=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
-echo -e "$asponsor"
-echo -e "$aad1"
+echo -e "$asponsor" 1>&2
+echo -e "$aad1" 1>&2
 }
 read_ref(){
 Media_Cookie=$(curl $CurlARG -sL --retry 3 --max-time 10 "${rawgithub}main/ref/cookies.txt")
@@ -2425,11 +2428,11 @@ MediaUnlockTest_Spotify $2
 OpenAITest $2
 check_mail
 [[ $2 -eq 4 ]]&&check_dnsbl "$IP" 50
-echo -ne "$Font_LineClear"
+echo -ne "$Font_LineClear" 1>&2
 if [ $2 -eq 4 ]||[[ $IPV4work -eq 0 || $IPV4check -eq 0 ]];then
 for ((i=0; i<ADLines; i++));do
-echo -ne "$Font_LineUp"
-echo -ne "$Font_LineClear"
+echo -ne "$Font_LineUp" 1>&2
+echo -ne "$Font_LineClear" 1>&2
 done
 fi
 if [[ $mode_lite -eq 0 ]];then
