@@ -1372,7 +1372,7 @@ disney[utype]="${smedia[nodata]}"
 return
 fi
 local previewcheck=$(curl $CurlARG -$1 -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com"|grep preview)
-local isUnabailable=$(echo $previewcheck|grep 'unavailable')
+local isUnavailable=$(echo $previewcheck|grep 'unavailable')
 local region=$(echo $tmpresult|jq -r '.extensions.sdk.session.location.countryCode')
 local inSupportedLocation=$(echo $tmpresult|jq -r '.extensions.sdk.session.inSupportedLocation')
 if [[ $region == "JP" ]];then
@@ -1380,7 +1380,7 @@ disney[ustatus]="${smedia[yes]}"
 disney[uregion]="  [JP]   "
 disney[utype]="$resultunlocktype"
 return
-elif [ -n "$region" ]&&[[ $inSupportedLocation == "false" ]]&&[ -z "$isUnabailable" ];then
+elif [ -n "$region" ]&&[[ $inSupportedLocation == "false" ]]&&[ -z "$isUnavailable" ];then
 disney[ustatus]="${smedia[pending]}"
 disney[uregion]="  [$region]   "
 disney[utype]="$resultunlocktype"
