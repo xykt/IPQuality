@@ -112,7 +112,7 @@ shelp_lines=(
 "            -n                             No OS or dependencies check                跳过系统检测及依赖安装"
 "            -o /path/to/file.ansi          Output ANSI report to file                 输出ANSI报告至文件"
 "               /path/to/file.json          Output JSON result to file                 输出JSON结果至文件"
-"               /path/to/file.anyother      Output plain test report to file           输出纯文本报告至文件"
+"               /path/to/file.anyother      Output plain text report to file           输出纯文本报告至文件"
 "            -x http://usr:pwd@proxyurl:p   Specify http proxy                         指定http代理"
 "               https://usr:pwd@proxyurl:p  Specify https proxy                        指定https代理"
 "               socks5://usr:pwd@proxyurl:p Specify socks5 proxy                       指定socks5代理"
