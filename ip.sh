@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-04-22"
+script_version="v2025-04-23"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -83,6 +83,7 @@ declare mode_yes=0
 declare mode_lite=0
 declare mode_json=0
 declare mode_menu=0
+declare mode_output=0
 declare ipjson
 declare ibar=0
 declare bar_pid
@@ -109,6 +110,9 @@ shelp_lines=(
 "            -i eth0                        Specify network interface                  指定检测网卡"
 "            -l cn|en|jp|es|de|fr|ru|pt     Specify script language                    指定报告语言"
 "            -n                             No OS or dependencies check                跳过系统检测及依赖安装"
+"            -o /path/to/file.ansi          Output ANSI report to file                 输出ANSI报告至文件"
+"               /path/to/file.json          Output JSON result to file                 输出JSON结果至文件"
+"               /path/to/file.anyother      Output plain test report to file           输出纯文本报告至文件"
 "            -x http://usr:pwd@proxyurl:p   Specify http proxy                         指定http代理"
 "               https://usr:pwd@proxyurl:p  Specify https proxy                        指定https代理"
 "               socks5://usr:pwd@proxyurl:p Specify socks5 proxy                       指定socks5代理"
@@ -125,6 +129,8 @@ swarn[4]="ERROR: Parameter -4 conflicts with -i or -6!"
 swarn[6]="ERROR: Parameter -6 conflicts with -i or -4!"
 swarn[7]="ERROR: The specified network interface is invalid or does not exist!"
 swarn[8]="ERROR: The specified proxy parameter is invalid or not working!"
+swarn[10]="ERROR: Output file already exist!"
+swarn[11]="ERROR: Output file is not writable!"
 swarn[40]="ERROR: IPv4 is not available!"
 swarn[60]="ERROR: IPv6 is not available!"
 sinfo[database]="Checking IP database "
@@ -244,7 +250,9 @@ swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安
 swarn[4]="错误：参数-4与-i/-6冲突！"
 swarn[6]="错误：参数-6与-i/-4冲突！"
 swarn[7]="错误：指定的网卡不存在！"
-swarn[8]="错误: 指定的代理服务器不可用！"
+swarn[8]="错误：指定的代理服务器不可用！"
+swarn[10]="错误：输出文件已存在！"
+swarn[11]="错误：输出文件不可写！"
 swarn[40]="错误：IPV4不可用！"
 swarn[60]="错误：IPV6不可用！"
 sinfo[database]="正在检测IP数据库 "
@@ -2098,7 +2106,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:x:fhjnyEM46" opt;do
+while getopts "i:l:o:x:fhjnyEM46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -2138,6 +2146,21 @@ j)mode_json=1
 l)YY=$(echo "$OPTARG"|tr '[:upper:]' '[:lower:]')
 ;;
 n)mode_no=1
+;;
+o)mode_output=1
+outputfile="$OPTARG"
+[[ -z $outputfile ]]&&{
+ERRORcode=1
+break
+}
+[[ -e $outputfile ]]&&{
+ERRORcode=10
+break
+}
+touch "$outputfile" 2>/dev/null||{
+ERRORcode=11
+break
+}
 ;;
 x)xproxy="$OPTARG"
 if [[ -z $xproxy ]]||! curl -sL -x "$xproxy" --connect-timeout 5 --max-time 10 https://myip.check.place -o /dev/null;then
@@ -2461,6 +2484,15 @@ save_json
 [[ mode_json -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 [[ mode_json -eq 1 ]]&&echo -ne "\r$ipjson\n"
 echo -ne "\r\n"
+if [[ mode_output -eq 1 ]];then
+case "$outputfile" in
+*.ansi)echo "$ip_report" >>"$outputfile" 2>/dev/null
+;;
+*.json)echo "$ipjson" >>"$outputfile" 2>/dev/null
+;;
+*)echo -e "$ip_report"|sed 's/\x1b\[[0-9;]*[mGKHF]//g' >>"$outputfile" 2>/dev/null
+esac
+fi
 }
 generate_random_user_agent
 adapt_locale
