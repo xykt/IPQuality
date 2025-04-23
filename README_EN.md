@@ -73,12 +73,21 @@ bash <(curl -Ls IP.Check.Place) -Ef
 bash <(curl -Ls IP.Check.Place) -Ej
 ````
 
+##### Output report to file in ANSI/JSON/Text format:
+````bash
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.ansi
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.json
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.txtoranyother
+````
+
 ##### Basic information multi-language support:
 ````bash
 bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
+
+2025/04/23 18:00 Add -o to output report to file in ANSI/JSON/Text format
 
 2025/04/19 21:00 Add -j for JSON mode
 
