@@ -76,12 +76,21 @@ bash <(curl -Ls IP.Check.Place) -f
 bash <(curl -Ls IP.Check.Place) -j
 ````
 
+##### 输出报告ANSI/JSON/纯文本至文件：
+````bash
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.ansi
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.json
+bash <(curl -Ls IP.Check.Place) -o /path/to/file.txtoranyother
+````
+
 ##### 基础信息多语言支持：
 ````bash
 bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## 脚本更新
+
+2025/04/23 18:00 增加-o输出报告ANSI/JSON/纯文本至文件
 
 2025/04/19 21:00 增加-j的JSON输出模式
 
