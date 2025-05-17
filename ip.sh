@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-04-24"
+script_version="v2025-05-17"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -94,6 +94,7 @@ declare useNIC=""
 declare usePROXY=""
 declare CurlARG=""
 declare UA_Browser
+declare usesudo="sudo"
 declare rawgithub
 declare Media_Cookie
 declare IATA_Database
@@ -108,6 +109,7 @@ shelp_lines=(
 "            -h                             Help information                           帮助信息"
 "            -j                             JSON output                                JSON输出"
 "            -i eth0                        Specify network interface                  指定检测网卡"
+"               ipaddress                   Specify outbound IP Address                指定检测出口IP"
 "            -l cn|en|jp|es|de|fr|ru|pt     Specify script language                    指定报告语言"
 "            -n                             No OS or dependencies check                跳过系统检测及依赖安装"
 "            -o /path/to/file.ansi          Output ANSI report to file                 输出ANSI报告至文件"
@@ -127,7 +129,7 @@ swarn[2]="ERROR: IP address format error!"
 swarn[3]="ERROR: Dependent programs are missing. Please run as root or install sudo!"
 swarn[4]="ERROR: Parameter -4 conflicts with -i or -6!"
 swarn[6]="ERROR: Parameter -6 conflicts with -i or -4!"
-swarn[7]="ERROR: The specified network interface is invalid or does not exist!"
+swarn[7]="ERROR: The specified network interface or outbound IP is invalid or does not exist!"
 swarn[8]="ERROR: The specified proxy parameter is invalid or not working!"
 swarn[10]="ERROR: Output file already exist!"
 swarn[11]="ERROR: Output file is not writable!"
@@ -249,7 +251,7 @@ swarn[2]="错误：IP地址格式错误！"
 swarn[3]="错误：未安装依赖程序，请以root执行此脚本，或者安装sudo命令！"
 swarn[4]="错误：参数-4与-i/-6冲突！"
 swarn[6]="错误：参数-6与-i/-4冲突！"
-swarn[7]="错误：指定的网卡不存在！"
+swarn[7]="错误：指定的网卡或出口IP不存在！"
 swarn[8]="错误：指定的代理服务器不可用！"
 swarn[10]="错误：输出文件已存在！"
 swarn[11]="错误：输出文件不可写！"
@@ -392,10 +394,13 @@ kill_progress_bar(){
 kill "$bar_pid" 2>/dev/null&&echo -ne "\r"
 }
 install_dependencies(){
+if [ "$(uname)" == "Darwin" ]||[ $(id -u) -eq 0 ];then
+usesudo=""
+fi
 if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1;then
 echo "Detecting operating system..."
 if [ "$(uname)" == "Darwin" ];then
-install_packages "brew" "brew install" "no_sudo"
+install_packages "brew" "brew install"
 elif [ -f /etc/os-release ];then
 . /etc/os-release
 if [ $(id -u) -ne 0 ]&&! command -v sudo >/dev/null 2>&1;then
@@ -438,7 +443,6 @@ fi
 install_packages(){
 local package_manager=$1
 local install_command=$2
-local no_sudo=$3
 echo "Using package manager: $package_manager"
 echo -e "Lacking necessary dependencies, $Font_I${Font_Cyan}jq curl bc netcat dnsutils iproute$Font_Suffix will be installed using $Font_I$Font_Cyan$package_manager$Font_Suffix."
 if [[ $mode_yes -eq 0 ]];then
@@ -455,11 +459,6 @@ exit 1
 esac
 else
 echo -e "Detected parameter $Font_Green-y$Font_Suffix. Continue installation..."
-fi
-if [ "$no_sudo" == "no_sudo" ]||[ $(id -u) -eq 0 ];then
-local usesudo=""
-else
-local usesudo="sudo"
 fi
 case $package_manager in
 apt)$usesudo apt update
@@ -553,10 +552,11 @@ return 1
 }
 get_ipv4(){
 local response
+IPV4=""
 local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 8 "$p")
-if [[ $? -eq 0 && ! $response =~ error ]];then
+if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
 IPV4="$response"
 break
 fi
@@ -592,10 +592,11 @@ return 1
 }
 get_ipv6(){
 local response
+IPV6=""
 local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 8 "$p")
-if [[ $? -eq 0 && ! $response =~ error ]];then
+if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
 IPV6="$response"
 break
 fi
@@ -1016,7 +1017,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ip2location=()
-local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 --user-agent "IPQuality" "https://www.ip2location.io/$IP"|sed -n '/<code/,/<\/code>/p'|sed -e 's/<[^>]*>//g'|sed 's/^[\t]*//')
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ip2location")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
 shopt -s nocasematch
@@ -2130,16 +2131,12 @@ h)show_help
 ;;
 i)iface="$OPTARG"
 useNIC=" --interface $iface"
-if [[ -n $iface && -d "/sys/class/net/$iface" ]];then
-useNIC=" --interface $iface"
-CurlARG="$useNIC"
+CurlARG+="$useNIC"
 get_ipv4
 get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
-else
-ERRORcode=7
-fi
+[[ $IPV4work -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=7
 ;;
 j)mode_json=1
 ;;
@@ -2163,16 +2160,13 @@ break
 }
 ;;
 x)xproxy="$OPTARG"
-if [[ -z $xproxy ]]||! curl -sL -x "$xproxy" --connect-timeout 5 --max-time 10 https://myip.check.place -o /dev/null;then
-ERRORcode=8
-else
 usePROXY=" -x $xproxy"
-CurlARG="$usePROXY"
+CurlARG+="$usePROXY"
 get_ipv4
 get_ipv6
 is_valid_ipv4 $IPV4
 is_valid_ipv6 $IPV6
-fi
+[[ $IPV4work -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=8
 ;;
 y)mode_yes=1
 ;;
@@ -2193,7 +2187,6 @@ exit 0
 fi
 [[ $IPV4check -eq 1 && $IPV6check -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=40
 [[ $IPV4check -eq 0 && $IPV6check -eq 1 && $IPV6work -eq 0 ]]&&ERRORcode=60
-CurlARG="$useNIC$usePROXY"
 }
 show_help(){
 echo -ne "\r$shelp\n"
