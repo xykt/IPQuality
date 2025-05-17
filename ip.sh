@@ -557,7 +557,7 @@ local response
 IPV4=""
 local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
-response=$(curl $CurlARG -s4 --max-time 8 "$p")
+response=$(curl $CurlARG -s4 --max-time 2 "$p")
 if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
 IPV4="$response"
 break
@@ -597,7 +597,7 @@ local response
 IPV6=""
 local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
-response=$(curl $CurlARG -s6k --max-time 8 "$p")
+response=$(curl $CurlARG -s6k --max-time 2 "$p")
 if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
 IPV6="$response"
 break
