@@ -94,7 +94,6 @@ declare useNIC=""
 declare usePROXY=""
 declare CurlARG=""
 declare UA_Browser
-declare usesudo="sudo"
 declare rawgithub
 declare Media_Cookie
 declare IATA_Database
@@ -394,13 +393,10 @@ kill_progress_bar(){
 kill "$bar_pid" 2>/dev/null&&echo -ne "\r"
 }
 install_dependencies(){
-if [ "$(uname)" == "Darwin" ]||[ $(id -u) -eq 0 ];then
-usesudo=""
-fi
 if ! jq --version >/dev/null 2>&1||! curl --version >/dev/null 2>&1||! bc --version >/dev/null 2>&1||! nc -h >/dev/null 2>&1||! dig -v >/dev/null 2>&1;then
 echo "Detecting operating system..."
 if [ "$(uname)" == "Darwin" ];then
-install_packages "brew" "brew install"
+install_packages "brew" "brew install" "no_sudo"
 elif [ -f /etc/os-release ];then
 . /etc/os-release
 if [ $(id -u) -ne 0 ]&&! command -v sudo >/dev/null 2>&1;then
@@ -443,6 +439,7 @@ fi
 install_packages(){
 local package_manager=$1
 local install_command=$2
+local no_sudo=$3
 echo "Using package manager: $package_manager"
 echo -e "Lacking necessary dependencies, $Font_I${Font_Cyan}jq curl bc netcat dnsutils iproute$Font_Suffix will be installed using $Font_I$Font_Cyan$package_manager$Font_Suffix."
 if [[ $mode_yes -eq 0 ]];then
@@ -459,6 +456,11 @@ exit 1
 esac
 else
 echo -e "Detected parameter $Font_Green-y$Font_Suffix. Continue installation..."
+fi
+if [ "$no_sudo" == "no_sudo" ]||[ $(id -u) -eq 0 ];then
+local usesudo=""
+else
+local usesudo="sudo"
 fi
 case $package_manager in
 apt)$usesudo apt update
