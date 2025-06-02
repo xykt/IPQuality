@@ -87,6 +87,8 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Updates
 
+2025/06/02 21:25 Fix the error logic in port 25 detection and standardize the connectivity testing method for email service providers
+
 2025/04/23 18:00 Add -o to output report to file in ANSI/JSON/Text format
 
 2025/04/19 21:00 Add -j for JSON mode
