@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-05-17"
+script_version="v2025-06-02"
 ADLines=25
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -231,9 +231,10 @@ smedia[status]="Status:  "
 smedia[region]="Region:  "
 smedia[type]="Type:    "
 smail[title]="6. Email service availability and blacklist detection"
-smail[port]="Local Port 25: "
+smail[port]="Local Port 25 Outbound: "
 smail[yes]="${Font_Green}Available$Font_Suffix"
 smail[no]="${Font_Red}Blocked$Font_Suffix"
+smail[occupied]="${Font_Yellow}Occupied$Font_Suffix"
 smail[provider]="Conn: "
 smail[dnsbl]="DNSBL database: "
 smail[available]="$Font_Suffix${Font_Cyan}Active $Font_B"
@@ -353,9 +354,10 @@ smedia[status]="状态：   "
 smedia[region]="地区：   "
 smedia[type]="方式：   "
 smail[title]="六、邮局连通性及黑名单检测"
-smail[port]="本地25端口："
+smail[port]="本地25端口出站："
 smail[yes]="$Font_Green可用$Font_Suffix"
 smail[no]="$Font_Red阻断$Font_Suffix"
+smail[occupied]="$Font_Yellow占用$Font_Suffix"
 smail[provider]="通信："
 smail[dnsbl]="IP地址黑名单数据库："
 smail[available]="$Font_Suffix$Font_Cyan有效 $Font_B"
@@ -1648,16 +1650,6 @@ chatgpt[utype]="${smedia[nodata]}"
 return
 fi
 }
-check_local_port_25(){
-local host=$1
-local port=$2
-nc -s "$IP" -z -w5 $host $port >/dev/null 2>&1
-if [ $? -eq 0 ]&&[ -z "$usePROXY" ];then
-smail[local]=1
-else
-smail[local]=0
-fi
-}
 get_sorted_mx_records(){
 local domain=$1
 dig +short MX $domain|sort -n|head -1|awk '{print $2}'
@@ -1675,7 +1667,6 @@ case $service in
 "Outlook")domain="outlook.com";;
 "Yahoo")domain="yahoo.com";;
 "Apple")domain="me.com";;
-"QQ")domain="qq.com";;
 "MailRU")domain="mail.ru";;
 "AOL")domain="aol.com";;
 "GMX")domain="gmx.com";;
@@ -1683,39 +1674,45 @@ case $service in
 "163")domain="163.com";;
 "Sohu")domain="sohu.com";;
 "Sina")domain="sina.com";;
+"QQ")domain="qq.com";;
 *)return
 esac
 if [[ -z $host ]];then
 local mx_hosts=($(get_sorted_mx_records $domain))
 for host in "${mx_hosts[@]}";do
-response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
+response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 $host $port 2>&1")
 smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
-smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
+smail[$service]="$Font_Black+$Font_Suffix$Back_Green$Font_White$Font_B$service$Font_Suffix"
 smailstatus[$service]="true"
 break
 fi
 done
 else
-response=$(timeout 4 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
+response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 $host $port 2>&1")
 if [[ $response == *"$expected_response"* ]];then
 success="true"
-smail[$service]="$Back_Green$Font_White$Font_B$service$Font_Suffix"
+smail[$service]="$Font_Black+$Font_Suffix$Back_Green$Font_White$Font_B$service$Font_Suffix"
 smailstatus[$service]="true"
 fi
 fi
 if [[ $success == "false" ]];then
-smail[$service]="$Back_Red$Font_White$Font_B$service$Font_Suffix"
+smail[$service]="$Font_Black-$Font_Suffix$Back_Red$Font_White$Font_B$service$Font_Suffix"
 smailstatus[$service]="false"
 fi
 }
 check_mail(){
-check_local_port_25 "localhost" 25
-if [ ${smail[local]} -eq 1 ];then
-services=("Gmail" "Outlook" "Yahoo" "Apple" "QQ" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina")
+ss -tano|grep -q ":25\b"&&smail[local]=2||smail[local]=0
+if [[ smail[local] -ne 2 && -z $usePROXY ]];then
+local response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 smtp.mailgun.org 25 2>&1")
+[[ $response == *"220"* ]]&&smail[local]=1
+fi
+[[ -n $usePROXY ]]&&smail[local]=0
+if [[ ${smail[local]} -eq 1 ]];then
+services=("Gmail" "Outlook" "Yahoo" "Apple" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina" "QQ")
 for service in "${services[@]}";do
-local temp_info="$Font_Cyan$Font_B${sinfo[mail]}$Font_I$service $Font_Suffix"
+local temp_info="$Font_Cyan$Font_B${sinfo[mail]}$Font_I$service$Font_Suffix "
 ((ibar_step+=3))
 show_progress_bar "$temp_info" $((40-1-${#service}-${sinfo[lmail]}))&
 bar_pid="$!"&&disown "$bar_pid"
@@ -1723,11 +1720,19 @@ check_email_service $service
 kill_progress_bar
 done
 else
-services=("Gmail" "Outlook" "Yahoo" "Apple" "QQ" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina")
+services=("Gmail" "Outlook" "Yahoo" "Apple" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina" "QQ")
 for service in "${services[@]}";do
 smailstatus[$service]="false"
 done
 fi
+}
+parse_sdnsbl(){
+local clean=$(echo "${smail[sdnsbl]}"|sed 's/\x1b\[[0-9;]*m//g')
+local num_array=($clean)
+smail[t]=${num_array[0]:-0}
+smail[c]=${num_array[1]:-0}
+smail[m]=${num_array[2]:-0}
+smail[b]=${num_array[3]:-0}
 }
 check_dnsbl_parallel(){
 ip_to_check=$1
@@ -1754,7 +1759,7 @@ smail[t]="$total"
 smail[c]="$clean"
 smail[m]="$other"
 smail[b]="$blacklisted"
-echo "$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix"
+echo "${smail[t]} ${smail[c]} ${smail[m]} ${smail[b]}"
 }
 }
 check_dnsbl(){
@@ -1763,7 +1768,12 @@ local temp_info="$Font_Cyan$Font_B${sinfo[dnsbl]} $Font_Suffix"
 show_progress_bar "$temp_info" $((40-1-${sinfo[ldnsbl]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
-smail[sdnsbl]=$(check_dnsbl_parallel "$IP" 50)
+local num_array=($(check_dnsbl_parallel "$IP" 50))
+smail[t]=${num_array[0]:-0}
+smail[c]=${num_array[1]:-0}
+smail[m]=${num_array[2]:-0}
+smail[b]=${num_array[3]:-0}
+smail[sdnsbl]="$Font_Cyan${smail[dnsbl]}  ${smail[available]}${smail[t]}   ${smail[clean]}${smail[c]}   ${smail[marked]}${smail[m]}   ${smail[blacklisted]}${smail[b]}$Font_Suffix"
 }
 show_head(){
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
@@ -2095,9 +2105,11 @@ if [ ${smail[local]} -eq 1 ];then
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[yes]}\n"
 echo -ne "\r$Font_Cyan${smail[provider]}$Font_Suffix"
 for service in "${services[@]}";do
-echo -ne "${smail[$service]} "
+echo -ne "${smail[$service]}"
 done
 echo ""
+elif [ ${smail[local]} -eq 2 ];then
+echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[occupied]}\n"
 else
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
 fi
@@ -2388,16 +2400,20 @@ media_updates+=".Media |= map(. * { Youtube: { Type: \"$(clean_ansi "${youtube[u
 media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Type: \"$(clean_ansi "${amazon[utype]:-null}")\" } }) | "
 media_updates+=".Media |= map(. * { Spotify: { Type: \"$(clean_ansi "${spotify[utype]:-null}")\" } }) | "
 media_updates+=".Media |= map(. * { ChatGPT: { Type: \"$(clean_ansi "${chatgpt[utype]:-null}")\" } }) | "
-if [ ${smail[local]} -eq 1 ];then
+if [[ ${smail[local]} -eq 1 ]];then
 mail_updates+=".Mail |= map(. + { Port25: true }) | "
 for service in "${services[@]}";do
 if [[ ${smailstatus[$service]} == "true" ]];then
-mail_updates+=".Mail |= map(. + { $service: true }) | "
+mail_updates+=".Mail |= map(. + { \"$service\": true }) | "
 else
-mail_updates+=".Mail |= map(. + { $service: false }) | "
+mail_updates+=".Mail |= map(. + { \"$service\": false }) | "
 fi
 done
-echo ""
+elif [[ ${smail[local]} -eq 2 ]];then
+mail_updates+=".Mail |= map(. + { Port25: null }) | "
+for service in "${services[@]}";do
+mail_updates+=".Mail |= map(. + { \"$service\": null }) | "
+done
 else
 mail_updates+=".Mail |= map(. + { Port25: false }) | "
 for service in "${services[@]}";do
