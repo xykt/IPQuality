@@ -235,6 +235,7 @@ smail[port]="Local Port 25 Outbound: "
 smail[yes]="${Font_Green}Available$Font_Suffix"
 smail[no]="${Font_Red}Blocked$Font_Suffix"
 smail[occupied]="${Font_Yellow}Occupied$Font_Suffix"
+smail[blocked]="${Font_Red}Remote Port 25 unreachable​$Font_Suffix"
 smail[provider]="Conn: "
 smail[dnsbl]="DNSBL database: "
 smail[available]="$Font_Suffix${Font_Cyan}Active $Font_B"
@@ -358,6 +359,7 @@ smail[port]="本地25端口出站："
 smail[yes]="$Font_Green可用$Font_Suffix"
 smail[no]="$Font_Red阻断$Font_Suffix"
 smail[occupied]="$Font_Yellow占用$Font_Suffix"
+smail[blocked]="$Font_Red远端25端口不可达​$Font_Suffix"
 smail[provider]="通信："
 smail[dnsbl]="IP地址黑名单数据库："
 smail[available]="$Font_Suffix$Font_Cyan有效 $Font_B"
@@ -1680,21 +1682,23 @@ esac
 if [[ -z $host ]];then
 local mx_hosts=($(get_sorted_mx_records $domain))
 for host in "${mx_hosts[@]}";do
-response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 $host $port 2>&1")
+response=$(timeout 5 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
 smail_response[$service]=$response
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Font_Black+$Font_Suffix$Back_Green$Font_White$Font_B$service$Font_Suffix"
 smailstatus[$service]="true"
+smail[remote]=1
 break
 fi
 done
 else
-response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 $host $port 2>&1")
+response=$(timeout 5 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -w4 $host $port 2>&1")
 if [[ $response == *"$expected_response"* ]];then
 success="true"
 smail[$service]="$Font_Black+$Font_Suffix$Back_Green$Font_White$Font_B$service$Font_Suffix"
 smailstatus[$service]="true"
+smail[remote]=1
 fi
 fi
 if [[ $success == "false" ]];then
@@ -1705,12 +1709,12 @@ fi
 check_mail(){
 ss -tano|grep -q ":25\b"&&smail[local]=2||smail[local]=0
 if [[ smail[local] -ne 2 && -z $usePROXY ]];then
-local response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w5 smtp.mailgun.org 25 2>&1")
+local response=$(timeout 10 bash -c "echo -e 'QUIT\r\n' | nc -s $IP -p25 -w9 smtp.mailgun.org 25 2>&1")
 [[ $response == *"220"* ]]&&smail[local]=1
 fi
 [[ -n $usePROXY ]]&&smail[local]=0
-if [[ ${smail[local]} -eq 1 ]];then
-services=("Gmail" "Outlook" "Yahoo" "Apple" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina" "QQ")
+smail[remote]=0
+services=("Gmail" "Outlook" "Yahoo" "Apple" "QQ" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina")
 for service in "${services[@]}";do
 local temp_info="$Font_Cyan$Font_B${sinfo[mail]}$Font_I$service$Font_Suffix "
 ((ibar_step+=3))
@@ -1719,20 +1723,6 @@ bar_pid="$!"&&disown "$bar_pid"
 check_email_service $service
 kill_progress_bar
 done
-else
-services=("Gmail" "Outlook" "Yahoo" "Apple" "MailRU" "AOL" "GMX" "MailCOM" "163" "Sohu" "Sina" "QQ")
-for service in "${services[@]}";do
-smailstatus[$service]="false"
-done
-fi
-}
-parse_sdnsbl(){
-local clean=$(echo "${smail[sdnsbl]}"|sed 's/\x1b\[[0-9;]*m//g')
-local num_array=($clean)
-smail[t]=${num_array[0]:-0}
-smail[c]=${num_array[1]:-0}
-smail[m]=${num_array[2]:-0}
-smail[b]=${num_array[3]:-0}
 }
 check_dnsbl_parallel(){
 ip_to_check=$1
@@ -2103,15 +2093,19 @@ show_mail(){
 echo -ne "\r${smail[title]}\n"
 if [ ${smail[local]} -eq 1 ];then
 echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[yes]}\n"
+elif [ ${smail[local]} -eq 2 ];then
+echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[occupied]}\n"
+else
+echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
+fi
+if [ ${smail[remote]} -eq 1 ];then
 echo -ne "\r$Font_Cyan${smail[provider]}$Font_Suffix"
 for service in "${services[@]}";do
 echo -ne "${smail[$service]}"
 done
 echo ""
-elif [ ${smail[local]} -eq 2 ];then
-echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[occupied]}\n"
 else
-echo -ne "\r$Font_Cyan${smail[port]}$Font_Suffix${smail[no]}\n"
+echo -ne "\r$Font_Cyan${smail[provider]}${smail[blocked]}$Font_Suffix\n"
 fi
 [[ $1 -eq 4 ]]&&echo -ne "\r${smail[sdnsbl]}\n"
 }
