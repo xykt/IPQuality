@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-06-05"
+script_version="v2025-06-06"
 ADLines=38
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -494,22 +494,32 @@ $usesudo $install_command jq curl bc netcat bind-utils iproute2
 esac
 }
 declare -A browsers=(
-[Chrome]="87.0.4280.66 88.0.4324.150 89.0.4389.82"
-[Firefox]="83.0 84.0 85.0"
-[Edge]="88.0.705.50 89.0.774.57")
+[Chrome]="120.0.6087.129 121.0.6167.85 122.0.6261.39 123.0.6312.58 124.0.6367.91 125.0.6422.78"
+[Firefox]="120.0.1 121.0.2 122.0.3 123.0.4 124.0.5 125.0.6")
+declare -a edge_versions=(
+"120.0.2210.91|120.0.6087.129"
+"121.0.2277.83|121.0.6167.85"
+"122.0.2345.29|122.0.6261.39"
+"123.0.2403.130|123.0.6312.58"
+"124.0.2478.51|124.0.6367.91"
+"125.0.2535.67|125.0.6422.78")
 generate_random_user_agent(){
-local browsers_keys=(${!browsers[@]})
+local browsers_keys=(${!browsers[@]} "Edge")
 local random_browser_index=$((RANDOM%${#browsers_keys[@]}))
 local browser=${browsers_keys[random_browser_index]}
-local versions=(${browsers[$browser]})
-local random_version_index=$((RANDOM%${#versions[@]}))
-local version=${versions[random_version_index]}
 case $browser in
-Chrome)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$version Safari/537.36"
+Chrome)local versions=(${browsers[Chrome]})
+local version=${versions[RANDOM%${#versions[@]}]}
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$version Safari/537.36"
 ;;
-Firefox)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:${version%%.*}) Gecko/20100101 Firefox/$version"
+Firefox)local versions=(${browsers[Firefox]})
+local version=${versions[RANDOM%${#versions[@]}]}
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:${version%%.*}) Gecko/20100101 Firefox/$version"
 ;;
-Edge)UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version%.*}.0.0 Safari/537.36 Edg/$version"
+Edge)local pair=${edge_versions[RANDOM%${#edge_versions[@]}]}
+local edge_ver=${pair%%|*}
+local chrome_ver=${pair##*|}
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$chrome_ver Safari/537.36 Edg/$edge_ver"
 esac
 }
 adapt_locale(){
@@ -827,7 +837,7 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 scamalytics=()
-local RESPONSE=$(curl $CurlARG -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
+local RESPONSE=$(curl $CurlARG --user-agent "$UA_Browser" -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
 [[ -z $RESPONSE ]]&&return 1
 local tmpscore=$(echo "$RESPONSE"|grep -oE 'Fraud Score: [0-9]+'|awk -F': ' '{print $2}')
 scamalytics[score]=$(echo "$tmpscore"|bc)
@@ -2195,6 +2205,7 @@ exit 0
 fi
 [[ $IPV4check -eq 1 && $IPV6check -eq 0 && $IPV4work -eq 0 ]]&&ERRORcode=40
 [[ $IPV4check -eq 0 && $IPV6check -eq 1 && $IPV6work -eq 0 ]]&&ERRORcode=60
+CurlARG="$useNIC$usePROXY"
 }
 show_help(){
 echo -ne "\r$shelp\n"
