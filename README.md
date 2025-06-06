@@ -19,7 +19,7 @@
 - IP地址黑名单400+数据库检测
 
 ##### 屏幕截图
-![截图](https://raw.githubusercontent.com/xykt/IPQuality/main/img/cn_IPv4.svg)
+![截图](https://raw.githubusercontent.com/xykt/IPQuality/main/res/cn_IPv4.svg)
 
 ## 使用方法
 
@@ -130,18 +130,22 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## 脚本贡献
 
-**Server Sponsor:**
+**服务器赞助商（排名不分先后，字母顺序罗列）**
 
-| 赞助商| 商标 | 网址 | 
+| 赞助商 | 商标 | 网址 | 
 | - | - | - | 
-| V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
-| BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
-| 丽萨主机 | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
-| DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_dreamcloud.png) | [https://as211392.com/](https://as211392.com/)|
+| BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
+| CNFaster | ![cnfaster_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_cnfaster.png) | [https://cnfaster.com](https://cnfaster.com)|
+| DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_dreamcloud.png) | [https://as211392.com](https://as211392.com)|
+| LisaHost</br>丽萨主机 | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
+| UCloud</br>优刻得 | ![ucloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ucloud.png) | [https://ucloud.cn](https://www.ucloud.cn/site/active/kuaijiesale.html?ytag=ip)|
+| V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
 
 **仅接受长期稳定运营，信誉良好的商家*
 
 **Acknowledgments:**
+
+- 衷心感谢主流IP风险数据库[IPinfo](https://ipinfo.io/)/[ipregistry](https://ipregistry.co/)/[ipapi](https://ipapi.is/)/[AbuseIPDB](https://www.abuseipdb.com/)/[IP2LOCATION](https://www.ip2location.com/)/[IPQS](https://www.ipqualityscore.com/)/[DB-IP](https://db-ip.com/)/[SCAMALYTICS](https://scamalytics.com/)/[IPWHOIS](https://ipwhois.io/)/[Cloudflare](https://cloudflare.com/)提供的风险数据
 
 - 感谢[lmc999](https://github.com/lmc999/RegionRestrictionCheck)，本脚本局部代码参考原版流媒体解锁检测脚本
 
@@ -150,3 +154,7 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 **Stars History:**
 
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377ff77)
+
+**Daily Runs History:**
+
+![daily_runs_history](https://history.xykt.de/?name=ip&days=46&chartType=bar&title=IP%E8%B4%A8%E9%87%8F%E4%BD%93%E6%A3%80%E8%84%9A%E6%9C%AC%E6%AF%8F%E6%97%A5%E8%BF%90%E8%A1%8C%E9%87%8F%E7%BB%9F%E8%AE%A1&width=1024&height=400&color=steelblue)
