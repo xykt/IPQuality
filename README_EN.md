@@ -19,7 +19,7 @@
 - Over 400 IP address blacklist database checks
 
 ##### Screenshots
-![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/img/en_IPv4.svg)
+![Screenshot](https://raw.githubusercontent.com/xykt/IPQuality/main/res/en_IPv4.svg)
 
 ## Usage
 
@@ -127,18 +127,22 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ## Script Contributions
 
-**Server Sponsor:**
+**Server Sponsors​ *(Listed in alphabetical order, no ranking implied)*:**
 
 | Sponsor | Logo | Link | 
 | - | - | - | 
-| V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
-| BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
-| LisaHost | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
-| DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/img/sponsor/logo_dreamcloud.png) | [https://as211392.com/](https://as211392.com/)|
+| BAGE | ![bage_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_bage.png) | [https://bagevm.com](https://bagevm.com)|
+| CNFaster | ![cnfaster_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_cnfaster.png) | [https://cnfaster.com](https://cnfaster.com)|
+| DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_dreamcloud.png) | [https://as211392.com](https://as211392.com)|
+| LisaHost</br>丽萨主机 | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
+| UCloud</br>优刻得 | ![ucloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ucloud.png) | [https://ucloud.cn](https://www.ucloud.cn/site/active/kuaijiesale.html?ytag=ip)|
+| V.PS | ![vps_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vps.png) | [https://v.ps](https://v.ps)| 
 
 **Only accepting merchants with long-term stable operations and good reputation*
 
 **Acknowledgments:**
+
+- Sincerely appreciate the risk intelligence data provided by leading IP threat intelligence providers: [IPinfo](https://ipinfo.io/)/[ipregistry](https://ipregistry.co/)/[ipapi](https://ipapi.is/)/[AbuseIPDB](https://www.abuseipdb.com/)/[IP2LOCATION](https://www.ip2location.com/)/[IPQS](https://www.ipqualityscore.com/)/[DB-IP](https://db-ip.com/)/[SCAMALYTICS](https://scamalytics.com/)/[IPWHOIS](https://ipwhois.io/)/[Cloudflare](https://cloudflare.com/)
 
 - Thanks to [lmc999](https://github.com/lmc999/RegionRestrictionCheck) for portions of the original streaming media unlocking script referenced in this script.
 
@@ -147,3 +151,7 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 **Stars History:**
 
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377dd77)
+
+**Daily Runs History:**
+
+![daily_runs_history](https://history.xykt.de/?name=ip&days=46&chartType=bar&title=Daily%20Runs%20of%20Network%20Quality%20Script&width=1024&height=400&color=green)
