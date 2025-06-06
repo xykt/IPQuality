@@ -1,124 +1,0 @@
-<svg width="74ch" height="46em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
-    <style>
-        * {
-            font-family: SimHei, Consolas, Menlo, DejaVu Sans Mono, Courier New, Noto Sans Mono CJK SC, monospace;
-            font-size: 14px;
-        }
-        tspan, text {
-            font-variant-ligatures: none;
-            dominant-baseline: central;
-            white-space: pre;
-            fill: #bbbbbb;
-        }
-        .bg {
-            stroke-width: "0.5px";
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .italic {
-            font-style: italic;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        <!-- Background ANSI colors -->
-        .ba1 { stroke: #bb0000; fill: #bb0000; }
-        .ba2 { stroke: #00bb00; fill: #00bb00; }
-        .ba3 { stroke: #bbbb00; fill: #bbbb00; }
-        <!-- Foreground ANSI colors -->
-        .fa1 { fill: #bb0000; }
-        .fa2 { fill: #00bb00; }
-        .fa6 { fill: #00bbbb; }
-        .fa7 { fill: #bbbbbb; }
-    </style>
-    <rect width="100%" height="100%" x="0" y="0" style="fill: #000000"/>
-<g class="bg">
-<rect x="25ch" y="15em" width="8ch" height="1em" class="ba2"/>
-<rect x="15ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="27ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="39ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="51ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="63ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="15ch" y="19em" width="6ch" height="1em" class="ba3"/>
-<rect x="27ch" y="19em" width="6ch" height="1em" class="ba1"/>
-<rect x="39ch" y="19em" width="6ch" height="1em" class="ba1"/>
-<rect x="17ch" y="21em" width="16ch" height="1em" class="ba2"/>
-<rect x="33ch" y="21em" width="16ch" height="1em" class="ba3"/>
-<rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
-<rect x="17ch" y="22em" width="1ch" height="1em" class="ba2"/>
-<rect x="17ch" y="23em" width="1ch" height="1em" class="ba2"/>
-<rect x="17ch" y="24em" width="1ch" height="1em" class="ba2"/>
-<rect x="17ch" y="25em" width="9ch" height="1em" class="ba2"/>
-<rect x="17ch" y="26em" width="1ch" height="1em" class="ba2"/>
-<rect x="11ch" y="38em" width="6ch" height="1em" class="ba1"/>
-<rect x="20ch" y="38em" width="6ch" height="1em" class="ba2"/>
-<rect x="28ch" y="38em" width="8ch" height="1em" class="ba3"/>
-<rect x="38ch" y="38em" width="6ch" height="1em" class="ba2"/>
-<rect x="47ch" y="38em" width="6ch" height="1em" class="ba1"/>
-<rect x="56ch" y="38em" width="6ch" height="1em" class="ba2"/>
-<rect x="65ch" y="38em" width="6ch" height="1em" class="ba1"/>
-<rect x="20ch" y="40em" width="6ch" height="1em" class="ba2"/>
-<rect x="29ch" y="40em" width="6ch" height="1em" class="ba2"/>
-<rect x="38ch" y="40em" width="6ch" height="1em" class="ba2"/>
-<rect x="56ch" y="40em" width="6ch" height="1em" class="ba2"/>
-<rect x="7ch" y="43em" width="5ch" height="1em" class="ba1"/>
-<rect x="13ch" y="43em" width="7ch" height="1em" class="ba1"/>
-<rect x="21ch" y="43em" width="5ch" height="1em" class="ba1"/>
-<rect x="27ch" y="43em" width="5ch" height="1em" class="ba1"/>
-<rect x="33ch" y="43em" width="2ch" height="1em" class="ba1"/>
-<rect x="36ch" y="43em" width="6ch" height="1em" class="ba1"/>
-<rect x="43ch" y="43em" width="3ch" height="1em" class="ba1"/>
-<rect x="47ch" y="43em" width="3ch" height="1em" class="ba1"/>
-<rect x="51ch" y="43em" width="7ch" height="1em" class="ba1"/>
-<rect x="59ch" y="43em" width="3ch" height="1em" class="ba1"/>
-<rect x="63ch" y="43em" width="4ch" height="1em" class="ba1"/>
-<rect x="68ch" y="43em" width="4ch" height="1em" class="ba1"/>
-</g>
-<text x="0ch" y="0.5em"><tspan>########################################################################</tspan></text>
-<text x="0ch" y="1.5em"><tspan>                 </tspan><tspan class="bold">IP质量体检报告：</tspan><tspan class="bold fa6">2a12:a301:1:*:*:*:*:*</tspan></text>
-<text x="0ch" y="2.5em"><tspan>                    bash &lt;(curl -sL IP.Check.Place)</tspan></text>
-<text x="0ch" y="3.5em"><tspan>                   </tspan><tspan class="underline">https://github.com/xykt/IPQuality</tspan></text>
-<text x="0ch" y="4.5em"><tspan>        报告时间：2024-05-17 00:52:14 CST  脚本版本：v2024-05-17</tspan></text>
-<text x="0ch" y="5.5em"><tspan>########################################################################</tspan></text>
-<text x="0ch" y="6.5em"><tspan>一、基础信息（</tspan><tspan class="italic">Maxmind 数据库</tspan><tspan>）</tspan></text>
-<text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">自治系统号：            </tspan><tspan class="fa2">AS3258</tspan></text>
-<text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">组织：                  </tspan><tspan class="fa2">xTom Pty Ltd</tspan></text>
-<text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">坐标：                  </tspan><tspan class="fa2">139°22′52″E, 35°26′50″N</tspan></text>
-<text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">地图：                  </tspan><tspan class="underline fa2">https://check.place/35.4472,139.381,15,cn</tspan></text>
-<text x="0ch" y="11.5em"><tspan></tspan><tspan class="fa6">城市：                  </tspan><tspan class="fa2">Kanagawa, 海老名市, 243-0421</tspan></text>
-<text x="0ch" y="12.5em"><tspan></tspan><tspan class="fa6">使用地：                </tspan><tspan class="fa2">[JP]日本, [AS]亚洲</tspan></text>
-<text x="0ch" y="13.5em"><tspan></tspan><tspan class="fa6">注册地：                </tspan><tspan class="fa2">[JP]日本</tspan></text>
-<text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">时区：                  </tspan><tspan class="fa2">Asia/Tokyo</tspan></text>
-<text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP类型：                 </tspan><tspan class="bold fa7">原生IP </tspan></text>
-<text x="0ch" y="16.5em"><tspan>二、IP类型属性</tspan></text>
-<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">数据库：      </tspan><tspan class="italic fa6">IPinfo    ipregistry    ipapi     AbuseIPDB  IP2LOCATION </tspan></text>
-<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">使用类型：     </tspan><tspan class="bold fa7">机房        机房        机房        机房        机房    </tspan></text>
-<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">公司类型：     </tspan><tspan class="bold fa7">商业        机房        机房    </tspan></text>
-<text x="0ch" y="20.5em"><tspan>三、风险评分</tspan></text>
-<text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">风险等级：      </tspan><tspan class="italic fa7">极低         低       中等       高         极高</tspan></text>
-<text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS：  </tspan><tspan class="bold fa7">0|</tspan><tspan class="bold fa2">低风险</tspan></text>
-<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">ipapi：    </tspan><tspan class="bold fa7">0.00%|</tspan><tspan class="bold fa2">极低风险</tspan></text>
-<text x="0ch" y="24.5em"><tspan></tspan><tspan class="fa6">AbuseIPDB：    </tspan><tspan class="bold fa7">0|</tspan><tspan class="bold fa2">低风险</tspan></text>
-<text x="0ch" y="25.5em"><tspan></tspan><tspan class="fa6">IPQS：                </tspan><tspan class="bold fa7">38|</tspan><tspan class="bold fa2">低风险</tspan></text>
-<text x="0ch" y="26.5em"><tspan></tspan><tspan class="fa6">DB-IP：         </tspan><tspan class="bold fa7">|</tspan><tspan class="bold fa2">低风险</tspan></text>
-<text x="0ch" y="27.5em"><tspan>四、风险因子</tspan></text>
-<text x="0ch" y="28.5em"><tspan></tspan><tspan class="fa6">库： </tspan><tspan class="italic fa6">IP2LOCATION ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS</tspan></text>
-<text x="0ch" y="29.5em"><tspan></tspan><tspan class="fa6">地区：    </tspan><tspan class="fa2">[JP]    [JP]    [JP]    [JP]    [JP]    [JP]    [JP]    [JP]</tspan></text>
-<text x="0ch" y="30.5em"><tspan></tspan><tspan class="fa6">代理：     </tspan><tspan class="bold fa2">否      否      否      否      否      否      否      否 </tspan></text>
-<text x="0ch" y="31.5em"><tspan></tspan><tspan class="fa6">Tor：      </tspan><tspan class="bold fa2">否      否      否      否      否      否      否      否 </tspan></text>
-<text x="0ch" y="32.5em"><tspan></tspan><tspan class="fa6">VPN：      </tspan><tspan class="bold fa2">否      否      否      否      否      无      否      否 </tspan></text>
-<text x="0ch" y="33.5em"><tspan></tspan><tspan class="fa6">服务器：   </tspan><tspan class="bold fa1">是      是      是      </tspan><tspan class="bold fa2">无      </tspan><tspan class="bold fa1">是      </tspan><tspan class="bold fa2">否      否      否 </tspan></text>
-<text x="0ch" y="34.5em"><tspan></tspan><tspan class="fa6">滥用：     </tspan><tspan class="bold fa2">否      否      否      否      无      否      无      无 </tspan></text>
-<text x="0ch" y="35.5em"><tspan></tspan><tspan class="fa6">机器人：   </tspan><tspan class="bold fa2">否      否      无      否      否      无      无      无 </tspan></text>
-<text x="0ch" y="36.5em"><tspan>五、流媒体及AI服务解锁检测</tspan></text>
-<text x="0ch" y="37.5em"><tspan></tspan><tspan class="fa6">服务商：  </tspan><tspan class="italic fa6">TikTok   Disney&#43;  Netflix Youtube  AmazonPV  Spotify  ChatGPT </tspan></text>
-<text x="0ch" y="38.5em"><tspan></tspan><tspan class="fa6">状态：     </tspan><tspan class="fa7">失败     解锁    仅自制    解锁     屏蔽     解锁     失败   </tspan></text>
-<text x="0ch" y="39.5em"><tspan></tspan><tspan class="fa6">地区：              </tspan><tspan class="fa2">[JP]     [JP]     [JP]              [JP]            </tspan></text>
-<text x="0ch" y="40.5em"><tspan></tspan><tspan class="fa6">方式：              </tspan><tspan class="fa7">原生     原生     原生              原生            </tspan></text>
-<text x="0ch" y="41.5em"><tspan>六、邮局连通性及黑名单检测</tspan></text>
-<text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">本地25端口：</tspan><tspan class="fa2">可用</tspan></text>
-<text x="0ch" y="43.5em"><tspan></tspan><tspan class="fa6">通信：</tspan><tspan class="bold fa7">Gmail Outlook Yahoo Apple QQ MailRU AOL GMX MailCOM 163 Sohu Sina </tspan></text>
-<text x="0ch" y="44.5em"><tspan>========================================================================</tspan></text>
-<text x="0ch" y="45.5em"><tspan></tspan><tspan class="italic">脚本今日运行次数：486；总运行次数：7457。感谢使用xy系列脚本！ </tspan></text>
-</svg>
