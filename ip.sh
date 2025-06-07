@@ -1,6 +1,6 @@
 #!/bin/bash
-script_version="v2025-06-06"
-ADLines=38
+script_version="v2025-06-07"
+ADLines=51
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -64,8 +64,6 @@ declare IPV6check=1
 declare IPV4work=0
 declare IPV6work=0
 declare ERRORcode=0
-declare asponsor
-declare aad1
 declare shelp
 declare -A swarn
 declare -A sinfo
@@ -2212,12 +2210,14 @@ echo -ne "\r$shelp\n"
 exit 0
 }
 show_ad(){
-asponsor=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
-aad1=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
-aad2=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
+local asponsor=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
+local aad1=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
+local aad2=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
+local aad3=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
 echo -e "$asponsor" 1>&2
 echo -e "$aad1" 1>&2
 echo -e "$aad2" 1>&2
+echo -e "$aad3" 1>&2
 }
 read_ref(){
 Media_Cookie=$(curl $CurlARG -sL --retry 3 --max-time 10 "${rawgithub}main/ref/cookies.txt")
