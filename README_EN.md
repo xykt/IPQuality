@@ -154,4 +154,4 @@ bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 **Daily Runs History:**
 
-![daily_runs_history](https://history.xykt.de/?name=ip&days=46&chartType=bar&title=Daily%20Runs%20of%20Network%20Quality%20Script&width=1024&height=400&color=green)
+![daily_runs_history](https://hits.xykt.de/history/ip.svg?days=46&chartType=bar&title=Daily%20Runs%20of%20Network%20Quality%20Script&width=1024&height=400&color=green)
