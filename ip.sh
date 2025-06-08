@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-06-07"
+script_version="v2025-06-08"
 ADLines=51
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
@@ -1632,32 +1632,30 @@ if [ -z "$result2" ]&&[ -z "$result1" ]&&[[ $tmpresult1 != "curl"* ]]&&[[ $tmpre
 chatgpt[ustatus]="${smedia[yes]}"
 chatgpt[uregion]="  [$countryCode]   "
 chatgpt[utype]="$resultunlocktype"
-return
 elif [ -n "$result2" ]&&[ -n "$result1" ];then
 chatgpt[ustatus]="${smedia[no]}"
 chatgpt[uregion]="${smedia[nodata]}"
 chatgpt[utype]="${smedia[nodata]}"
-return
 elif [ -z "$result1" ]&&[ -n "$result2" ]&&[[ $tmpresult1 != "curl"* ]];then
 chatgpt[ustatus]="${smedia[web]}"
 chatgpt[uregion]="  [$countryCode]   "
 chatgpt[utype]="$resultunlocktype"
-return
 elif [ -n "$result1" ]&&[ -z "$result2" ];then
 chatgpt[ustatus]="${smedia[app]}"
 chatgpt[uregion]="  [$countryCode]   "
 chatgpt[utype]="$resultunlocktype"
-return
 elif [[ $tmpresult1 == "curl"* ]]&&[ -n "$result2" ];then
 chatgpt[ustatus]="${smedia[no]}"
 chatgpt[uregion]="${smedia[nodata]}"
 chatgpt[utype]="${smedia[nodata]}"
-return
+elif [[ $1 -eq 6 ]]&&[ -z "$result2" ]&&[[ $tmpresult2 != "curl"* ]];then
+chatgpt[ustatus]="${smedia[yes]}"
+chatgpt[uregion]="  [$countryCode]   "
+chatgpt[utype]="$resultunlocktype"
 else
 chatgpt[ustatus]="${smedia[bad]}"
 chatgpt[uregion]="${smedia[nodata]}"
 chatgpt[utype]="${smedia[nodata]}"
-return
 fi
 }
 get_sorted_mx_records(){
