@@ -1,6 +1,5 @@
 #!/bin/bash
 script_version="v2025-06-09"
-ADLines=48
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -34,6 +33,8 @@ Back_White="\033[47m"
 Font_Suffix="\033[0m"
 Font_LineClear="\033[2K"
 Font_LineUp="\033[1A"
+declare ADLines
+declare -A aad
 declare IP=""
 declare IPhide
 declare fullIP=0
@@ -2208,14 +2209,23 @@ echo -ne "\r$shelp\n"
 exit 0
 }
 show_ad(){
-local asponsor=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
-local aad1=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
-local aad2=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
-local aad3=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
-echo -e "$asponsor" 1>&2
-echo -e "$aad1" 1>&2
-echo -e "$aad2" 1>&2
-echo -e "$aad3" 1>&2
+local RANDOM=$(date +%s)
+local indices=(1 2 3)
+for ((i=${#indices[@]}-1; i>0; i--));do
+j=$((RANDOM%(i+1)))
+temp=${indices[i]}
+indices[i]=${indices[j]}
+indices[j]=$temp
+done
+aad[0]=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
+aad[${indices[0]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
+aad[${indices[1]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
+aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
+echo "${aad[0]}"
+echo "${aad[1]}"
+echo "${aad[2]}"
+echo "${aad[3]}"
+ADLines=48
 }
 read_ref(){
 Media_Cookie=$(curl $CurlARG -sL --retry 3 --max-time 10 "${rawgithub}main/ref/cookies.txt")
