@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-06-09"
+script_version="v2025-06-10"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -2221,10 +2221,10 @@ aad[0]=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
 aad[${indices[0]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
 aad[${indices[1]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
 aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
-echo "${aad[0]}"
-echo "${aad[1]}"
-echo "${aad[2]}"
-echo "${aad[3]}"
+echo -e "${aad[0]}" 1>&2
+echo -e "${aad[1]}" 1>&2
+echo -e "${aad[2]}" 1>&2
+echo -e "${aad[3]}" 1>&2
 ADLines=48
 }
 read_ref(){
