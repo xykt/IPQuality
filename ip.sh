@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-06-10"
+script_version="v2025-06-29"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -2210,7 +2210,7 @@ exit 0
 }
 show_ad(){
 local RANDOM=$(date +%s)
-local indices=(1 2 3)
+local indices=(1 2 3 4)
 for ((i=${#indices[@]}-1; i>0; i--));do
 j=$((RANDOM%(i+1)))
 temp=${indices[i]}
@@ -2221,11 +2221,31 @@ aad[0]=$(curl -sL --max-time 5 "${rawgithub}main/ref/sponsor.ans")
 aad[${indices[0]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
 aad[${indices[1]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
 aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
-echo -e "${aad[0]}" 1>&2
-echo -e "${aad[1]}" 1>&2
-echo -e "${aad[2]}" 1>&2
-echo -e "${aad[3]}" 1>&2
-ADLines=48
+aad[${indices[3]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad4.ans")
+local rows
+local cols
+read rows cols < <(stty size)
+if [[ $cols -ge 150 ]];then
+echo "${aad[0]}" 1>&2
+mapfile -t aad1 <<<"${aad[1]}"
+mapfile -t aad2 <<<"${aad[2]}"
+mapfile -t aad3 <<<"${aad[3]}"
+mapfile -t aad4 <<<"${aad[4]}"
+for ((i=0; i<12; i++));do
+printf "%-72s$Font_Suffix     %-72s\n" "${aad1[$i]}" "${aad2[$i]}" 1>&2
+done
+for ((i=0; i<12; i++));do
+printf "%-72s$Font_Suffix     %-72s\n" "${aad3[$i]}" "${aad4[$i]}" 1>&2
+done
+ADLines=36
+else
+echo "${aad[0]}" 1>&2
+echo "${aad[1]}" 1>&2
+echo "${aad[2]}" 1>&2
+echo "${aad[3]}" 1>&2
+echo "${aad[4]}" 1>&2
+ADLines=60
+fi
 }
 read_ref(){
 Media_Cookie=$(curl $CurlARG -sL --retry 3 --max-time 10 "${rawgithub}main/ref/cookies.txt")
