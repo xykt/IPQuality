@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-07-13"
+script_version="v2025-07-22"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -2200,7 +2200,7 @@ exit 0
 }
 show_ad(){
 local RANDOM=$(date +%s)
-local indices=(1 2 3 4)
+local indices=(1 2 3 4 5)
 for ((i=${#indices[@]}-1; i>0; i--));do
 j=$((RANDOM%(i+1)))
 temp=${indices[i]}
@@ -2212,20 +2212,25 @@ aad[${indices[0]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad1.ans")
 aad[${indices[1]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
 aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
 aad[${indices[3]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad4.ans")
+aad[${indices[4]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad5.ans")
 local rows
 local cols
 read rows cols < <(stty size)
 if [[ $cols -ge 150 ]];then
-echo "${aad[0]}" 1>&2
+mapfile -t aad0 <<<"${aad[0]}"
 mapfile -t aad1 <<<"${aad[1]}"
 mapfile -t aad2 <<<"${aad[2]}"
 mapfile -t aad3 <<<"${aad[3]}"
 mapfile -t aad4 <<<"${aad[4]}"
+mapfile -t aad5 <<<"${aad[5]}"
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad1[$i]}" "${aad2[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad0[$i]}" "${aad1[$i]}" 1>&2
 done
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad3[$i]}" "${aad4[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad2[$i]}" "${aad3[$i]}" 1>&2
+done
+for ((i=0; i<12; i++));do
+printf "%-72s$Font_Suffix     %-72s\n" "${aad4[$i]}" "${aad5[$i]}" 1>&2
 done
 ADLines=36
 else
@@ -2234,6 +2239,7 @@ echo "${aad[1]}" 1>&2
 echo "${aad[2]}" 1>&2
 echo "${aad[3]}" 1>&2
 echo "${aad[4]}" 1>&2
+echo "${aad[5]}" 1>&2
 ADLines=60
 fi
 }
