@@ -98,9 +98,9 @@ declare Media_Cookie
 declare IATA_Database
 shelp_lines=(
 "IP QUALITY CHECK SCRIPT IP质量体检脚本"
-"Interactive Interface:  bash <(curl -sL IP.Check.Place) -EM"
-"交互界面：              bash <(curl -sL IP.Check.Place) -M"
-"Parameters 参数运行: bash <(curl -sL IP.Check.Place) [-4] [-6] [-f] [-h] [-j] [-i iface] [-l language] [-n] [-x proxy] [-y] [-E] [-M]"
+"Interactive Interface:  bash <(curl -sL https://IP.Check.Place) -EM"
+"交互界面：              bash <(curl -sL https://IP.Check.Place) -M"
+"Parameters 参数运行: bash <(curl -sL https://IP.Check.Place) [-4] [-6] [-f] [-h] [-j] [-i iface] [-l language] [-n] [-x proxy] [-y] [-E] [-M]"
 "            -4                             Test IPv4                                  测试IPv4"
 "            -6                             Test IPv6                                  测试IPv6"
 "            -f                             Show full IP on reports                    报告展示完整IP地址"
@@ -146,7 +146,7 @@ sinfo[ldnsbl]=28
 shead[title]="IP QUALITY CHECK REPORT: "
 shead[title_lite]="IP QUALITY CHECK REPORT(LITE): "
 shead[ver]="Version: $script_version"
-shead[bash]="bash <(curl -sL Check.Place) -EI"
+shead[bash]="bash <(curl -sL https://Check.Place) -EI"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(date -u +"Report Time: %Y-%m-%d %H:%M:%S UTC")
 shead[ltitle]=25
@@ -270,7 +270,7 @@ sinfo[ldnsbl]=21
 shead[title]="IP质量体检报告："
 shead[title_lite]="IP质量体检报告(Lite)："
 shead[ver]="脚本版本：$script_version"
-shead[bash]="bash <(curl -sL Check.Place) -I"
+shead[bash]="bash <(curl -sL https://Check.Place) -I"
 shead[git]="https://github.com/xykt/IPQuality"
 shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
 shead[ltitle]=16
@@ -2184,9 +2184,9 @@ esac
 done
 if [[ $mode_menu -eq 1 ]];then
 if [[ $YY == "cn" ]];then
-eval "bash <(curl -sL Check.Place) -I"
+eval "bash <(curl -sL https://Check.Place) -I"
 else
-eval "bash <(curl -sL Check.Place) -EI"
+eval "bash <(curl -sL https://Check.Place) -EI"
 fi
 exit 0
 fi

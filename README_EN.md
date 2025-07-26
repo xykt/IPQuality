@@ -25,64 +25,64 @@
 
 ##### English version of dual-stack test (Either):
 ````bash
-bash <(curl -Ls IP.Check.Place) -E
-bash <(curl -Ls IP.Check.Place) -l en
+bash <(curl -Ls https://IP.Check.Place) -E
+bash <(curl -Ls https://IP.Check.Place) -l en
 ````
 
 ##### IPv4 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -E4
+bash <(curl -Ls https://IP.Check.Place) -E4
 ````
 
 ##### IPv6 only test:
 ````bash
-bash <(curl -Ls IP.Check.Place) -E6
+bash <(curl -Ls https://IP.Check.Place) -E6
 ````
 
 ##### Specify network interface:
 ````bash
-bash <(curl -Ls IP.Check.Place) -E -i eth0
+bash <(curl -Ls https://IP.Check.Place) -E -i eth0
 ````
 
 ##### Specify proxy server:
 ````bash
-bash <(curl -Ls IP.Check.Place) -E -x http://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -E -x https://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -E -x socks5://username:password@socksproxy:port
+bash <(curl -Ls https://IP.Check.Place) -E -x http://username:password@proxyserver:port
+bash <(curl -Ls https://IP.Check.Place) -E -x https://username:password@proxyserver:port
+bash <(curl -Ls https://IP.Check.Place) -E -x socks5://username:password@socksproxy:port
 ````
 
 ##### Skip checking OS and dependencies:
 
 ```bash
-bash <(curl -Ls Net.Check.Place) -En
+bash <(curl -Ls https://Net.Check.Place) -En
 ```
 
 ##### Auto-install dependencies:
 
 ```bash
-bash <(curl -Ls Net.Check.Place) -Ey
+bash <(curl -Ls https://Net.Check.Place) -Ey
 ```
 
 ##### Show full IP on report:
 ````bash
-bash <(curl -Ls IP.Check.Place) -Ef
+bash <(curl -Ls https://IP.Check.Place) -Ef
 ````
 
 ##### JSON mode：
 ````bash
-bash <(curl -Ls IP.Check.Place) -Ej
+bash <(curl -Ls https://IP.Check.Place) -Ej
 ````
 
 ##### Output report to file in ANSI/JSON/Text format:
 ````bash
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.ansi
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.json
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.txtoranyother
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.ansi
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.json
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.txtoranyother
 ````
 
 ##### Basic information multi-language support:
 ````bash
-bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
+bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## Script Updates
