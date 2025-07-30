@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-07-22"
+script_version="v2025-07-30"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -568,7 +568,7 @@ return 1
 get_ipv4(){
 local response
 IPV4=""
-local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
+local API_NET=("https://myip.check.place" "https://ip.sb" "https://ping0.cc" "https://icanhazip.com" "https://api64.ipify.org" "https://ifconfig.co" "https://ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 2 "$p")
 if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
@@ -608,7 +608,7 @@ return 1
 get_ipv6(){
 local response
 IPV6=""
-local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
+local API_NET=("https://myip.check.place" "https://ip.sb" "https://ping0.cc" "https://icanhazip.com" "https://api64.ipify.org" "https://ifconfig.co" "https://ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 2 "$p")
 if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
@@ -739,7 +739,7 @@ maxmind[country]=$(echo "$RESPONSE"|jq -r '.Country.Name')
 maxmind[regcountrycode]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.IsoCode')
 maxmind[regcountry]=$(echo "$RESPONSE"|jq -r '.Country.RegisteredCountry.Name')
 if [[ $YY != "en" ]];then
-local backup_response=$(curl $CurlARG -s -$1 -m 10 "http://ipinfo.check.place/$IP?lang=en")
+local backup_response=$(curl $CurlARG -s -$1 -m 10 "https://ipinfo.check.place/$IP?lang=en")
 [[ ${maxmind[asn]} == "null" ]]&&maxmind[asn]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemNumber')
 [[ ${maxmind[org]} == "null" ]]&&maxmind[org]=$(echo "$backup_response"|jq -r '.ASN.AutonomousSystemOrganization')
 [[ ${maxmind[city]} == "null" ]]&&maxmind[city]=$(echo "$backup_response"|jq -r '.City.Name')
@@ -1781,10 +1781,10 @@ calc_padding "$(printf '%*s' "${shead[ltitle_lite]}" '')$IPhide" 72
 echo -ne "\r$PADDING$Font_B${shead[title_lite]}$Font_Cyan$IPhide$Font_Suffix\n"
 fi
 fi
-calc_padding "${shead[bash]}" 72
-echo -ne "\r$PADDING${shead[bash]}\n"
 calc_padding "${shead[git]}" 72
 echo -ne "\r$PADDING$Font_U${shead[git]}$Font_Suffix\n"
+calc_padding "${shead[bash]}" 72
+echo -ne "\r$PADDING${shead[bash]}\n"
 echo -ne "\r${shead[ptime]}${shead[time]}  ${shead[ver]}\n"
 echo -ne "\r$(printf '%72s'|tr ' ' '#')\n"
 }
@@ -2200,7 +2200,7 @@ exit 0
 }
 show_ad(){
 local RANDOM=$(date +%s)
-local indices=(1 2 3 4 5)
+local indices=(1 2 3 4 5 6)
 for ((i=${#indices[@]}-1; i>0; i--));do
 j=$((RANDOM%(i+1)))
 temp=${indices[i]}
@@ -2213,26 +2213,29 @@ aad[${indices[1]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad2.ans")
 aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
 aad[${indices[3]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad4.ans")
 aad[${indices[4]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad5.ans")
+aad[${indices[5]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad6.ans")
 local rows
 local cols
 read rows cols < <(stty size)
 if [[ $cols -ge 150 ]];then
+echo "${aad[0]}" 1>&2
 mapfile -t aad0 <<<"${aad[0]}"
 mapfile -t aad1 <<<"${aad[1]}"
 mapfile -t aad2 <<<"${aad[2]}"
 mapfile -t aad3 <<<"${aad[3]}"
 mapfile -t aad4 <<<"${aad[4]}"
 mapfile -t aad5 <<<"${aad[5]}"
+mapfile -t aad6 <<<"${aad[6]}"
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad0[$i]}" "${aad1[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad1[$i]}" "${aad2[$i]}" 1>&2
 done
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad2[$i]}" "${aad3[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad3[$i]}" "${aad4[$i]}" 1>&2
 done
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad4[$i]}" "${aad5[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad5[$i]}" "${aad6[$i]}" 1>&2
 done
-ADLines=36
+ADLines=48
 else
 echo "${aad[0]}" 1>&2
 echo "${aad[1]}" 1>&2
@@ -2240,7 +2243,8 @@ echo "${aad[2]}" 1>&2
 echo "${aad[3]}" 1>&2
 echo "${aad[4]}" 1>&2
 echo "${aad[5]}" 1>&2
-ADLines=60
+echo "${aad[6]}" 1>&2
+ADLines=72
 fi
 }
 read_ref(){
@@ -2521,7 +2525,7 @@ show_tail)
 fi
 local report_link=""
 save_json
-[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST http://upload.check.place -d "type=ip" --data-urlencode "json=$ipjson" --data-urlencode "content=$ip_report")
+[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST https://upload.check.place -d "type=ip" --data-urlencode "json=$ipjson" --data-urlencode "content=$ip_report")
 [[ mode_json -eq 0 ]]&&echo -ne "\r$ip_report\n"
 [[ mode_json -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 [[ mode_json -eq 1 ]]&&echo -ne "\r$ipjson\n"
