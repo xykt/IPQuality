@@ -25,67 +25,67 @@
 
 ##### 默认双栈检测：
 ````bash
-bash <(curl -Ls IP.Check.Place)
+bash <(curl -Ls https://IP.Check.Place)
 ````
 
 ##### 只检测IPv4结果：
 ````bash
-bash <(curl -Ls IP.Check.Place) -4
+bash <(curl -Ls https://IP.Check.Place) -4
 ````
 
 ##### 只检测IPv6结果：
 ````bash
-bash <(curl -Ls IP.Check.Place) -6
+bash <(curl -Ls https://IP.Check.Place) -6
 ````
 
 ##### 指定检测网卡：
 ````bash
-bash <(curl -Ls IP.Check.Place) -i eth0
+bash <(curl -Ls https://IP.Check.Place) -i eth0
 ````
 
 ##### 指定代理服务器：
 ````bash
-bash <(curl -Ls IP.Check.Place) -x http://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -x https://username:password@proxyserver:port
-bash <(curl -Ls IP.Check.Place) -x socks5://username:password@socksproxy:port
+bash <(curl -Ls https://IP.Check.Place) -x http://username:password@proxyserver:port
+bash <(curl -Ls https://IP.Check.Place) -x https://username:password@proxyserver:port
+bash <(curl -Ls https://IP.Check.Place) -x socks5://username:password@socksproxy:port
 ````
 
 ##### 选择脚本语言为英文（任选其一）：
 ````bash
-bash <(curl -Ls IP.Check.Place) -E
-bash <(curl -Ls IP.Check.Place) -l en
+bash <(curl -Ls https://IP.Check.Place) -E
+bash <(curl -Ls https://IP.Check.Place) -l en
 ````
 
 ##### 跳过检测系统及安装依赖：
 ````bash
-bash <(curl -Ls Net.Check.Place) -n
+bash <(curl -Ls https://Net.Check.Place) -n
 ````
 
 ##### 自动安装依赖：
 ````bash
-bash <(curl -Ls Net.Check.Place) -y
+bash <(curl -Ls https://Net.Check.Place) -y
 ````
 
 ##### 报告展示完整IP地址：
 ````bash
-bash <(curl -Ls IP.Check.Place) -f
+bash <(curl -Ls https://IP.Check.Place) -f
 ````
 
 ##### 输出JSON结果：
 ````bash
-bash <(curl -Ls IP.Check.Place) -j
+bash <(curl -Ls https://IP.Check.Place) -j
 ````
 
 ##### 输出报告ANSI/JSON/纯文本至文件：
 ````bash
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.ansi
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.json
-bash <(curl -Ls IP.Check.Place) -o /path/to/file.txtoranyother
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.ansi
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.json
+bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.txtoranyother
 ````
 
 ##### 基础信息多语言支持：
 ````bash
-bash <(curl -Ls IP.Check.Place) -l jp|es|de|fr|ru|pt
+bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## 脚本更新
