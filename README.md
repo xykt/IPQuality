@@ -58,12 +58,12 @@ bash <(curl -Ls https://IP.Check.Place) -l en
 
 ##### 跳过检测系统及安装依赖：
 ````bash
-bash <(curl -Ls https://Net.Check.Place) -n
+bash <(curl -Ls https://IP.Check.Place) -n
 ````
 
 ##### 自动安装依赖：
 ````bash
-bash <(curl -Ls https://Net.Check.Place) -y
+bash <(curl -Ls https://IP.Check.Place) -y
 ````
 
 ##### 报告展示完整IP地址：
@@ -89,6 +89,8 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
 ## 脚本更新
+
+2025/07/30 16:30 将所有HTTP请求替换为HTTPS以提升脚本安全性
 
 2025/06/02 21:25 修复25端口检测的错误逻辑，规范化邮件服务商连通性检测方法
 
@@ -143,6 +145,7 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 | AaITR | ![aaitr_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_aaitr.png) | [https://aaitr.com](https://www.aaitr.com/link.php?id=5)| 
 | VIRCS</br>威尔克斯 | ![vircs_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vircs.png) | [https://vircs.com](https://www.vircs.com/promotion?code=6)| 
 | Thordata</br>`原生IP` | ![thordata_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_thordata.png) | [https://thordata.com](https://www.thordata.com/?ls=VNSCxroa&lk=quality)| 
+| BestProxy</br>`原生IP` | ![bestproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_bestproxy.png) | [https://bestproxy.com](https://bestproxy.com/?keyword=nstdqben)| 
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **仅接受长期稳定运营，信誉良好的商家*
