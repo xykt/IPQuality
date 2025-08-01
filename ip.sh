@@ -2204,7 +2204,7 @@ exit 0
 }
 show_ad(){
 local RANDOM=$(date +%s)
-local indices=(1 2 3 4 5 6)
+local indices=(1 2 3 4 5 6 7)
 for ((i=${#indices[@]}-1; i>0; i--));do
 j=$((RANDOM%(i+1)))
 temp=${indices[i]}
@@ -2218,11 +2218,11 @@ aad[${indices[2]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad3.ans")
 aad[${indices[3]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad4.ans")
 aad[${indices[4]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad5.ans")
 aad[${indices[5]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad6.ans")
+aad[${indices[6]}]=$(curl -sL --max-time 5 "${rawgithub}main/ref/ad7.ans")
 local rows
 local cols
 read rows cols < <(stty size)
 if [[ $cols -ge 150 ]];then
-echo "${aad[0]}" 1>&2
 mapfile -t aad0 <<<"${aad[0]}"
 mapfile -t aad1 <<<"${aad[1]}"
 mapfile -t aad2 <<<"${aad[2]}"
@@ -2230,14 +2230,18 @@ mapfile -t aad3 <<<"${aad[3]}"
 mapfile -t aad4 <<<"${aad[4]}"
 mapfile -t aad5 <<<"${aad[5]}"
 mapfile -t aad6 <<<"${aad[6]}"
+mapfile -t aad7 <<<"${aad[7]}"
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad1[$i]}" "${aad2[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad0[$i]}" "${aad1[$i]}" 1>&2
 done
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad3[$i]}" "${aad4[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad2[$i]}" "${aad3[$i]}" 1>&2
 done
 for ((i=0; i<12; i++));do
-printf "%-72s$Font_Suffix     %-72s\n" "${aad5[$i]}" "${aad6[$i]}" 1>&2
+printf "%-72s$Font_Suffix     %-72s\n" "${aad4[$i]}" "${aad5[$i]}" 1>&2
+done
+for ((i=0; i<12; i++));do
+printf "%-72s$Font_Suffix     %-72s\n" "${aad6[$i]}" "${aad7[$i]}" 1>&2
 done
 ADLines=48
 else
@@ -2248,7 +2252,8 @@ echo "${aad[3]}" 1>&2
 echo "${aad[4]}" 1>&2
 echo "${aad[5]}" 1>&2
 echo "${aad[6]}" 1>&2
-ADLines=72
+echo "${aad[7]}" 1>&2
+ADLines=80
 fi
 }
 read_ref(){
