@@ -150,6 +150,7 @@ bash <(curl -Ls https://IP.Check.Place) -p
 | VIRCS</br>威尔克斯 | ![vircs_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vircs.png) | [https://vircs.com](https://www.vircs.com/promotion?code=6)| 
 | Thordata</br>`原生IP` | ![thordata_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_thordata.png) | [https://thordata.com](https://www.thordata.com/?ls=VNSCxroa&lk=quality)|  
 | BestProxy</br>`原生IP` | ![bestproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_bestproxy.png) | [https://bestproxy.com](https://bestproxy.com/?keyword=nstdqben)| 
+| RapidProxy</br>`原生IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)| 
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **Only accepting merchants with long-term stable operations and good reputation*
