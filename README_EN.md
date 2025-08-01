@@ -85,7 +85,14 @@ bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.txtoranyother
 bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
+##### privacy mode - Disable online report link:
+````bash
+bash <(curl -Ls https://IP.Check.Place) -p
+````
+
 ## Script Updates
+
+2025/08/01 16:15 Add -p for privacy mode, which disables online report links
 
 2025/07/30 16:30 Replace all HTTP requests with HTTPS to improve script security
 
