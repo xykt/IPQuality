@@ -88,7 +88,14 @@ bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.txtoranyother
 bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
+##### 隐私模式——禁用在线报告生成功能：
+````bash
+bash <(curl -Ls https://IP.Check.Place) -p
+````
+
 ## 脚本更新
+
+2025/08/01 16:15 增加-p隐私模式，禁用在线报告生成功能
 
 2025/07/30 16:30 将所有HTTP请求替换为HTTPS以提升脚本安全性
 
