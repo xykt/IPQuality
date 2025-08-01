@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-07-30"
+script_version="v2025-08-01"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -83,6 +83,7 @@ declare mode_lite=0
 declare mode_json=0
 declare mode_menu=0
 declare mode_output=0
+declare mode_privacy=0
 declare ipjson
 declare ibar=0
 declare bar_pid
@@ -113,6 +114,7 @@ shelp_lines=(
 "            -o /path/to/file.ansi          Output ANSI report to file                 输出ANSI报告至文件"
 "               /path/to/file.json          Output JSON result to file                 输出JSON结果至文件"
 "               /path/to/file.anyother      Output plain text report to file           输出纯文本报告至文件"
+"            -p                             Privacy mode - no generate report link     隐私模式：不生成报告链接"
 "            -x http://usr:pwd@proxyurl:p   Specify http proxy                         指定http代理"
 "               https://usr:pwd@proxyurl:p  Specify https proxy                        指定https代理"
 "               socks5://usr:pwd@proxyurl:p Specify socks5 proxy                       指定socks5代理"
@@ -2112,7 +2114,7 @@ echo -ne "\r$Font_I${stail[stoday]}${stail[today]}${stail[stotal]}${stail[total]
 echo -e ""
 }
 get_opts(){
-while getopts "i:l:o:x:fhjnyEM46" opt;do
+while getopts "i:l:o:x:fhjnpyEM46" opt;do
 case $opt in
 4)if
 [[ IPV4check -ne 0 ]]
@@ -2163,6 +2165,8 @@ touch "$outputfile" 2>/dev/null||{
 ERRORcode=11
 break
 }
+;;
+p)mode_privacy=1
 ;;
 x)xproxy="$OPTARG"
 usePROXY=" -x $xproxy"
@@ -2524,10 +2528,10 @@ show_mail $2
 show_tail)
 fi
 local report_link=""
-save_json
-[[ $mode_lite -eq 0 ]]&&report_link=$(curl -$2 -s -X POST https://upload.check.place -d "type=ip" --data-urlencode "json=$ipjson" --data-urlencode "content=$ip_report")
+[[ mode_json -eq 1 || mode_output -eq 1 || mode_privacy -eq 0 ]]&&save_json
+[[ $mode_lite -eq 0 && mode_privacy -eq 0 ]]&&report_link=$(curl -$2 -s -X POST https://upload.check.place -d "type=ip" --data-urlencode "json=$ipjson" --data-urlencode "content=$ip_report")
 [[ mode_json -eq 0 ]]&&echo -ne "\r$ip_report\n"
-[[ mode_json -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
+[[ mode_json -eq 0 && mode_privacy -eq 0 && $report_link == *"https://Report.Check.Place/"* ]]&&echo -ne "\r${stail[link]}$report_link$Font_Suffix\n"
 [[ mode_json -eq 1 ]]&&echo -ne "\r$ipjson\n"
 echo -ne "\r\n"
 if [[ mode_output -eq 1 ]];then
