@@ -23,6 +23,24 @@
 
 ## Usage
 
+### Easy Mode: Run with Interactive Interface
+
+![Net](https://github.com/xykt/ScriptMenu/raw/main/res/IP_EN.png)
+
+##### Bash：
+````bash
+bash <(curl -Ls https://Check.Place) -EI
+````
+
+##### Docker：
+````bash
+docker run --rm --net=host -it xykt/check -EI && docker rmi xykt/check > /dev/null 2>&1
+````
+
+### Advanced Mode: Run with Parameters
+
+![Help](https://github.com/xykt/IPQuality/raw/main/res/help.png)
+
 ##### English version of dual-stack test (Either):
 ````bash
 bash <(curl -Ls https://IP.Check.Place) -E
@@ -87,7 +105,12 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 
 ##### privacy mode - Disable online report link:
 ````bash
-bash <(curl -Ls https://IP.Check.Place) -p
+bash <(curl -Ls https://IP.Check.Place) -Ep
+````
+
+##### Docker (supports runtime arguments; insert them before the ```&&```):
+````bash
+docker run --rm --net=host -it xykt/ipquality -E && docker rmi xykt/ipquality > /dev/null 2>&1
 ````
 
 ## Script Updates
