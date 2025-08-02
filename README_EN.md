@@ -27,12 +27,12 @@
 
 ![Net](https://github.com/xykt/ScriptMenu/raw/main/res/IP_EN.png)
 
-##### Bash：
+##### Bash:
 ````bash
 bash <(curl -Ls https://Check.Place) -EI
 ````
 
-##### Docker：
+##### Docker:
 ````bash
 docker run --rm --net=host -it xykt/check -EI && docker rmi xykt/check > /dev/null 2>&1
 ````
@@ -114,6 +114,8 @@ docker run --rm --net=host -it xykt/ipquality -E && docker rmi xykt/ipquality > 
 ````
 
 ## Script Updates
+
+2025/08/03 00:00 Add Docker support
 
 2025/08/01 16:15 Add -p for privacy mode, which disables online report links
 
