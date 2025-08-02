@@ -23,6 +23,24 @@
 
 ## 使用方法
 
+### 便捷模式：交互界面
+
+![Net](https://github.com/xykt/ScriptMenu/raw/main/res/IP_CN.png)
+
+##### Bash：
+````bash
+bash <(curl -Ls https://Check.Place) -I
+````
+
+##### Docker：
+````bash
+docker run --rm --net=host -it xykt/check -I && docker rmi xykt/check > /dev/null 2>&1
+````
+
+### 高级模式：参数运行
+
+![Help](https://github.com/xykt/IPQuality/raw/main/res/help.png)
+
 ##### 默认双栈检测：
 ````bash
 bash <(curl -Ls https://IP.Check.Place)
@@ -91,6 +109,11 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ##### 隐私模式——禁用在线报告生成功能：
 ````bash
 bash <(curl -Ls https://IP.Check.Place) -p
+````
+
+##### Docker（支持运行参数，须在```&&```前插入）：
+````bash
+docker run --rm --net=host -it xykt/ipquality && docker rmi xykt/ipquality > /dev/null 2>&1
 ````
 
 ## 脚本更新
