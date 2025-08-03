@@ -6,7 +6,7 @@
 
 ## IP Quality Check Script  -  [IP质量体检脚本 (中文)](https://github.com/xykt/IPQuality/blob/main/README.md)
 
-**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux | AlmaLinux | Rocky Linux | macOS | Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE | Void Linux**
+**Supported OS/Platform: Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux | AlmaLinux | Rocky Linux | macOS | Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE | Void Linux | Windows (via Docker)**
 
 - Bilingual support in English and Chinese
 - Supports dual-stack queries for IPv4/IPv6
@@ -33,8 +33,14 @@ bash <(curl -Ls https://Check.Place) -EI
 ````
 
 ##### Docker:
+- Linux
 ````bash
 docker run --rm --net=host -it xykt/check -EI && docker rmi xykt/check > /dev/null 2>&1
+````
+
+- Windows (CMD)
+````bash
+docker run --rm --net=host -it xykt/check -EI & docker rmi xykt/check > NUL 2>&1
 ````
 
 ### Advanced Mode: Run with Parameters
@@ -108,9 +114,15 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 bash <(curl -Ls https://IP.Check.Place) -Ep
 ````
 
-##### Docker (supports runtime arguments; insert them before the ```&&```):
+##### Docker (supports runtime arguments; insert them before the ```&```):
+- Linux
 ````bash
 docker run --rm --net=host -it xykt/ipquality -E && docker rmi xykt/ipquality > /dev/null 2>&1
+````
+
+- Windows (CMD)
+````bash
+docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > NUL 2>&1
 ````
 
 ## Script Updates
