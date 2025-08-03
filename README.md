@@ -6,7 +6,7 @@
 
 ## IP质量体检脚本  -  [IP Quality Check Script (EN)](https://github.com/xykt/IPQuality/blob/main/README_EN.md)
 
-**支持OS/Platform：Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux | AlmaLinux | Rocky Linux | macOS | Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE | Void Linux**
+**支持OS/Platform：Ubuntu | Debian | Linux Mint | Fedora | Red Hat Enterprise Linux (RHEL) | CentOS | Arch Linux | Manjaro | Alpine Linux | AlmaLinux | Rocky Linux | macOS | Anolis OS | Alibaba Cloud Linux | SUSE Linux | openSUSE | Void Linux | Windows (via Docker)**
 
 - 中英文双语言支持
 - 支持IPv4/IPv6双栈查询
@@ -33,8 +33,14 @@ bash <(curl -Ls https://Check.Place) -I
 ````
 
 ##### Docker：
+- Linux
 ````bash
 docker run --rm --net=host -it xykt/check -I && docker rmi xykt/check > /dev/null 2>&1
+````
+
+- Windows (CMD)
+````bash
+docker run --rm --net=host -it xykt/check -I & docker rmi xykt/check > NUL 2>&1
 ````
 
 ### 高级模式：参数运行
@@ -111,9 +117,15 @@ bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 bash <(curl -Ls https://IP.Check.Place) -p
 ````
 
-##### Docker（支持运行参数，须在```&&```前插入）：
+##### Docker（支持运行参数，须在```&```前插入）：
+- Linux
 ````bash
 docker run --rm --net=host -it xykt/ipquality && docker rmi xykt/ipquality > /dev/null 2>&1
+````
+
+- Windows (CMD)
+````cmd
+docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 2>&1
 ````
 
 ## 脚本更新
