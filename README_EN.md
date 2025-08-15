@@ -173,6 +173,18 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 
 ## Script Contributions
 
+**Acknowledgments:**
+
+| Sponsor | Logo | Link | 
+| - | - | - | 
+| IP2Location | ![ip2location_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ip2location.png) | [https://ip2location.io](https://ip2location.io)</br>[https://ip2location.com](https://ip2location.com) | 
+
+- Sincerely appreciate the IP threat intelligence data provided by leading providers (No ranking implied, listed in alphabetical order): [AbuseIPDB](https://www.abuseipdb.com/)/[Cloudflare](https://cloudflare.com/)/[DB-IP](https://db-ip.com/)/[IP2Location](https://www.ip2location.io/)/[ipapi](https://ipapi.is/)/[IPinfo](https://ipinfo.io/)/[IPQS](https://www.ipqualityscore.com/)/[ipregistry](https://ipregistry.co/)/[IPWHOIS](https://ipwhois.io/)/[SCAMALYTICS](https://scamalytics.com/) 
+
+- Thanks to [lmc999](https://github.com/lmc999/RegionRestrictionCheck) for parts of this script reference the RegionRestrictionCheck script.
+
+- Thanks to [spiritLHLS](https://github.com/spiritLHLS/ecs) for parts of this script reference the VPS Fusion Monster Server Test Script.
+
 **Server Sponsors​ *(No ranking implied)*:**
 
 | Sponsor | Logo | Link | 
@@ -191,15 +203,6 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **Only accepting merchants with long-term stable operations and good reputation*
-
-**Acknowledgments:**
-
-- Sincerely appreciate the risk intelligence data provided by leading IP threat intelligence providers: [IPinfo](https://ipinfo.io/)/[ipregistry](https://ipregistry.co/)/[ipapi](https://ipapi.is/)/[AbuseIPDB](https://www.abuseipdb.com/)/[IP2LOCATION](https://www.ip2location.com/)/[IPQS](https://www.ipqualityscore.com/)/[DB-IP](https://db-ip.com/)/[SCAMALYTICS](https://scamalytics.com/)/[IPWHOIS](https://ipwhois.io/)/[Cloudflare](https://cloudflare.com/)
-
-- Thanks to [lmc999](https://github.com/lmc999/RegionRestrictionCheck) for portions of the original streaming media unlocking script referenced in this script.
-
-- Thanks to [spiritLHLS](https://github.com/spiritLHLS/ecs) for portions of the integration monster review script referenced in this script.
-
 **Stars History:**
 
 ![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377dd77)
