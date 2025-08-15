@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-08-06"
+script_version="v2025-08-15"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1068,10 +1068,11 @@ case $first_use in
 esac
 shopt -u nocasematch
 ip2location[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
+ip2location[proxy0]=$(echo "$RESPONSE"|jq -r '.is_proxy')
 ip2location[proxy1]=$(echo "$RESPONSE"|jq -r '.proxy.is_public_proxy')
 ip2location[proxy2]=$(echo "$RESPONSE"|jq -r '.proxy.is_web_proxy')
-[[ ${ip2location[proxy1]} == "true" || ${ip2location[proxy2]} == "true" ]]&&ip2location[proxy]="true"
-[[ ${ip2location[proxy1]} == "false" && ${ip2location[proxy2]} == "false" ]]&&ip2location[proxy]="false"
+[[ ${ip2location[proxy0]} == "true" || ${ip2location[proxy1]} == "true" || ${ip2location[proxy2]} == "true" ]]&&ip2location[proxy]="true"
+[[ ${ip2location[proxy0]} == "false" && ${ip2location[proxy1]} == "false" && ${ip2location[proxy2]} == "false" ]]&&ip2location[proxy]="false"
 ip2location[tor]=$(echo "$RESPONSE"|jq -r '.proxy.is_tor')
 ip2location[vpn]=$(echo "$RESPONSE"|jq -r '.proxy.is_vpn')
 ip2location[server]=$(echo "$RESPONSE"|jq -r '.proxy.is_data_center')
@@ -1081,6 +1082,14 @@ ip2location[robot2]=$(echo "$RESPONSE"|jq -r '.proxy.is_scanner')
 ip2location[robot3]=$(echo "$RESPONSE"|jq -r '.proxy.is_botnet')
 [[ ${ip2location[robot1]} == "true" || ${ip2location[robot2]} == "true" || ${ip2location[robot3]} == "true" ]]&&ip2location[robot]="true"
 [[ ${ip2location[robot1]} == "false" && ${ip2location[robot2]} == "false" && ${ip2location[robot3]} == "false" ]]&&ip2location[robot]="false"
+ip2location[score]=$(echo "$RESPONSE"|jq -r '.fraud_score')
+if [[ ${ip2location[score]} -lt 33 ]];then
+ip2location[risk]="${sscore[low]}"
+elif [[ ${ip2location[score]} -lt 66 ]];then
+ip2location[risk]="${sscore[medium]}"
+elif [[ ${ip2location[score]} -ge 66 ]];then
+ip2location[risk]="${sscore[high]}"
+fi
 }
 db_dbip(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}DB-IP $Font_Suffix"
@@ -1089,9 +1098,18 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 dbip=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://db-ip.com/demo/home.php?s=$IP")
-echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
-dbip[risktext]=$(echo "$RESPONSE"|jq -r '.demoInfo.threatLevel')
+local RESPONSE=$(curl $CurlARG -sL -m 10 "https://db-ip.com/$IP")
+mapfile -t results < <(echo "$RESPONSE"|awk '/<th class='\''text-center'\''>Crawler/ {flag=1; next}
+             flag && /<span class="sr-only">/ {
+                 if ($0 ~ /Yes/) print "true";
+                 else if ($0 ~ /No/) print "false";
+             }
+             /<\/tr>/ && flag {flag=0}')
+dbip[robot]="${results[0]}"
+dbip[proxy]="${results[1]}"
+dbip[abuser]="${results[2]}"
+dbip[risktext]=$(echo "$RESPONSE"|sed -n 's/.*Estimated threat level for this IP address is[[:space:]]*<span[^>]*>\([^<]*\)<.*/\1/p')
+dbip[countrycode]=$(echo "$RESPONSE"|sed -n '/<code class="language-json">/,/<\/code>/p'|sed -n 's/.*"countryCode"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
 shopt -s nocasematch
 case ${dbip[risktext]} in
 "low")dbip[risk]="${sscore[low]}"
@@ -1894,14 +1912,14 @@ fi
 }
 show_type(){
 echo -ne "\r${stype[title]}\n"
-echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2LOCATION $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location $Font_Suffix\n"
 echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${abuseipdb[susetype]}${ip2location[susetype]}\n"
 echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[susetype]}${ipapi[susetype]}\n"
 }
 show_type_lite(){
 echo -ne "\r${stype[title]}\n"
-echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo      ipapi    IP2LOCATION $Font_Suffix\n"
-echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipapi[susetype]}${ip2location[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo      ipapi $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipapi[susetype]}\n"
 echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipapi[susetype]}\n"
 }
 sscore_text(){
@@ -1934,6 +1952,10 @@ sscore[text4]="${tmp1:49-p6}"
 show_score(){
 echo -ne "\r${sscore[title]}\n"
 echo -ne "\r${sscore[range]}\n"
+if [[ -n ${ip2location[score]} ]];then
+sscore_text "${ip2location[score]}" ${ip2location[score]} 33 66 100 13
+echo -ne "\r${Font_Cyan}IP2Location${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ip2location[risk]}\n"
+fi
 if [[ -n ${scamalytics[score]} ]];then
 sscore_text "${scamalytics[score]}" ${scamalytics[score]} 25 50 100 13
 echo -ne "\r${Font_Cyan}SCAMALYTICS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
@@ -2046,7 +2068,7 @@ echo "$tmp_txt"
 show_factor(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2LOCATION ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS$Font_Suffix\n"
 tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
@@ -2065,20 +2087,20 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2LOCATION ipapi SCAMALYTICS IPinfo IPWHOIS$Font_Suffix\n"
-tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${scamalytics[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi SCAMALYTICS IPinfo IPWHOIS DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ipapi[countrycode]}" "${scamalytics[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${scamalytics[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
+tmp_factor=$(format_factor "${ipapi[proxy]}" "${scamalytics[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${scamalytics[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
+tmp_factor=$(format_factor "${ipapi[tor]}" "${scamalytics[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${scamalytics[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
+tmp_factor=$(format_factor "${ipapi[vpn]}" "${scamalytics[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${scamalytics[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
+tmp_factor=$(format_factor "${ipapi[server]}" "${scamalytics[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${scamalytics[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
+tmp_factor=$(format_factor "${ipapi[abuser]}" "${scamalytics[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${scamalytics[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
+tmp_factor=$(format_factor "${ipapi[robot]}" "${scamalytics[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2356,6 +2378,7 @@ type_updates+=".Type |= map(. * { Usage: { IP2LOCATION: \"$(clean_ansi "${ip2loc
 type_updates+=".Type |= map(. * { Company: { IPinfo: \"$(clean_ansi "${ipinfo[scomtype]:-null}")\" } }) | "
 type_updates+=".Type |= map(. * { Company: { ipregistry: \"$(clean_ansi "${ipregistry[scomtype]:-null}")\" } }) | "
 type_updates+=".Type |= map(. * { Company: { ipapi: \"$(clean_ansi "${ipapi[scomtype]:-null}")\" } }) | "
+score_updates+=".Score |= map(. + { IP2LOCATION: \"${ip2location[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { SCAMALYTICS: \"${scamalytics[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { ipapi: \"${ipapi[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { AbuseIPDB: \"${abuseipdb[score]:-null}\" }) | "
@@ -2370,6 +2393,7 @@ factor_updates+=$(factor_bool "${scamalytics[countrycode]}" "SCAMALYTICS" "Count
 factor_updates+=$(factor_bool "${ipdata[countrycode]}" "ipdata" "CountryCode")
 factor_updates+=$(factor_bool "${ipinfo[countrycode]}" "IPinfo" "CountryCode")
 factor_updates+=$(factor_bool "${ipwhois[countrycode]}" "IPWHOIS" "CountryCode")
+factor_updates+=$(factor_bool "${dbip[countrycode]}" "DBIP" "CountryCode")
 factor_updates+=$(factor_bool "${ip2location[proxy]}" "IP2LOCATION" "Proxy")
 factor_updates+=$(factor_bool "${ipapi[proxy]}" "ipapi" "Proxy")
 factor_updates+=$(factor_bool "${ipregistry[proxy]}" "ipregistry" "Proxy")
@@ -2378,6 +2402,7 @@ factor_updates+=$(factor_bool "${scamalytics[proxy]}" "SCAMALYTICS" "Proxy")
 factor_updates+=$(factor_bool "${ipdata[proxy]}" "ipdata" "Proxy")
 factor_updates+=$(factor_bool "${ipinfo[proxy]}" "IPinfo" "Proxy")
 factor_updates+=$(factor_bool "${ipwhois[proxy]}" "IPWHOIS" "Proxy")
+factor_updates+=$(factor_bool "${dbip[proxy]}" "DBIP" "Proxy")
 factor_updates+=$(factor_bool "${ip2location[tor]}" "IP2LOCATION" "Tor")
 factor_updates+=$(factor_bool "${ipapi[tor]}" "ipapi" "Tor")
 factor_updates+=$(factor_bool "${ipregistry[tor]}" "ipregistry" "Tor")
@@ -2386,6 +2411,7 @@ factor_updates+=$(factor_bool "${scamalytics[tor]}" "SCAMALYTICS" "Tor")
 factor_updates+=$(factor_bool "${ipdata[tor]}" "ipdata" "Tor")
 factor_updates+=$(factor_bool "${ipinfo[tor]}" "IPinfo" "Tor")
 factor_updates+=$(factor_bool "${ipwhois[tor]}" "IPWHOIS" "Tor")
+factor_updates+=$(factor_bool "${dbip[tor]}" "DBIP" "Tor")
 factor_updates+=$(factor_bool "${ip2location[vpn]}" "IP2LOCATION" "VPN")
 factor_updates+=$(factor_bool "${ipapi[vpn]}" "ipapi" "VPN")
 factor_updates+=$(factor_bool "${ipregistry[vpn]}" "ipregistry" "VPN")
@@ -2394,6 +2420,7 @@ factor_updates+=$(factor_bool "${scamalytics[vpn]}" "SCAMALYTICS" "VPN")
 factor_updates+=$(factor_bool "${ipdata[vpn]}" "ipdata" "VPN")
 factor_updates+=$(factor_bool "${ipinfo[vpn]}" "IPinfo" "VPN")
 factor_updates+=$(factor_bool "${ipwhois[vpn]}" "IPWHOIS" "VPN")
+factor_updates+=$(factor_bool "${dbip[vpn]}" "DBIP" "VPN")
 factor_updates+=$(factor_bool "${ip2location[server]}" "IP2LOCATION" "Server")
 factor_updates+=$(factor_bool "${ipapi[server]}" "ipapi" "Server")
 factor_updates+=$(factor_bool "${ipregistry[server]}" "ipregistry" "Server")
@@ -2402,6 +2429,7 @@ factor_updates+=$(factor_bool "${scamalytics[server]}" "SCAMALYTICS" "Server")
 factor_updates+=$(factor_bool "${ipdata[server]}" "ipdata" "Server")
 factor_updates+=$(factor_bool "${ipinfo[server]}" "IPinfo" "Server")
 factor_updates+=$(factor_bool "${ipwhois[server]}" "IPWHOIS" "Server")
+factor_updates+=$(factor_bool "${dbip[server]}" "DBIP" "Server")
 factor_updates+=$(factor_bool "${ip2location[abuser]}" "IP2LOCATION" "Abuser")
 factor_updates+=$(factor_bool "${ipapi[abuser]}" "ipapi" "Abuser")
 factor_updates+=$(factor_bool "${ipregistry[abuser]}" "ipregistry" "Abuser")
@@ -2410,6 +2438,7 @@ factor_updates+=$(factor_bool "${scamalytics[abuser]}" "SCAMALYTICS" "Abuser")
 factor_updates+=$(factor_bool "${ipdata[abuser]}" "ipdata" "Abuser")
 factor_updates+=$(factor_bool "${ipinfo[abuser]}" "IPinfo" "Abuser")
 factor_updates+=$(factor_bool "${ipwhois[abuser]}" "IPWHOIS" "Abuser")
+factor_updates+=$(factor_bool "${dbip[abuser]}" "DBIP" "Abuser")
 factor_updates+=$(factor_bool "${ip2location[robot]}" "IP2LOCATION" "Robot")
 factor_updates+=$(factor_bool "${ipapi[robot]}" "ipapi" "Robot")
 factor_updates+=$(factor_bool "${ipregistry[robot]}" "ipregistry" "Robot")
@@ -2418,6 +2447,7 @@ factor_updates+=$(factor_bool "${scamalytics[robot]}" "SCAMALYTICS" "Robot")
 factor_updates+=$(factor_bool "${ipdata[robot]}" "ipdata" "Robot")
 factor_updates+=$(factor_bool "${ipinfo[robot]}" "IPinfo" "Robot")
 factor_updates+=$(factor_bool "${ipwhois[robot]}" "IPWHOIS" "Robot")
+factor_updates+=$(factor_bool "${dbip[robot]}" "DBIP" "Robot")
 media_updates+=".Media |= map(. * { TikTok: { Status: \"$(clean_ansi "${tiktok[ustatus]:-null}")\" } }) | "
 media_updates+=".Media |= map(. * { DisneyPlus: { Status: \"$(clean_ansi "${disney[ustatus]:-null}")\" } }) | "
 media_updates+=".Media |= map(. * { Netflix: { Status: \"$(clean_ansi "${netflix[ustatus]:-null}")\" } }) | "
@@ -2486,7 +2516,7 @@ db_scamalytics
 [[ $mode_lite -eq 0 ]]&&db_ipregistry $2
 db_ipapi
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2
-db_ip2location $2
+[[ $mode_lite -eq 0 ]]&&db_ip2location $2
 db_dbip
 db_ipwhois
 [[ $mode_lite -eq 0 ]]&&db_ipdata $2
