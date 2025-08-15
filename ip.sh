@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-08-15"
+script_version="v2025-08-16"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1953,7 +1953,7 @@ show_score(){
 echo -ne "\r${sscore[title]}\n"
 echo -ne "\r${sscore[range]}\n"
 if [[ -n ${ip2location[score]} ]];then
-sscore_text "${ip2location[score]}" ${ip2location[score]} 33 66 100 13
+sscore_text "${ip2location[score]}" ${ip2location[score]} 33 66 99 13
 echo -ne "\r${Font_Cyan}IP2Location${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ip2location[risk]}\n"
 fi
 if [[ -n ${scamalytics[score]} ]];then
