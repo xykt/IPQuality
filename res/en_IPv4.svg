@@ -50,7 +50,7 @@
 <rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
 <rect x="17ch" y="22em" width="16ch" height="1em" class="ba2"/>
 <rect x="33ch" y="22em" width="16ch" height="1em" class="ba3"/>
-<rect x="49ch" y="22em" width="15ch" height="1em" class="ba1"/>
+<rect x="49ch" y="22em" width="16ch" height="1em" class="ba1"/>
 <rect x="17ch" y="23em" width="3ch" height="1em" class="ba2"/>
 <rect x="17ch" y="24em" width="2ch" height="1em" class="ba2"/>
 <rect x="17ch" y="25em" width="1ch" height="1em" class="ba2"/>
@@ -107,7 +107,7 @@
 <text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">Company:   </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>     </tspan><tspan class="bold fa7"> ISP </tspan></text>
 <text x="0ch" y="20.5em"><tspan>3. Risk Score</tspan></text>
 <text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">Levels:         </tspan><tspan class="italic fa7">VeryLow     Low      Medium      High   VeryHigh</tspan></text>
-<text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location: </tspan><tspan class="bold fa7">                                               99|</tspan><tspan class="bold fa1">High</tspan></text>
+<text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location: </tspan><tspan class="bold fa7">                                                99|</tspan><tspan class="bold fa1">High</tspan></text>
 <text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS: </tspan><tspan class="bold fa7">    4|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="24.5em"><tspan></tspan><tspan class="fa6">ipapi: </tspan><tspan class="bold fa7">     0.10%|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="25.5em"><tspan></tspan><tspan class="fa6">AbuseIPDB: </tspan><tspan class="bold fa7">    0|</tspan><tspan class="bold fa2">Low</tspan></text>
