@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-08-16"
+script_version="v2025-08-18"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1952,7 +1952,7 @@ sscore[text4]="${tmp1:49-p6}"
 show_score(){
 echo -ne "\r${sscore[title]}\n"
 echo -ne "\r${sscore[range]}\n"
-if [[ -n ${ip2location[score]} ]];then
+if [[ -n ${ip2location[score]} && $mode_lite -eq 0 ]];then
 sscore_text "${ip2location[score]}" ${ip2location[score]} 33 66 99 13
 echo -ne "\r${Font_Cyan}IP2Location${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ip2location[risk]}\n"
 fi
@@ -2513,14 +2513,14 @@ countRunTimes
 db_maxmind $2
 db_ipinfo
 db_scamalytics
-[[ $mode_lite -eq 0 ]]&&db_ipregistry $2
+[[ $mode_lite -eq 0 ]]&&db_ipregistry $2||ipregistry=()
 db_ipapi
-[[ $mode_lite -eq 0 ]]&&db_abuseipdb $2
-[[ $mode_lite -eq 0 ]]&&db_ip2location $2
+[[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
+[[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
 db_dbip
 db_ipwhois
-[[ $mode_lite -eq 0 ]]&&db_ipdata $2
-[[ $mode_lite -eq 0 ]]&&db_ipqs $2
+[[ $mode_lite -eq 0 ]]&&db_ipdata $2||ipdata=()
+[[ $mode_lite -eq 0 ]]&&db_ipqs $2||ipqs=()
 db_cloudflare $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
