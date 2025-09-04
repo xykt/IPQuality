@@ -41,10 +41,11 @@
 <rect x="27ch" y="18em" width="6ch" height="1em" class="ba1"/>
 <rect x="39ch" y="18em" width="6ch" height="1em" class="ba1"/>
 <rect x="51ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="63ch" y="18em" width="6ch" height="1em" class="ba1"/>
+<rect x="63ch" y="18em" width="6ch" height="1em" class="ba2"/>
 <rect x="15ch" y="19em" width="6ch" height="1em" class="ba2"/>
-<rect x="27ch" y="19em" width="6ch" height="1em" class="ba1"/>
-<rect x="39ch" y="19em" width="6ch" height="1em" class="ba1"/>
+<rect x="27ch" y="19em" width="6ch" height="1em" class="ba2"/>
+<rect x="39ch" y="19em" width="6ch" height="1em" class="ba3"/>
+<rect x="51ch" y="19em" width="6ch" height="1em" class="ba1"/>
 <rect x="17ch" y="21em" width="16ch" height="1em" class="ba2"/>
 <rect x="33ch" y="21em" width="16ch" height="1em" class="ba3"/>
 <rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
@@ -80,18 +81,18 @@
 <rect x="48ch" y="45em" width="3ch" height="1em" class="ba1"/>
 <rect x="52ch" y="45em" width="7ch" height="1em" class="ba1"/>
 <rect x="60ch" y="45em" width="3ch" height="1em" class="ba2"/>
-<rect x="64ch" y="45em" width="4ch" height="1em" class="ba1"/>
+<rect x="64ch" y="45em" width="4ch" height="1em" class="ba2"/>
 <rect x="69ch" y="45em" width="4ch" height="1em" class="ba1"/>
 </g>
 <text x="0ch" y="0.5em"><tspan>########################################################################</tspan></text>
 <text x="0ch" y="1.5em"><tspan>                       </tspan><tspan class="bold">IP质量体检报告：</tspan><tspan class="bold fa6">38.105.*.*</tspan></text>
 <text x="0ch" y="2.5em"><tspan>                   </tspan><tspan class="underline">https://github.com/xykt/IPQuality</tspan></text>
 <text x="0ch" y="3.5em"><tspan>                bash &lt;(curl -sL https://Check.Place) -I</tspan></text>
-<text x="0ch" y="4.5em"><tspan>        报告时间：2025-08-15 22:38:19 CST  脚本版本：v2025-08-15</tspan></text>
+<text x="0ch" y="4.5em"><tspan>        报告时间：2025-09-04 16:26:20 CST  脚本版本：v2025-09-04</tspan></text>
 <text x="0ch" y="5.5em"><tspan>########################################################################</tspan></text>
 <text x="0ch" y="6.5em"><tspan>一、基础信息（</tspan><tspan class="italic">Maxmind 数据库</tspan><tspan>）</tspan></text>
-<text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">自治系统号：            </tspan><tspan class="fa2">AS142111</tspan></text>
-<text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">组织：                  </tspan><tspan class="fa2">Zhejiang Aiyun Network Technology Co Ltd</tspan></text>
+<text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">自治系统号：            </tspan><tspan class="fa2">AS152672</tspan></text>
+<text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">组织：                  </tspan><tspan class="fa2">Aiyun HK Network</tspan></text>
 <text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">坐标：                  </tspan><tspan class="fa2">118°14′38″W, 34°3′16″N</tspan></text>
 <text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">地图：                  </tspan><tspan class="underline fa2">https://check.place/34.0544,-118.244,15,cn</tspan></text>
 <text x="0ch" y="11.5em"><tspan></tspan><tspan class="fa6">城市：                  </tspan><tspan class="fa2">加州, 洛杉矶, 90060</tspan></text>
@@ -100,9 +101,9 @@
 <text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">时区：                  </tspan><tspan class="fa2">America/Los_Angeles</tspan></text>
 <text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP类型：                </tspan><tspan class="bold fa7"> 原生IP </tspan></text>
 <text x="0ch" y="16.5em"><tspan>二、IP类型属性</tspan></text>
-<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">数据库：   </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location </tspan></text>
-<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">使用类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
-<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">公司类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 家宽 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
+<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">数据库：   </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi    IP2Location   AbuseIPDB </tspan></text>
+<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">使用类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 家宽 </tspan></text>
+<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">公司类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 家宽 </tspan><tspan>      </tspan><tspan class="bold fa7"> 家宽 </tspan><tspan>      </tspan><tspan class="bold fa7"> 商业 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
 <text x="0ch" y="20.5em"><tspan>三、风险评分</tspan></text>
 <text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">风险等级：      </tspan><tspan class="italic fa7">极低         低       中等       高         极高</tspan></text>
 <text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location：</tspan><tspan class="bold fa7">   3|</tspan><tspan class="bold fa2">低风险</tspan></text>
@@ -128,8 +129,8 @@
 <text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">方式：    </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan></text>
 <text x="0ch" y="43.5em"><tspan>六、邮局连通性及黑名单检测</tspan></text>
 <text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">本地25端口出站：</tspan><tspan class="fa2">可用</tspan></text>
-<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">通信：</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
-<text x="0ch" y="46.5em"><tspan></tspan><tspan class="fa6">IP地址黑名单数据库：  有效 </tspan><tspan class="bold fa6">439   </tspan><tspan class="fa2">正常 </tspan><tspan class="bold fa2">416   </tspan><tspan class="fa3">已标记 </tspan><tspan class="bold fa3">21   </tspan><tspan class="fa1">黑名单 </tspan><tspan class="bold fa1">2</tspan></text>
+<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">通信：</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
+<text x="0ch" y="46.5em"><tspan></tspan><tspan class="fa6">IP地址黑名单数据库：  有效 </tspan><tspan class="bold fa6">439   </tspan><tspan class="fa2">正常 </tspan><tspan class="bold fa2">412   </tspan><tspan class="fa3">已标记 </tspan><tspan class="bold fa3">25   </tspan><tspan class="fa1">黑名单 </tspan><tspan class="bold fa1">2</tspan></text>
 <text x="0ch" y="47.5em"><tspan>========================================================================</tspan></text>
-<text x="0ch" y="48.5em"><tspan></tspan><tspan class="italic">今日IP检测量：3215；总检测量：496957。感谢使用xy系列脚本！ </tspan></text>
+<text x="0ch" y="48.5em"><tspan></tspan><tspan class="italic">今日IP检测量：837；总检测量：552136。感谢使用xy系列脚本！ </tspan></text>
 </svg>

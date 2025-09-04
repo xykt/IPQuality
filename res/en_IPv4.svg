@@ -36,102 +36,101 @@
     </style>
     <rect width="100%" height="100%" x="0" y="0" style="fill: #000000"/>
 <g class="bg">
-<rect x="25ch" y="15em" width="16ch" height="1em" class="ba1"/>
+<rect x="25ch" y="15em" width="16ch" height="1em" class="ba2"/>
 <rect x="13ch" y="18em" width="9ch" height="1em" class="ba1"/>
 <rect x="25ch" y="18em" width="9ch" height="1em" class="ba1"/>
-<rect x="39ch" y="18em" width="5ch" height="1em" class="ba2"/>
+<rect x="37ch" y="18em" width="9ch" height="1em" class="ba1"/>
 <rect x="49ch" y="18em" width="9ch" height="1em" class="ba1"/>
-<rect x="61ch" y="18em" width="9ch" height="1em" class="ba1"/>
-<rect x="13ch" y="19em" width="9ch" height="1em" class="ba1"/>
-<rect x="25ch" y="19em" width="9ch" height="1em" class="ba1"/>
-<rect x="39ch" y="19em" width="5ch" height="1em" class="ba2"/>
+<rect x="61ch" y="18em" width="10ch" height="1em" class="ba2"/>
+<rect x="15ch" y="19em" width="5ch" height="1em" class="ba2"/>
+<rect x="27ch" y="19em" width="5ch" height="1em" class="ba2"/>
+<rect x="37ch" y="19em" width="10ch" height="1em" class="ba3"/>
+<rect x="49ch" y="19em" width="9ch" height="1em" class="ba1"/>
 <rect x="17ch" y="21em" width="16ch" height="1em" class="ba2"/>
 <rect x="33ch" y="21em" width="16ch" height="1em" class="ba3"/>
 <rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
-<rect x="17ch" y="22em" width="16ch" height="1em" class="ba2"/>
-<rect x="33ch" y="22em" width="16ch" height="1em" class="ba3"/>
-<rect x="49ch" y="22em" width="16ch" height="1em" class="ba1"/>
-<rect x="17ch" y="23em" width="3ch" height="1em" class="ba2"/>
+<rect x="17ch" y="22em" width="2ch" height="1em" class="ba2"/>
+<rect x="17ch" y="23em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="24em" width="2ch" height="1em" class="ba2"/>
 <rect x="17ch" y="25em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="26em" width="16ch" height="1em" class="ba2"/>
-<rect x="33ch" y="26em" width="16ch" height="1em" class="ba3"/>
-<rect x="49ch" y="26em" width="16ch" height="1em" class="ba1"/>
+<rect x="33ch" y="26em" width="1ch" height="1em" class="ba3"/>
 <rect x="17ch" y="27em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="28em" width="1ch" height="1em" class="ba2"/>
-<rect x="10ch" y="40em" width="8ch" height="1em" class="ba1"/>
+<rect x="12ch" y="40em" width="5ch" height="1em" class="ba2"/>
 <rect x="21ch" y="40em" width="5ch" height="1em" class="ba2"/>
 <rect x="30ch" y="40em" width="5ch" height="1em" class="ba2"/>
 <rect x="39ch" y="40em" width="5ch" height="1em" class="ba2"/>
 <rect x="48ch" y="40em" width="5ch" height="1em" class="ba2"/>
 <rect x="57ch" y="40em" width="5ch" height="1em" class="ba2"/>
-<rect x="64ch" y="40em" width="9ch" height="1em" class="ba3"/>
+<rect x="66ch" y="40em" width="5ch" height="1em" class="ba2"/>
+<rect x="10ch" y="42em" width="8ch" height="1em" class="ba2"/>
 <rect x="19ch" y="42em" width="8ch" height="1em" class="ba2"/>
 <rect x="28ch" y="42em" width="8ch" height="1em" class="ba2"/>
 <rect x="37ch" y="42em" width="8ch" height="1em" class="ba2"/>
 <rect x="46ch" y="42em" width="8ch" height="1em" class="ba2"/>
 <rect x="55ch" y="42em" width="8ch" height="1em" class="ba2"/>
-<rect x="64ch" y="42em" width="8ch" height="1em" class="ba3"/>
-<rect x="8ch" y="45em" width="5ch" height="1em" class="ba1"/>
+<rect x="64ch" y="42em" width="8ch" height="1em" class="ba2"/>
+<rect x="8ch" y="45em" width="5ch" height="1em" class="ba2"/>
 <rect x="14ch" y="45em" width="7ch" height="1em" class="ba2"/>
 <rect x="22ch" y="45em" width="5ch" height="1em" class="ba2"/>
-<rect x="28ch" y="45em" width="5ch" height="1em" class="ba1"/>
-<rect x="34ch" y="45em" width="2ch" height="1em" class="ba1"/>
+<rect x="28ch" y="45em" width="5ch" height="1em" class="ba2"/>
+<rect x="34ch" y="45em" width="2ch" height="1em" class="ba2"/>
 <rect x="37ch" y="45em" width="6ch" height="1em" class="ba2"/>
 <rect x="44ch" y="45em" width="3ch" height="1em" class="ba2"/>
 <rect x="48ch" y="45em" width="3ch" height="1em" class="ba1"/>
 <rect x="52ch" y="45em" width="7ch" height="1em" class="ba1"/>
 <rect x="60ch" y="45em" width="3ch" height="1em" class="ba2"/>
 <rect x="64ch" y="45em" width="4ch" height="1em" class="ba2"/>
-<rect x="69ch" y="45em" width="4ch" height="1em" class="ba2"/>
+<rect x="69ch" y="45em" width="4ch" height="1em" class="ba1"/>
 </g>
 <text x="0ch" y="0.5em"><tspan>########################################################################</tspan></text>
-<text x="0ch" y="1.5em"><tspan>                  </tspan><tspan class="bold">IP QUALITY CHECK REPORT: </tspan><tspan class="bold fa6">104.245.*.*</tspan></text>
+<text x="0ch" y="1.5em"><tspan>                  </tspan><tspan class="bold">IP QUALITY CHECK REPORT: </tspan><tspan class="bold fa6">38.105.*.*</tspan></text>
 <text x="0ch" y="2.5em"><tspan>                   </tspan><tspan class="underline">https://github.com/xykt/IPQuality</tspan></text>
 <text x="0ch" y="3.5em"><tspan>                bash &lt;(curl -sL https://Check.Place) -EI</tspan></text>
-<text x="0ch" y="4.5em"><tspan>       Report Time: 2025-08-15 14:35:29 UTC  Version: v2025-08-15</tspan></text>
+<text x="0ch" y="4.5em"><tspan>       Report Time: 2025-09-04 08:34:15 UTC  Version: v2025-09-04</tspan></text>
 <text x="0ch" y="5.5em"><tspan>########################################################################</tspan></text>
 <text x="0ch" y="6.5em"><tspan>1. Basic Information (</tspan><tspan class="italic">Maxmind Database</tspan><tspan>)</tspan></text>
-<text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">ASN:                    </tspan><tspan class="fa2">AS25820</tspan></text>
-<text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">Organization:           </tspan><tspan class="fa2">IT7NET</tspan></text>
-<text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">Location:               </tspan><tspan class="fa2">114°10′33″E, 22°17′3″N</tspan></text>
-<text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">Map:                    </tspan><tspan class="underline fa2">https://check.place/22.2842,114.1759,15,en</tspan></text>
-<text x="0ch" y="11.5em"><tspan></tspan><tspan class="fa6">City:                   </tspan><tspan class="fa2">N/A, Hong Kong</tspan></text>
-<text x="0ch" y="12.5em"><tspan></tspan><tspan class="fa6">Actual Region:          </tspan><tspan class="fa2">[HK]Hong Kong, [AS]Asia</tspan></text>
-<text x="0ch" y="13.5em"><tspan></tspan><tspan class="fa6">Registered Region:      </tspan><tspan class="fa2">[CA]Canada</tspan></text>
-<text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">Time Zone:              </tspan><tspan class="fa2">Asia/Hong_Kong</tspan></text>
-<text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP Type:                </tspan><tspan class="bold fa7"> Geo-discrepant </tspan></text>
+<text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">ASN:                    </tspan><tspan class="fa2">AS152672</tspan></text>
+<text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">Organization:           </tspan><tspan class="fa2">Aiyun HK Network</tspan></text>
+<text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">Location:               </tspan><tspan class="fa2">118°14′38″W, 34°3′16″N</tspan></text>
+<text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">Map:                    </tspan><tspan class="underline fa2">https://check.place/34.0544,-118.244,15,en</tspan></text>
+<text x="0ch" y="11.5em"><tspan></tspan><tspan class="fa6">City:                   </tspan><tspan class="fa2">California, Los Angeles, 90060</tspan></text>
+<text x="0ch" y="12.5em"><tspan></tspan><tspan class="fa6">Actual Region:          </tspan><tspan class="fa2">[US]United States, [NA]North America</tspan></text>
+<text x="0ch" y="13.5em"><tspan></tspan><tspan class="fa6">Registered Region:      </tspan><tspan class="fa2">[US]United States</tspan></text>
+<text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">Time Zone:              </tspan><tspan class="fa2">America/Los_Angeles</tspan></text>
+<text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP Type:                </tspan><tspan class="bold fa7"> Geo-consistent </tspan></text>
 <text x="0ch" y="16.5em"><tspan>2. IP Type</tspan></text>
-<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">Database:  </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location </tspan></text>
-<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">Usage:     </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>     </tspan><tspan class="bold fa7"> ISP </tspan><tspan>     </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan></text>
-<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">Company:   </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>     </tspan><tspan class="bold fa7"> ISP </tspan></text>
+<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">Database:  </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi    IP2Location   AbuseIPDB </tspan></text>
+<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">Usage:     </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Line ISP </tspan></text>
+<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">Company:   </tspan><tspan>   </tspan><tspan class="bold fa7"> ISP </tspan><tspan>       </tspan><tspan class="bold fa7"> ISP </tspan><tspan>     </tspan><tspan class="bold fa7"> Business </tspan><tspan>  </tspan><tspan class="bold fa7"> Hosting </tspan></text>
 <text x="0ch" y="20.5em"><tspan>3. Risk Score</tspan></text>
 <text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">Levels:         </tspan><tspan class="italic fa7">VeryLow     Low      Medium      High   VeryHigh</tspan></text>
-<text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location: </tspan><tspan class="bold fa7">                                                99|</tspan><tspan class="bold fa1">High</tspan></text>
-<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS: </tspan><tspan class="bold fa7">    4|</tspan><tspan class="bold fa2">Low</tspan></text>
+<text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location: </tspan><tspan class="bold fa7">   3|</tspan><tspan class="bold fa2">Low</tspan></text>
+<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS: </tspan><tspan class="bold fa7">  0|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="24.5em"><tspan></tspan><tspan class="fa6">ipapi: </tspan><tspan class="bold fa7">     0.10%|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="25.5em"><tspan></tspan><tspan class="fa6">AbuseIPDB: </tspan><tspan class="bold fa7">    0|</tspan><tspan class="bold fa2">Low</tspan></text>
-<text x="0ch" y="26.5em"><tspan></tspan><tspan class="fa6">IPQS: </tspan><tspan class="bold fa7">                                                      100|</tspan><tspan class="bold fa1">HighRisk</tspan></text>
+<text x="0ch" y="26.5em"><tspan></tspan><tspan class="fa6">IPQS: </tspan><tspan class="bold fa7">                        75|</tspan><tspan class="bold fa3">Suspicious</tspan></text>
 <text x="0ch" y="27.5em"><tspan></tspan><tspan class="fa6">Cloudflare: </tspan><tspan class="bold fa7">   0|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="28.5em"><tspan></tspan><tspan class="fa6">DB-IP: </tspan><tspan class="bold fa7">         |</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="29.5em"><tspan>4. Risk Factors</tspan></text>
 <text x="0ch" y="30.5em"><tspan></tspan><tspan class="fa6">DB:  </tspan><tspan class="italic fa6">IP2Location ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS</tspan></text>
-<text x="0ch" y="31.5em"><tspan></tspan><tspan class="fa6">Region: </tspan><tspan>  </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[CN]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan><tspan>    </tspan><tspan class="fa2">[HK]</tspan></text>
-<text x="0ch" y="32.5em"><tspan></tspan><tspan class="fa6">Proxy:  </tspan><tspan>  </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan></text>
+<text x="0ch" y="31.5em"><tspan></tspan><tspan class="fa6">Region: </tspan><tspan>  </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan><tspan>    </tspan><tspan class="fa2">[US]</tspan></text>
+<text x="0ch" y="32.5em"><tspan></tspan><tspan class="fa6">Proxy:  </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan></text>
 <text x="0ch" y="33.5em"><tspan></tspan><tspan class="fa6">Tor:    </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan></text>
-<text x="0ch" y="34.5em"><tspan></tspan><tspan class="fa6">VPN:    </tspan><tspan>  </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan></text>
-<text x="0ch" y="35.5em"><tspan></tspan><tspan class="fa6">Server: </tspan><tspan>  </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan></text>
-<text x="0ch" y="36.5em"><tspan></tspan><tspan class="fa6">Abuser: </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan></text>
-<text x="0ch" y="37.5em"><tspan></tspan><tspan class="fa6">Robot:  </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan></text>
+<text x="0ch" y="34.5em"><tspan></tspan><tspan class="fa6">VPN:    </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan></text>
+<text x="0ch" y="35.5em"><tspan></tspan><tspan class="fa6">Server: </tspan><tspan>  </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa1"> Yes</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan></text>
+<text x="0ch" y="36.5em"><tspan></tspan><tspan class="fa6">Abuser: </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan></text>
+<text x="0ch" y="37.5em"><tspan></tspan><tspan class="fa6">Robot:  </tspan><tspan>  </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> No </tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan><tspan>    </tspan><tspan class="bold fa2"> N/A</tspan></text>
 <text x="0ch" y="38.5em"><tspan>5. Accessibility check for media and AI services</tspan></text>
 <text x="0ch" y="39.5em"><tspan></tspan><tspan class="fa6">Service: </tspan><tspan class="italic fa6"> TikTok   Disney&#43;  Netflix Youtube  AmazonPV  Spotify  ChatGPT </tspan></text>
-<text x="0ch" y="40.5em"><tspan></tspan><tspan class="fa6">Status:  </tspan><tspan class="fa7"> Failed </tspan><tspan>   </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>  </tspan><tspan class="fa7"> APPOnly </tspan></text>
-<text x="0ch" y="41.5em"><tspan></tspan><tspan class="fa6">Region:  </tspan><tspan class="fa2">           [HK]     [HK]     [HK]     [HK]     [HK]     [HK]   </tspan></text>
-<text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">Type:             </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> ViaDNS </tspan></text>
+<text x="0ch" y="40.5em"><tspan></tspan><tspan class="fa6">Status:    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan><tspan>    </tspan><tspan class="fa7"> Yes </tspan></text>
+<text x="0ch" y="41.5em"><tspan></tspan><tspan class="fa6">Region:  </tspan><tspan class="fa2">  [US]     [US]     [US]     [US]     [US]     [US]     [US]   </tspan></text>
+<text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">Type:    </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan></text>
 <text x="0ch" y="43.5em"><tspan>6. Email service availability and blacklist detection</tspan></text>
-<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">Local Port 25 Outbound: </tspan><tspan class="fa3">Occupied</tspan></text>
-<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">Conn: </tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Sina</tspan></text>
-<text x="0ch" y="46.5em"><tspan></tspan><tspan class="fa6">DNSBL database:   Active </tspan><tspan class="bold fa6">439   </tspan><tspan class="fa2">Clean </tspan><tspan class="bold fa2">420   </tspan><tspan class="fa3">Marked </tspan><tspan class="bold fa3">19   </tspan><tspan class="fa1">Blacklisted </tspan><tspan class="bold fa1">0</tspan></text>
+<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">Local Port 25 Outbound: </tspan><tspan class="fa2">Available</tspan></text>
+<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">Conn: </tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
+<text x="0ch" y="46.5em"><tspan></tspan><tspan class="fa6">DNSBL database:   Active </tspan><tspan class="bold fa6">439   </tspan><tspan class="fa2">Clean </tspan><tspan class="bold fa2">411   </tspan><tspan class="fa3">Marked </tspan><tspan class="bold fa3">26   </tspan><tspan class="fa1">Blacklisted </tspan><tspan class="bold fa1">2</tspan></text>
 <text x="0ch" y="47.5em"><tspan>========================================================================</tspan></text>
-<text x="0ch" y="48.5em"><tspan></tspan><tspan class="italic">IP Checks Today: 3206; Total: 496947. Thanks for running xy scripts! </tspan></text>
+<text x="0ch" y="48.5em"><tspan></tspan><tspan class="italic">IP Checks Today: 865; Total: 552164. Thanks for running xy scripts! </tspan></text>
 </svg>

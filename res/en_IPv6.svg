@@ -45,13 +45,13 @@
 <rect x="13ch" y="19em" width="9ch" height="1em" class="ba1"/>
 <rect x="25ch" y="19em" width="9ch" height="1em" class="ba1"/>
 <rect x="37ch" y="19em" width="9ch" height="1em" class="ba1"/>
+<rect x="49ch" y="19em" width="9ch" height="1em" class="ba1"/>
 <rect x="17ch" y="21em" width="16ch" height="1em" class="ba2"/>
 <rect x="33ch" y="21em" width="16ch" height="1em" class="ba3"/>
 <rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
 <rect x="17ch" y="22em" width="2ch" height="1em" class="ba2"/>
 <rect x="17ch" y="23em" width="16ch" height="1em" class="ba2"/>
-<rect x="33ch" y="23em" width="16ch" height="1em" class="ba3"/>
-<rect x="49ch" y="23em" width="2ch" height="1em" class="ba1"/>
+<rect x="33ch" y="23em" width="8ch" height="1em" class="ba3"/>
 <rect x="17ch" y="24em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="25em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="26em" width="16ch" height="1em" class="ba2"/>
@@ -73,7 +73,7 @@
 <rect x="14ch" y="45em" width="7ch" height="1em" class="ba1"/>
 <rect x="22ch" y="45em" width="5ch" height="1em" class="ba1"/>
 <rect x="28ch" y="45em" width="5ch" height="1em" class="ba1"/>
-<rect x="34ch" y="45em" width="2ch" height="1em" class="ba1"/>
+<rect x="34ch" y="45em" width="2ch" height="1em" class="ba2"/>
 <rect x="37ch" y="45em" width="6ch" height="1em" class="ba1"/>
 <rect x="44ch" y="45em" width="3ch" height="1em" class="ba1"/>
 <rect x="48ch" y="45em" width="3ch" height="1em" class="ba1"/>
@@ -86,7 +86,7 @@
 <text x="0ch" y="1.5em"><tspan>             </tspan><tspan class="bold">IP QUALITY CHECK REPORT: </tspan><tspan class="bold fa6">2001:41d0:2:*:*:*:*:*</tspan></text>
 <text x="0ch" y="2.5em"><tspan>                   </tspan><tspan class="underline">https://github.com/xykt/IPQuality</tspan></text>
 <text x="0ch" y="3.5em"><tspan>                bash &lt;(curl -sL https://Check.Place) -EI</tspan></text>
-<text x="0ch" y="4.5em"><tspan>       Report Time: 2025-08-15 14:46:52 UTC  Version: v2025-08-15</tspan></text>
+<text x="0ch" y="4.5em"><tspan>       Report Time: 2025-09-04 08:39:26 UTC  Version: v2025-09-04</tspan></text>
 <text x="0ch" y="5.5em"><tspan>########################################################################</tspan></text>
 <text x="0ch" y="6.5em"><tspan>1. Basic Information (</tspan><tspan class="italic">Maxmind Database</tspan><tspan>)</tspan></text>
 <text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">ASN:                    </tspan><tspan class="fa2">AS16276</tspan></text>
@@ -99,13 +99,13 @@
 <text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">Time Zone:              </tspan><tspan class="fa2">Europe/Paris</tspan></text>
 <text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP Type:                </tspan><tspan class="bold fa7"> Geo-consistent </tspan></text>
 <text x="0ch" y="16.5em"><tspan>2. IP Type</tspan></text>
-<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">Database:  </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location </tspan></text>
+<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">Database:  </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi    IP2Location   AbuseIPDB </tspan></text>
 <text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">Usage:     </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan></text>
-<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">Company:   </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan></text>
+<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">Company:   </tspan><tspan> </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan><tspan>   </tspan><tspan class="bold fa7"> Hosting </tspan></text>
 <text x="0ch" y="20.5em"><tspan>3. Risk Score</tspan></text>
 <text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">Levels:         </tspan><tspan class="italic fa7">VeryLow     Low      Medium      High   VeryHigh</tspan></text>
 <text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location: </tspan><tspan class="bold fa7">   3|</tspan><tspan class="bold fa2">Low</tspan></text>
-<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS: </tspan><tspan class="bold fa7">                                  55|</tspan><tspan class="bold fa1">High</tspan></text>
+<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS: </tspan><tspan class="bold fa7">                        37|</tspan><tspan class="bold fa3">Medium</tspan></text>
 <text x="0ch" y="24.5em"><tspan></tspan><tspan class="fa6">ipapi: </tspan><tspan class="bold fa7">    0.00%|</tspan><tspan class="bold fa2">VeryLow</tspan></text>
 <text x="0ch" y="25.5em"><tspan></tspan><tspan class="fa6">AbuseIPDB: </tspan><tspan class="bold fa7">    0|</tspan><tspan class="bold fa2">Low</tspan></text>
 <text x="0ch" y="26.5em"><tspan></tspan><tspan class="fa6">IPQS: </tspan><tspan class="bold fa7">                        75|</tspan><tspan class="bold fa3">Suspicious</tspan></text>
@@ -126,8 +126,8 @@
 <text x="0ch" y="41.5em"><tspan></tspan><tspan class="fa6">Region:  </tspan><tspan class="fa2">                    [FR]     [FR]              [FR]     [FR]   </tspan></text>
 <text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">Type:                      </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan><tspan>          </tspan><tspan class="fa7"> Native </tspan><tspan> </tspan><tspan class="fa7"> Native </tspan></text>
 <text x="0ch" y="43.5em"><tspan>6. Email service availability and blacklist detection</tspan></text>
-<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">Local Port 25 Outbound: </tspan><tspan class="fa1">Blocked</tspan></text>
-<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">Conn: </tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
+<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">Local Port 25 Outbound: </tspan><tspan class="fa3">Occupied</tspan></text>
+<text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">Conn: </tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
 <text x="0ch" y="46.5em"><tspan>========================================================================</tspan></text>
-<text x="0ch" y="47.5em"><tspan></tspan><tspan class="italic">IP Checks Today: 3254; Total: 496997. Thanks for running xy scripts! </tspan></text>
+<text x="0ch" y="47.5em"><tspan></tspan><tspan class="italic">IP Checks Today: 885; Total: 552184. Thanks for running xy scripts! </tspan></text>
 </svg>

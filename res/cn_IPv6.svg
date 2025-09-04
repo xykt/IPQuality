@@ -40,16 +40,18 @@
 <rect x="15ch" y="18em" width="6ch" height="1em" class="ba1"/>
 <rect x="27ch" y="18em" width="6ch" height="1em" class="ba1"/>
 <rect x="39ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="51ch" y="18em" width="5ch" height="1em" class="ba1"/>
+<rect x="51ch" y="18em" width="6ch" height="1em" class="ba1"/>
 <rect x="63ch" y="18em" width="6ch" height="1em" class="ba1"/>
-<rect x="15ch" y="19em" width="6ch" height="1em" class="ba3"/>
+<rect x="15ch" y="19em" width="6ch" height="1em" class="ba1"/>
 <rect x="27ch" y="19em" width="6ch" height="1em" class="ba1"/>
 <rect x="39ch" y="19em" width="6ch" height="1em" class="ba1"/>
+<rect x="51ch" y="19em" width="6ch" height="1em" class="ba1"/>
 <rect x="17ch" y="21em" width="16ch" height="1em" class="ba2"/>
 <rect x="33ch" y="21em" width="16ch" height="1em" class="ba3"/>
 <rect x="49ch" y="21em" width="16ch" height="1em" class="ba1"/>
 <rect x="17ch" y="22em" width="2ch" height="1em" class="ba2"/>
-<rect x="17ch" y="23em" width="13ch" height="1em" class="ba2"/>
+<rect x="17ch" y="23em" width="16ch" height="1em" class="ba2"/>
+<rect x="33ch" y="23em" width="8ch" height="1em" class="ba3"/>
 <rect x="17ch" y="24em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="25em" width="1ch" height="1em" class="ba2"/>
 <rect x="17ch" y="26em" width="16ch" height="1em" class="ba2"/>
@@ -58,7 +60,7 @@
 <rect x="17ch" y="28em" width="1ch" height="1em" class="ba2"/>
 <rect x="11ch" y="40em" width="6ch" height="1em" class="ba1"/>
 <rect x="20ch" y="40em" width="6ch" height="1em" class="ba1"/>
-<rect x="28ch" y="40em" width="8ch" height="1em" class="ba3"/>
+<rect x="29ch" y="40em" width="6ch" height="1em" class="ba2"/>
 <rect x="38ch" y="40em" width="6ch" height="1em" class="ba2"/>
 <rect x="47ch" y="40em" width="6ch" height="1em" class="ba1"/>
 <rect x="56ch" y="40em" width="6ch" height="1em" class="ba2"/>
@@ -81,29 +83,29 @@
 <rect x="69ch" y="45em" width="4ch" height="1em" class="ba1"/>
 </g>
 <text x="0ch" y="0.5em"><tspan>########################################################################</tspan></text>
-<text x="0ch" y="1.5em"><tspan>                 </tspan><tspan class="bold">IP质量体检报告：</tspan><tspan class="bold fa6">2607:5300:60:*:*:*:*:*</tspan></text>
+<text x="0ch" y="1.5em"><tspan>                 </tspan><tspan class="bold">IP质量体检报告：</tspan><tspan class="bold fa6">2001:41d0:2:*:*:*:*:*</tspan></text>
 <text x="0ch" y="2.5em"><tspan>                   </tspan><tspan class="underline">https://github.com/xykt/IPQuality</tspan></text>
 <text x="0ch" y="3.5em"><tspan>                bash &lt;(curl -sL https://Check.Place) -I</tspan></text>
-<text x="0ch" y="4.5em"><tspan>        报告时间：2025-08-15 22:41:54 CST  脚本版本：v2025-08-15</tspan></text>
+<text x="0ch" y="4.5em"><tspan>        报告时间：2025-09-04 16:38:12 CST  脚本版本：v2025-09-04</tspan></text>
 <text x="0ch" y="5.5em"><tspan>########################################################################</tspan></text>
 <text x="0ch" y="6.5em"><tspan>一、基础信息（</tspan><tspan class="italic">Maxmind 数据库</tspan><tspan>）</tspan></text>
 <text x="0ch" y="7.5em"><tspan></tspan><tspan class="fa6">自治系统号：            </tspan><tspan class="fa2">AS16276</tspan></text>
 <text x="0ch" y="8.5em"><tspan></tspan><tspan class="fa6">组织：                  </tspan><tspan class="fa2">OVH SAS</tspan></text>
-<text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">坐标：                  </tspan><tspan class="fa2">79°22′18″W, 43°37′55″N</tspan></text>
-<text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">地图：                  </tspan><tspan class="underline fa2">https://check.place/43.6319,-79.3716,13,cn</tspan></text>
+<text x="0ch" y="9.5em"><tspan></tspan><tspan class="fa6">坐标：                  </tspan><tspan class="fa2">2°20′19″E, 48°51′30″N</tspan></text>
+<text x="0ch" y="10.5em"><tspan></tspan><tspan class="fa6">地图：                  </tspan><tspan class="underline fa2">https://check.place/48.8582,2.3387,14,cn</tspan></text>
 <text x="0ch" y="11.5em"><tspan></tspan><tspan class="fa6">城市：                  </tspan><tspan class="fa2">N/A</tspan></text>
-<text x="0ch" y="12.5em"><tspan></tspan><tspan class="fa6">使用地：                </tspan><tspan class="fa2">[CA]加拿大, [NA]北美洲</tspan></text>
-<text x="0ch" y="13.5em"><tspan></tspan><tspan class="fa6">注册地：                </tspan><tspan class="fa2">[CA]加拿大</tspan></text>
-<text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">时区：                  </tspan><tspan class="fa2">America/Toronto</tspan></text>
+<text x="0ch" y="12.5em"><tspan></tspan><tspan class="fa6">使用地：                </tspan><tspan class="fa2">[FR]法国, [EU]欧洲</tspan></text>
+<text x="0ch" y="13.5em"><tspan></tspan><tspan class="fa6">注册地：                </tspan><tspan class="fa2">[FR]法国</tspan></text>
+<text x="0ch" y="14.5em"><tspan></tspan><tspan class="fa6">时区：                  </tspan><tspan class="fa2">Europe/Paris</tspan></text>
 <text x="0ch" y="15.5em"><tspan></tspan><tspan class="fa6">IP类型：                </tspan><tspan class="bold fa7"> 原生IP </tspan></text>
 <text x="0ch" y="16.5em"><tspan>二、IP类型属性</tspan></text>
-<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">数据库：   </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location </tspan></text>
-<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">使用类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> CDN </tspan><tspan>       </tspan><tspan class="bold fa7"> 机房 </tspan></text>
-<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">公司类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 商业 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
+<text x="0ch" y="17.5em"><tspan></tspan><tspan class="fa6">数据库：   </tspan><tspan class="italic fa6">   IPinfo    ipregistry    ipapi    IP2Location   AbuseIPDB </tspan></text>
+<text x="0ch" y="18.5em"><tspan></tspan><tspan class="fa6">使用类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
+<text x="0ch" y="19.5em"><tspan></tspan><tspan class="fa6">公司类型： </tspan><tspan>   </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan><tspan>      </tspan><tspan class="bold fa7"> 机房 </tspan></text>
 <text x="0ch" y="20.5em"><tspan>三、风险评分</tspan></text>
 <text x="0ch" y="21.5em"><tspan></tspan><tspan class="fa6">风险等级：      </tspan><tspan class="italic fa7">极低         低       中等       高         极高</tspan></text>
 <text x="0ch" y="22.5em"><tspan></tspan><tspan class="fa6">IP2Location：</tspan><tspan class="bold fa7">   3|</tspan><tspan class="bold fa2">低风险</tspan></text>
-<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS：</tspan><tspan class="bold fa7">             20|</tspan><tspan class="bold fa2">低风险</tspan></text>
+<text x="0ch" y="23.5em"><tspan></tspan><tspan class="fa6">SCAMALYTICS：</tspan><tspan class="bold fa7">                        37|</tspan><tspan class="bold fa3">中风险</tspan></text>
 <text x="0ch" y="24.5em"><tspan></tspan><tspan class="fa6">ipapi：</tspan><tspan class="bold fa7">    0.00%|</tspan><tspan class="bold fa2">极低风险</tspan></text>
 <text x="0ch" y="25.5em"><tspan></tspan><tspan class="fa6">AbuseIPDB：</tspan><tspan class="bold fa7">    0|</tspan><tspan class="bold fa2">低风险</tspan></text>
 <text x="0ch" y="26.5em"><tspan></tspan><tspan class="fa6">IPQS：</tspan><tspan class="bold fa7">                        75|</tspan><tspan class="bold fa3">可疑IP</tspan></text>
@@ -111,21 +113,21 @@
 <text x="0ch" y="28.5em"><tspan></tspan><tspan class="fa6">DB-IP：</tspan><tspan class="bold fa7">         |</tspan><tspan class="bold fa2">低风险</tspan></text>
 <text x="0ch" y="29.5em"><tspan>四、风险因子</tspan></text>
 <text x="0ch" y="30.5em"><tspan></tspan><tspan class="fa6">库： </tspan><tspan class="italic fa6">IP2Location ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS</tspan></text>
-<text x="0ch" y="31.5em"><tspan></tspan><tspan class="fa6">地区：  </tspan><tspan>  </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan><tspan>    </tspan><tspan class="fa2">[CA]</tspan></text>
+<text x="0ch" y="31.5em"><tspan></tspan><tspan class="fa6">地区：  </tspan><tspan>  </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan><tspan>    </tspan><tspan class="fa2">[FR]</tspan></text>
 <text x="0ch" y="32.5em"><tspan></tspan><tspan class="fa6">代理：  </tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan></text>
 <text x="0ch" y="33.5em"><tspan></tspan><tspan class="fa6">Tor：   </tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan></text>
-<text x="0ch" y="34.5em"><tspan></tspan><tspan class="fa6">VPN：   </tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan></text>
+<text x="0ch" y="34.5em"><tspan></tspan><tspan class="fa6">VPN：   </tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan></text>
 <text x="0ch" y="35.5em"><tspan></tspan><tspan class="fa6">服务器：</tspan><tspan>  </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa1"> 是 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan></text>
 <text x="0ch" y="36.5em"><tspan></tspan><tspan class="fa6">滥用：  </tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan></text>
 <text x="0ch" y="37.5em"><tspan></tspan><tspan class="fa6">机器人：</tspan><tspan>  </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 否 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan><tspan>    </tspan><tspan class="bold fa2"> 无 </tspan></text>
 <text x="0ch" y="38.5em"><tspan>五、流媒体及AI服务解锁检测</tspan></text>
 <text x="0ch" y="39.5em"><tspan></tspan><tspan class="fa6">服务商： </tspan><tspan class="italic fa6"> TikTok   Disney&#43;  Netflix Youtube  AmazonPV  Spotify  ChatGPT </tspan></text>
-<text x="0ch" y="40.5em"><tspan></tspan><tspan class="fa6">状态：    </tspan><tspan class="fa7"> 失败 </tspan><tspan>   </tspan><tspan class="fa7"> 屏蔽 </tspan><tspan>  </tspan><tspan class="fa7"> 仅自制 </tspan><tspan>  </tspan><tspan class="fa7"> 解锁 </tspan><tspan>   </tspan><tspan class="fa7"> 屏蔽 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan></text>
-<text x="0ch" y="41.5em"><tspan></tspan><tspan class="fa6">地区：   </tspan><tspan class="fa2">                    [CA]     [CA]              [CA]     [CA]   </tspan></text>
+<text x="0ch" y="40.5em"><tspan></tspan><tspan class="fa6">状态：    </tspan><tspan class="fa7"> 失败 </tspan><tspan>   </tspan><tspan class="fa7"> 屏蔽 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan><tspan>   </tspan><tspan class="fa7"> 屏蔽 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan><tspan>   </tspan><tspan class="fa7"> 解锁 </tspan></text>
+<text x="0ch" y="41.5em"><tspan></tspan><tspan class="fa6">地区：   </tspan><tspan class="fa2">                    [FR]     [FR]              [FR]     [FR]   </tspan></text>
 <text x="0ch" y="42.5em"><tspan></tspan><tspan class="fa6">方式：                      </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan><tspan>            </tspan><tspan class="fa7"> 原生 </tspan><tspan>   </tspan><tspan class="fa7"> 原生 </tspan></text>
 <text x="0ch" y="43.5em"><tspan>六、邮局连通性及黑名单检测</tspan></text>
-<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">本地25端口出站：</tspan><tspan class="fa1">阻断</tspan></text>
+<text x="0ch" y="44.5em"><tspan></tspan><tspan class="fa6">本地25端口出站：</tspan><tspan class="fa3">占用</tspan></text>
 <text x="0ch" y="45.5em"><tspan></tspan><tspan class="fa6">通信：</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">Gmail</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Outlook</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Yahoo</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Apple</tspan><tspan class="fa0">&#43;</tspan><tspan class="bold fa7">QQ</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailRU</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">AOL</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">GMX</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">MailCOM</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">163</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sohu</tspan><tspan class="fa0">-</tspan><tspan class="bold fa7">Sina</tspan></text>
 <text x="0ch" y="46.5em"><tspan>========================================================================</tspan></text>
-<text x="0ch" y="47.5em"><tspan></tspan><tspan class="italic">今日IP检测量：3228；总检测量：496971。感谢使用xy系列脚本！ </tspan></text>
+<text x="0ch" y="47.5em"><tspan></tspan><tspan class="italic">今日IP检测量：881；总检测量：552180。感谢使用xy系列脚本！ </tspan></text>
 </svg>
