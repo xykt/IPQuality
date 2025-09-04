@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-09-01"
+script_version="v2025-09-04"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1025,6 +1025,7 @@ ip2location=()
 local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ip2location")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ip2location[usetype]=$(echo "$RESPONSE"|jq -r '.usage_type')
+ip2location[comtype]=$(echo "$RESPONSE"|jq -r '.as_info.as_usage_type')
 shopt -s nocasematch
 local first_use="${ip2location[usetype]%%/*}"
 case $first_use in
@@ -1053,6 +1054,34 @@ case $first_use in
 "RSV")ip2location[susetype]="${stype[reserved]}"
 ;;
 *)ip2location[susetype]="${stype[other]}"
+esac
+first_use="${ip2location[comtype]%%/*}"
+case $first_use in
+"COM")ip2location[scomtype]="${stype[business]}"
+;;
+"DCH")ip2location[scomtype]="${stype[hosting]}"
+;;
+"EDU")ip2location[scomtype]="${stype[education]}"
+;;
+"GOV")ip2location[scomtype]="${stype[government]}"
+;;
+"ORG")ip2location[scomtype]="${stype[organization]}"
+;;
+"MIL")ip2location[scomtype]="${stype[military]}"
+;;
+"LIB")ip2location[scomtype]="${stype[library]}"
+;;
+"CDN")ip2location[scomtype]="${stype[cdn]}"
+;;
+"ISP")ip2location[scomtype]="${stype[lineisp]}"
+;;
+"MOB")ip2location[scomtype]="${stype[mobile]}"
+;;
+"SES")ip2location[scomtype]="${stype[spider]}"
+;;
+"RSV")ip2location[scomtype]="${stype[reserved]}"
+;;
+*)ip2location[scomtype]="${stype[other]}"
 esac
 shopt -u nocasematch
 ip2location[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
@@ -1900,15 +1929,15 @@ fi
 }
 show_type(){
 echo -ne "\r${stype[title]}\n"
-echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi     AbuseIPDB  IP2Location $Font_Suffix\n"
-echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${abuseipdb[susetype]}${ip2location[susetype]}\n"
-echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[susetype]}${ipapi[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo    ipregistry    ipapi    IP2Location   AbuseIPDB $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipregistry[susetype]}${ipapi[susetype]}${ip2location[susetype]}${abuseipdb[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipregistry[scomtype]}${ipapi[scomtype]}${ip2location[scomtype]}\n"
 }
 show_type_lite(){
 echo -ne "\r${stype[title]}\n"
 echo -ne "\r$Font_Cyan${stype[db]}$Font_I   IPinfo      ipapi $Font_Suffix\n"
 echo -ne "\r$Font_Cyan${stype[usetype]}$Font_Suffix${ipinfo[susetype]}${ipapi[susetype]}\n"
-echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipapi[susetype]}\n"
+echo -ne "\r$Font_Cyan${stype[comtype]}$Font_Suffix${ipinfo[scomtype]}${ipapi[scomtype]}\n"
 }
 sscore_text(){
 local text="$1"
