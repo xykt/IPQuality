@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-09-04"
+script_version="v2025-09-18"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -404,7 +404,7 @@ if [ "$(uname)" == "Darwin" ];then
 install_packages "brew" "brew install" "no_sudo"
 elif [ -f /etc/os-release ];then
 . /etc/os-release
-if [ $(id -u) -ne 0 ]&&! command -v sudo >/dev/null 2>&1;then
+if [ $(id -u) -ne 0 ]&&! sudo -v >/dev/null 2>&1;then
 ERRORcode=3
 fi
 case $ID in
