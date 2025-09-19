@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-09-18"
+script_version="v2025-09-19"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -50,7 +50,6 @@ declare -A dbip
 declare -A ipwhois
 declare -A ipdata
 declare -A ipqs
-declare -A cloudflare
 declare -A tiktok
 declare -A disney
 declare -A netflix
@@ -1209,26 +1208,6 @@ ipqs[vpn]=$(echo "$RESPONSE"|jq -r '.vpn')
 ipqs[abuser]=$(echo "$RESPONSE"|jq -r '.recent_abuse')
 ipqs[robot]=$(echo "$RESPONSE"|jq -r '.bot_status')
 }
-db_cloudflare(){
-local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}Cloudflare $Font_Suffix"
-((ibar_step+=3))
-show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
-bar_pid="$!"&&disown "$bar_pid"
-trap "kill_progress_bar" RETURN
-cloudflare=()
-local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ip.nodeget.com/json")
-echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
-cloudflare[score]=$(echo "$RESPONSE"|jq -r '.ip.riskScore')
-if [[ ${cloudflare[score]} -lt 10 ]];then
-cloudflare[risk]="${sscore[low]}"
-elif [[ ${cloudflare[score]} -lt 15 ]];then
-cloudflare[risk]="${sscore[medium]}"
-elif [[ ${cloudflare[score]} -lt 25 ]];then
-cloudflare[risk]="${sscore[risky]}"
-elif [[ ${cloudflare[score]} -ge 50 ]];then
-cloudflare[risk]="${sscore[veryhigh]}"
-fi
-}
 function check_ip_valide(){
 local IPPattern='^(\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>\.){3}\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>$'
 IP="$1"
@@ -1990,10 +1969,6 @@ sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
 echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
 fi
 fi
-if [ -n "${cloudflare[score]}" ]&&[ "${cloudflare[score]}" != "null" ];then
-sscore_text "${cloudflare[score]}" ${cloudflare[score]} 75 85 100 12
-echo -ne "\r${Font_Cyan}Cloudflare${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${cloudflare[risk]}\n"
-fi
 sscore_text " " ${dbip[score]} 33 66 100 7
 [[ -n ${dbip[risk]} ]]&&echo -ne "\r${Font_Cyan}DB-IP${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${dbip[risk]}\n"
 }
@@ -2417,7 +2392,6 @@ score_updates+=".Score |= map(. + { SCAMALYTICS: \"${scamalytics[score]:-null}\"
 score_updates+=".Score |= map(. + { ipapi: \"${ipapi[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { AbuseIPDB: \"${abuseipdb[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { IPQS: \"${ipapi[ipqs]:-null}\" }) | "
-score_updates+=".Score |= map(. + { Cloudflare: \"${cloudflare[score]:-null}\" }) | "
 score_updates+=".Score |= map(. + { DBIP: \"${dbip[score]:-null}\" }) | "
 factor_updates+=$(factor_bool "${ip2location[countrycode]}" "IP2LOCATION" "CountryCode")
 factor_updates+=$(factor_bool "${ipapi[countrycode]}" "ipapi" "CountryCode")
@@ -2555,7 +2529,6 @@ db_dbip
 db_ipwhois
 [[ $mode_lite -eq 0 ]]&&db_ipdata $2||ipdata=()
 [[ $mode_lite -eq 0 ]]&&db_ipqs $2||ipqs=()
-db_cloudflare $2
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
 MediaUnlockTest_Netflix $2
