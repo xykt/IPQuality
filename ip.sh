@@ -819,7 +819,7 @@ ipinfo[map]="null"
 fi
 }
 db_scamalytics(){
-local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}SCAMALYTICS $Font_Suffix"
+local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}Scamalytics $Font_Suffix"
 ((ibar_step+=3))
 show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
@@ -1955,7 +1955,7 @@ echo -ne "\r${Font_Cyan}IP2Location${sscore[colon]}$Font_White$Font_B${sscore[te
 fi
 if [[ -n ${scamalytics[score]} ]];then
 sscore_text "${scamalytics[score]}" ${scamalytics[score]} 20 60 100 13
-echo -ne "\r${Font_Cyan}SCAMALYTICS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
+echo -ne "\r${Font_Cyan}Scamalytics${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
 fi
 if [[ -n ${ipapi[score]} ]];then
 local tmp_score=$(echo "${ipapi[scorenum]} * 10000 / 1"|bc)
@@ -2061,7 +2061,7 @@ echo "$tmp_txt"
 show_factor(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS SCAMALYTICS ipdata IPinfo IPWHOIS$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS Scamalytics ipdata IPinfo IPWHOIS$Font_Suffix\n"
 tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
