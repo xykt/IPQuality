@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-09-19"
+script_version="v2025-10-23"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -825,28 +825,29 @@ show_progress_bar "$temp_info" $((40-12-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 scamalytics=()
-local RESPONSE=$(curl $CurlARG --user-agent "$UA_Browser" -sL -H "Referer: https://scamalytics.com" -m 10 "https://scamalytics.com/ip/$IP")
-[[ -z $RESPONSE ]]&&return 1
-local tmpscore=$(echo "$RESPONSE"|grep -oE 'Fraud Score: [0-9]+'|awk -F': ' '{print $2}')
-scamalytics[score]=$(echo "$tmpscore"|bc)
-if [[ ${scamalytics[score]} -lt 25 ]];then
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=scamalytics")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+scamalytics[countrycode]=$(echo "$RESPONSE"|jq -r '.external_datasources.maxmind_geolite2.ip_country_code')
+scamalytics[proxy]=$(echo "$RESPONSE"|jq -r '.external_datasources.firehol.is_proxy')
+scamalytics[tor]=$(echo "$RESPONSE"|jq -r '.external_datasources.x4bnet.is_tor')
+scamalytics[vpn]=$(echo "$RESPONSE"|jq -r '.scamalytics.scamalytics_proxy.is_vpn')
+scamalytics[server]=$(echo "$RESPONSE"|jq -r '.scamalytics.scamalytics_proxy.is_datacenter')
+scamalytics[abuser]=$(echo "$RESPONSE"|jq -r '.scamalytics.is_blacklisted_external')
+scamalytics[robot1]=$(echo "$RESPONSE"|jq -r '.external_datasources.x4bnet.is_blacklisted_spambot')
+scamalytics[robot2]=$(echo "$RESPONSE"|jq -r '.external_datasources.x4bnet.is_bot_operamini')
+scamalytics[robot3]=$(echo "$RESPONSE"|jq -r '.external_datasources.x4bnet.is_bot_semrush')
+[[ ${scamalytics[robot1]} == "true" || ${scamalytics[robot2]} == "true" || ${scamalytics[robot3]} == "true" ]]&&scamalytics[robot]="true"
+[[ ${scamalytics[robot1]} == "false" && ${scamalytics[robot2]} == "false" && ${scamalytics[robot3]} == "false" ]]&&scamalytics[robot]="false"
+scamalytics[score]=$(echo "$RESPONSE"|jq -r '.scamalytics.scamalytics_score')
+if [[ ${scamalytics[score]} -lt 20 ]];then
 scamalytics[risk]="${sscore[low]}"
-elif [[ ${scamalytics[score]} -lt 50 ]];then
+elif [[ ${scamalytics[score]} -lt 60 ]];then
 scamalytics[risk]="${sscore[medium]}"
-elif [[ ${scamalytics[score]} -lt 75 ]];then
+elif [[ ${scamalytics[score]} -lt 90 ]];then
 scamalytics[risk]="${sscore[high]}"
-elif [[ ${scamalytics[score]} -ge 75 ]];then
+elif [[ ${scamalytics[score]} -ge 90 ]];then
 scamalytics[risk]="${sscore[veryhigh]}"
 fi
-scamalytics[countrycode]=$(echo "$RESPONSE"|awk -F'</?td>' '/<th>Country Code<\/th>/ {getline; print $2}')
-scamalytics[vpn]=$(echo "$RESPONSE"|awk '/<th>Anonymizing VPN<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-scamalytics[tor]=$(echo "$RESPONSE"|awk '/<th>Tor Exit Node<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-scamalytics[server]=$(echo "$RESPONSE"|awk '/<th>Server<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-scamalytics[proxy1]=$(echo "$RESPONSE"|awk '/<th>Public Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-scamalytics[proxy2]=$(echo "$RESPONSE"|awk '/<th>Web Proxy<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
-[[ ${scamalytics[proxy1]} == "true" || ${scamalytics[proxy2]} == "true" ]]&&scamalytics[proxy]="true"
-[[ ${scamalytics[proxy1]} == "false" && ${scamalytics[proxy2]} == "false" ]]&&scamalytics[proxy]="false"
-scamalytics[robot]=$(echo "$RESPONSE"|awk '/<th>Search Engine Robot<\/th>/ {getline; getline; if ($0 ~ /Yes/) print "true"; else print "false"}')
 }
 db_ipregistry(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipregistry $Font_Suffix"
@@ -1953,7 +1954,7 @@ sscore_text "${ip2location[score]}" ${ip2location[score]} 33 66 99 13
 echo -ne "\r${Font_Cyan}IP2Location${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ip2location[risk]}\n"
 fi
 if [[ -n ${scamalytics[score]} ]];then
-sscore_text "${scamalytics[score]}" ${scamalytics[score]} 25 50 100 13
+sscore_text "${scamalytics[score]}" ${scamalytics[score]} 20 60 100 13
 echo -ne "\r${Font_Cyan}SCAMALYTICS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${scamalytics[risk]}\n"
 fi
 if [[ -n ${ipapi[score]} ]];then
@@ -2079,20 +2080,20 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi SCAMALYTICS IPinfo IPWHOIS DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ipapi[countrycode]}" "${scamalytics[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi     IPinfo IPWHOIS DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[proxy]}" "${scamalytics[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[tor]}" "${scamalytics[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${ipapi[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[vpn]}" "${scamalytics[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[server]}" "${scamalytics[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${ipapi[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[abuser]}" "${scamalytics[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[robot]}" "${scamalytics[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${ipapi[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2520,7 +2521,7 @@ ipjson='{
 countRunTimes
 db_maxmind $2
 db_ipinfo
-db_scamalytics
+[[ $mode_lite -eq 0 ]]&&db_scamalytics $2
 [[ $mode_lite -eq 0 ]]&&db_ipregistry $2||ipregistry=()
 db_ipapi
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
