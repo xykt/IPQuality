@@ -13,7 +13,7 @@
 - 精美排版，直观显示，多终端单屏优化展示，便于截图分享
 - 基础信息、IP类型、风险评分、风险因子、流媒体解锁、邮局检测六大模块
 - 基础数据源自*Maxmind*数据库
-- 风险信息 *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2LOCATION / IPQS / DB-IP / SCAMALYTICS / IPWHOIS* 多数据库整合
+- 风险信息 *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2Location / IPQS / DB-IP / Scamalytics / IPWHOIS* 多数据库整合
 - 流媒体及AI多个服务商 *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Spotify / ChatGPT* 解锁及解锁类型检测
 - 多邮局服务商 *Gmail / Outlook / Yahoo / Apple / QQ / Mail.ru / AOL / GMX / Mail.com / 163 / Sohu / Sina* 连通性检测
 - IP地址黑名单400+数据库检测
@@ -181,8 +181,9 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 | 赞助商 | 商标 | 网址 | 
 | - | - | - | 
 | IP2Location | ![ip2location_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ip2location.png) | [https://ip2location.io](https://ip2location.io)</br>[https://ip2location.com](https://ip2location.com) | 
+| Scamalytics | ![scamalytics_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_scamalytics.png) | [https://scamalytics.com](https://scamalytics.com) | 
 
-- 衷心感谢主流IP风险数据库[AbuseIPDB](https://www.abuseipdb.com/)/[Cloudflare](https://cloudflare.com/)/[DB-IP](https://db-ip.com/)/[IP2Location](https://www.ip2location.io/)/[ipapi](https://ipapi.is/)/[IPinfo](https://ipinfo.io/)/[IPQS](https://www.ipqualityscore.com/)/[ipregistry](https://ipregistry.co/)/[IPWHOIS](https://ipwhois.io/)/[SCAMALYTICS](https://scamalytics.com/)提供的风险数据（排名不分先后）
+- 衷心感谢主流IP风险数据库[AbuseIPDB](https://www.abuseipdb.com/)/[Cloudflare](https://cloudflare.com/)/[DB-IP](https://db-ip.com/)/[IP2Location](https://www.ip2location.io/)/[ipapi](https://ipapi.is/)/[IPinfo](https://ipinfo.io/)/[IPQS](https://www.ipqualityscore.com/)/[ipregistry](https://ipregistry.co/)/[IPWHOIS](https://ipwhois.io/)/[Scamalytics](https://scamalytics.com/)提供的风险数据（排名不分先后）
 
 - 感谢[lmc999](https://github.com/lmc999/RegionRestrictionCheck)，本脚本局部代码参考原版流媒体解锁检测脚本
 
