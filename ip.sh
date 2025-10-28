@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-10-23"
+script_version="v2025-10-28"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -763,7 +763,11 @@ show_progress_bar "$temp_info" $((40-7-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipinfo=()
+if [[ $IP == *:* ]];then
+local RESPONSE=$(curl -Ls -m 10 "https://ipinfo.io/widget/demo/$IP")
+else
 local RESPONSE=$(curl $CurlARG -Ls -m 10 "https://ipinfo.io/widget/demo/$IP")
+fi
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipinfo[usetype]=$(echo "$RESPONSE"|jq -r '.data.asn.type')
 ipinfo[comtype]=$(echo "$RESPONSE"|jq -r '.data.company.type')
@@ -905,7 +909,11 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
+if [[ $IP == *:* ]];then
+local RESPONSE=$(curl -Ls -m 10 "https://api.ipapi.is/?q=$IP")
+else
 local RESPONSE=$(curl $CurlARG -sL -m 10 "https://api.ipapi.is/?q=$IP")
+fi
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -2014,6 +2022,7 @@ tmp_txt+="$Font_Green[$4]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
+if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $5 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2024,7 +2033,6 @@ tmp_txt+="$Font_Green[$5]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
-if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $6 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2080,7 +2088,7 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi     IPinfo IPWHOIS DB-IP$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi    IPinfo IPWHOIS DB-IP$Font_Suffix\n"
 tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
 tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
