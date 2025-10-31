@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-10-28"
+script_version="v2025-10-31"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1123,7 +1123,11 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 dbip=()
+if [[ $IP == *:* ]];then
+local RESPONSE=$(curl -sL -m 10 "https://db-ip.com/$IP")
+else
 local RESPONSE=$(curl $CurlARG -sL -m 10 "https://db-ip.com/$IP")
+fi
 mapfile -t results < <(echo "$RESPONSE"|awk '/<th class='\''text-center'\''>Crawler/ {flag=1; next}
              flag && /<span class="sr-only">/ {
                  if ($0 ~ /Yes/) print "true";
@@ -1155,7 +1159,7 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipwhois=()
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --compressed \
+local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --compressed \
 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0" \
 -H "Accept: */*" \
 -H "Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2" \
@@ -2529,13 +2533,13 @@ ipjson='{
 countRunTimes
 db_maxmind $2
 db_ipinfo
-[[ $mode_lite -eq 0 ]]&&db_scamalytics $2
+[[ $mode_lite -eq 0 ]]&&db_scamalytics $2||scamalytics=()
 [[ $mode_lite -eq 0 ]]&&db_ipregistry $2||ipregistry=()
 db_ipapi
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
 [[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
 db_dbip
-db_ipwhois
+db_ipwhois $2
 [[ $mode_lite -eq 0 ]]&&db_ipdata $2||ipdata=()
 [[ $mode_lite -eq 0 ]]&&db_ipqs $2||ipqs=()
 MediaUnlockTest_TikTok $2
