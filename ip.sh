@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-10-31"
+script_version="v2025-11-06"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1480,8 +1480,8 @@ netflix[uregion]="${smedia[nodata]}"
 netflix[utype]="${smedia[nodata]}"
 return
 fi
-local region=$(echo "$result1"|grep -o 'data-country="[A-Z]*"'|sed 's/.*="\([A-Z]*\)"/\1/'|head -n1)
-[[ -n $region ]]&&region=$(echo "$result2"|grep -o 'data-country="[A-Z]*"'|sed 's/.*="\([A-Z]*\)"/\1/'|head -n1)
+region=$(echo "$result1"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
+[[ -n $region ]]&&region=$(echo "$result2"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
 result1=$(echo $result1|grep 'Oh no!')
 result2=$(echo $result1|grep 'Oh no!')
 if [ -n "$result1" ]&&[ -n "$result2" ];then
