@@ -196,7 +196,7 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 | DreamCloud | ![dreamcloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_dreamcloud.png) | [https://as211392.com](https://as211392.com)|
 | VIRCS</br>威尔克斯 | ![vircs_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vircs.png) | [https://vircs.com](https://www.vircs.com/promotion?code=6)|   
 | RapidProxy</br>`ISP IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)|   
-| IPOasis</br>`ISP IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ipoasis.png) | [https://ipoasis.com](https://ipoasis.com)| 
+| IPOasis</br>`ISP IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ipoasis.png) | [https://ipoasis.com](https://www.ipoasis.com/dashboard/register?utm_source=Githubxy)| 
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **Only accepting merchants with long-term stable operations and good reputation*
