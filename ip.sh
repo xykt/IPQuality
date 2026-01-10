@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2025-12-01"
+script_version="v2025-01-10"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -860,7 +860,16 @@ show_progress_bar "$temp_info" $((40-11-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipregistry=()
-local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipregistry")
+local tmpgo="sb69ksjcajfs4c"
+local REGISTRY_HTML
+REGISTRY_HTML=$(curl $CurlARG -sL -m 10 -H "user-agent: $UA_Browser" "https://ipregistry.co")
+if [[ -n $REGISTRY_HTML ]];then
+if [[ $REGISTRY_HTML =~ apiKey=\"([a-zA-Z0-9]+)\" ]];then
+tmpgo="${BASH_REMATCH[1]}"
+fi
+fi
+local RESPONSE
+RESPONSE=$(curl $CurlARG -sS --compressed -m 10 -H "authority: api.ipregistry.co" -H "origin: https://ipregistry.co" -H "referer: https://ipregistry.co/" -H "user-agent: $UA_Browser" "https://api.ipregistry.co/$IP?hostname=true&key=$tmpgo")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
 ipregistry[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -2120,20 +2129,20 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi    IPinfo IPWHOIS DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2562,7 +2571,7 @@ countRunTimes
 db_maxmind $2
 db_ipinfo
 [[ $mode_lite -eq 0 ]]&&db_scamalytics $2||scamalytics=()
-[[ $mode_lite -eq 0 ]]&&db_ipregistry $2||ipregistry=()
+db_ipregistry $2
 db_ipapi
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
 [[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
