@@ -100,7 +100,7 @@ shelp_lines=(
 "IP QUALITY CHECK SCRIPT IP质量体检脚本"
 "Interactive Interface:  bash <(curl -sL https://IP.Check.Place) -EM"
 "交互界面：              bash <(curl -sL https://IP.Check.Place) -M"
-"Parameters 参数运行: bash <(curl -sL https://IP.Check.Place) [-4] [-6] [-f] [-h] [-i iface] [-j] [-l language] [-n] [-o] [-p] [-x proxy] [-y] [-E] [-M]"
+"Parameters 参数运行: bash <(curl -sL https://IP.Check.Place) [-4] [-6] [-f] [-h] [-i iface] [-j] [-l language] [-n] [-o outputpath] [-p] [-x proxy] [-y] [-E] [-M]"
 "            -4                             Test IPv4                                  测试IPv4"
 "            -6                             Test IPv6                                  测试IPv6"
 "            -f                             Show full IP on reports                    报告展示完整IP地址"
