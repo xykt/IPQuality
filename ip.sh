@@ -2572,7 +2572,7 @@ db_maxmind $2
 db_ipinfo
 [[ $mode_lite -eq 0 ]]&&db_scamalytics $2||scamalytics=()
 db_ipregistry $2
-db_ipapi
+db_ipapi $2
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
 [[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
 db_dbip
