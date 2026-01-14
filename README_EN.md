@@ -109,7 +109,7 @@ bash <(curl -Ls https://IP.Check.Place) -o /path/to/file.txtoranyother
 bash <(curl -Ls https://IP.Check.Place) -l jp|es|de|fr|ru|pt
 ````
 
-##### privacy mode - Disable online report link:
+##### Privacy mode - Disable online report link:
 ````bash
 bash <(curl -Ls https://IP.Check.Place) -Ep
 ````
