@@ -92,7 +92,7 @@ bash <(curl -Ls https://IP.Check.Place) -Ey
 bash <(curl -Ls https://IP.Check.Place) -Ef
 ````
 
-##### JSON mode：
+##### JSON output ([Example Output](https://github.com/xykt/IPQuality/blob/main/res/output.json))：
 ````bash
 bash <(curl -Ls https://IP.Check.Place) -Ej
 ````
