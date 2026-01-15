@@ -1,0 +1,196 @@
+{
+  "Head": {
+    "IP": "36.235.*.*",
+    "Command": "bash <(curl -sL https://Check.Place) -EI",
+    "GitHub": "https://github.com/xykt/IPQuality",
+    "Time": "2026-01-15 09:31:25 UTC",
+    "Version": "v2026-01-15"
+  },
+  "Info": {
+    "ASN": "3462",
+    "Organization": "Data Communication Business Group",
+    "Latitude": "24.0761",
+    "Longitude": "120.5648",
+    "DMS": "120°33′53″E, 24°4′34″N",
+    "Map": "https://check.place/24.0761,120.5648,15,en",
+    "TimeZone": "Asia/Taipei",
+    "City": {
+      "Name": "Chang-hua",
+      "PostalCode": "null",
+      "SubCode": "CHA",
+      "Subdivisions": "Changhua"
+    },
+    "Region": {
+      "Code": "TW",
+      "Name": "Taiwan"
+    },
+    "Continent": {
+      "Code": "AS",
+      "Name": "Asia"
+    },
+    "RegisteredRegion": {
+      "Code": "TW",
+      "Name": "Taiwan"
+    },
+    "Type": "Geo-consistent"
+  },
+  "Type": {
+    "Usage": {
+      "IPinfo": "ISP",
+      "ipregistry": "ISP",
+      "ipapi": "ISP",
+      "AbuseIPDB": "Line ISP",
+      "IP2LOCATION": "Line ISP"
+    },
+    "Company": {
+      "IPinfo": "ISP",
+      "ipregistry": "ISP",
+      "ipapi": "ISP"
+    }
+  },
+  "Score": {
+    "IP2LOCATION": "0",
+    "SCAMALYTICS": "0",
+    "ipapi": "0.47%",
+    "AbuseIPDB": "0",
+    "IPQS": "null",
+    "DBIP": "0"
+  },
+  "Factor": {
+    "CountryCode": {
+      "IP2LOCATION": "TW",
+      "ipapi": "TW",
+      "ipregistry": "TW",
+      "IPQS": "TW",
+      "SCAMALYTICS": "TW",
+      "ipdata": "TW",
+      "IPinfo": "TW",
+      "IPWHOIS": "TW",
+      "DBIP": "TW"
+    },
+    "Proxy": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": false,
+      "IPQS": false,
+      "SCAMALYTICS": false,
+      "ipdata": false,
+      "IPinfo": false,
+      "IPWHOIS": false,
+      "DBIP": false
+    },
+    "Tor": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": false,
+      "IPQS": false,
+      "SCAMALYTICS": false,
+      "ipdata": false,
+      "IPinfo": false,
+      "IPWHOIS": false,
+      "DBIP": null
+    },
+    "VPN": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": false,
+      "IPQS": false,
+      "SCAMALYTICS": false,
+      "ipdata": null,
+      "IPinfo": false,
+      "IPWHOIS": false,
+      "DBIP": null
+    },
+    "Server": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": false,
+      "IPQS": null,
+      "SCAMALYTICS": false,
+      "ipdata": false,
+      "IPinfo": false,
+      "IPWHOIS": false,
+      "DBIP": null
+    },
+    "Abuser": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": false,
+      "IPQS": false,
+      "SCAMALYTICS": false,
+      "ipdata": false,
+      "IPinfo": null,
+      "IPWHOIS": null,
+      "DBIP": false
+    },
+    "Robot": {
+      "IP2LOCATION": false,
+      "ipapi": false,
+      "ipregistry": null,
+      "IPQS": false,
+      "SCAMALYTICS": false,
+      "ipdata": null,
+      "IPinfo": null,
+      "IPWHOIS": null,
+      "DBIP": false
+    }
+  },
+  "Media": {
+    "TikTok": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    },
+    "DisneyPlus": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    },
+    "Netflix": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    },
+    "Youtube": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    },
+    "AmazonPrimeVideo": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    },
+    "Spotify": {
+      "Status": "Block",
+      "Region": "",
+      "Type": ""
+    },
+    "ChatGPT": {
+      "Status": "Yes",
+      "Region": "TW",
+      "Type": "Native"
+    }
+  },
+  "Mail": {
+    "Port25": false,
+    "Gmail": false,
+    "Outlook": false,
+    "Yahoo": false,
+    "Apple": false,
+    "QQ": false,
+    "MailRU": false,
+    "AOL": false,
+    "GMX": false,
+    "MailCOM": false,
+    "163": false,
+    "Sohu": false,
+    "Sina": false,
+    "DNSBlacklist": {
+      "Total": 439,
+      "Clean": 411,
+      "Marked": 28,
+      "Blacklisted": 0
+    }
+  }
+}
