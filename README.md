@@ -95,7 +95,7 @@ bash <(curl -Ls https://IP.Check.Place) -y
 bash <(curl -Ls https://IP.Check.Place) -f
 ````
 
-##### 输出JSON结果：
+##### 输出JSON结果（[输出示例](https://github.com/xykt/IPQuality/blob/main/res/output.json)）：
 ````bash
 bash <(curl -Ls https://IP.Check.Place) -j
 ````
