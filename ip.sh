@@ -2067,7 +2067,6 @@ tmp_txt+="$Font_Green[$4]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
-if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $5 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2078,6 +2077,7 @@ tmp_txt+="$Font_Green[$5]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
+if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $6 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2133,20 +2133,20 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo IPWHOIS DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2351,13 +2351,13 @@ echo -n "$input"
 factor_bool(){
 local tmp_txt=""
 if [[ $1 == "true" ]];then
-tmp_txt+=".Factor |= map(. * { $3: { $2: true } }) | "
+tmp_txt+=".Factor |= . * { $3: { $2: true } } | "
 elif [[ $1 == "false" ]];then
-tmp_txt+=".Factor |= map(. * { $3: { $2: false } }) | "
+tmp_txt+=".Factor |= . * { $3: { $2: false } } | "
 elif [ ${#1} -eq 2 ];then
-tmp_txt+=".Factor |= map(. * { $3: { $2: \"$1\" } }) | "
+tmp_txt+=".Factor |= . * { $3: { $2: \"$1\" } } | "
 else
-tmp_txt+=".Factor |= map(. * { $3: { $2: null } }) | "
+tmp_txt+=".Factor |= . * { $3: { $2: null } } | "
 fi
 [[ -z $tmp_txt ]]&&tmp_txt="null"
 echo "$tmp_txt"
@@ -2371,83 +2371,83 @@ local factor_updates=""
 local media_updates=""
 local mail_updates=""
 if [ $fullIP -eq 1 ];then
-head_updates+=".Head |= map(. + { IP: \"${IP:-null}\" }) | "
+head_updates+=".Head |= . + { IP: \"${IP:-null}\" } | "
 else
-head_updates+=".Head |= map(. + { IP: \"${IPhide:-null}\" }) | "
+head_updates+=".Head |= . + { IP: \"${IPhide:-null}\" } | "
 fi
-head_updates+=".Head |= map(. + { Command: \"${shead[bash]:-null}\" }) | "
-head_updates+=".Head |= map(. + { GitHub: \"${shead[git]:-null}\" }) | "
-head_updates+=".Head |= map(. + { Time: \"${shead[time_raw]:-null}\" }) | "
-head_updates+=".Head |= map(. + { Version: \"${script_version:-null}\" }) | "
+head_updates+=".Head |= . + { Command: \"${shead[bash]:-null}\" } | "
+head_updates+=".Head |= . + { GitHub: \"${shead[git]:-null}\" } | "
+head_updates+=".Head |= . + { Time: \"${shead[time_raw]:-null}\" } | "
+head_updates+=".Head |= . + { Version: \"${script_version:-null}\" } | "
 if [ $mode_lite -eq 0 ];then
-basic_updates+=".Info |= map(. + { ASN: \"${maxmind[asn]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Organization: \"${maxmind[org]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Latitude: \"${maxmind[lat]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Longitude: \"${maxmind[lon]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { DMS: \"${maxmind[dms]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Map: \"${maxmind[map]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { TimeZone: \"${maxmind[timezone]:-null}\" }) | "
-basic_updates+=".Info |= map(. * { City: { Name: \"${maxmind[city]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { City: { PostalCode: \"${maxmind[post]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { City: { SubCode: \"${maxmind[subcode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { City: { Subdivisions: \"${maxmind[sub]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { Region: { Code: \"${maxmind[countrycode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { Region: { Name: \"${maxmind[country]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { Continent: { Code: \"${maxmind[continentcode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { Continent: { Name: \"${maxmind[continent]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { RegisteredRegion: { Code: \"${maxmind[regcountrycode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { RegisteredRegion: { Name: \"${maxmind[regcountry]:-null}\" } }) | "
+basic_updates+=".Info |= . + { ASN: \"${maxmind[asn]:-null}\" } | "
+basic_updates+=".Info |= . + { Organization: \"${maxmind[org]:-null}\" } | "
+basic_updates+=".Info |= . + { Latitude: \"${maxmind[lat]:-null}\" } | "
+basic_updates+=".Info |= . + { Longitude: \"${maxmind[lon]:-null}\" } | "
+basic_updates+=".Info |= . + { DMS: \"${maxmind[dms]:-null}\" } | "
+basic_updates+=".Info |= . + { Map: \"${maxmind[map]:-null}\" } | "
+basic_updates+=".Info |= . + { TimeZone: \"${maxmind[timezone]:-null}\" } | "
+basic_updates+=".Info |= . * { City: { Name: \"${maxmind[city]:-null}\" } } | "
+basic_updates+=".Info |= . * { City: { PostalCode: \"${maxmind[post]:-null}\" } } | "
+basic_updates+=".Info |= . * { City: { SubCode: \"${maxmind[subcode]:-null}\" } } | "
+basic_updates+=".Info |= . * { City: { Subdivisions: \"${maxmind[sub]:-null}\" } } | "
+basic_updates+=".Info |= . * { Region: { Code: \"${maxmind[countrycode]:-null}\" } } | "
+basic_updates+=".Info |= . * { Region: { Name: \"${maxmind[country]:-null}\" } } | "
+basic_updates+=".Info |= . * { Continent: { Code: \"${maxmind[continentcode]:-null}\" } } | "
+basic_updates+=".Info |= . * { Continent: { Name: \"${maxmind[continent]:-null}\" } } | "
+basic_updates+=".Info |= . * { RegisteredRegion: { Code: \"${maxmind[regcountrycode]:-null}\" } } | "
+basic_updates+=".Info |= . * { RegisteredRegion: { Name: \"${maxmind[regcountry]:-null}\" } } | "
 if [[ -n ${maxmind[countrycode]} && ${maxmind[countrycode]} != "null" ]];then
 if [ "${maxmind[countrycode]}" == "${maxmind[regcountrycode]}" ];then
-basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" }) | "
+basic_updates+=".Info |= . + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" } | "
 else
-basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" }) | "
+basic_updates+=".Info |= . + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" } | "
 fi
 else
-basic_updates+='.Info |= map(. + { Type: "null" }) | '
+basic_updates+='.Info |= . + { Type: "null" } | '
 fi
 else
-basic_updates+=".Info |= map(. + { ASN: \"${ipinfo[asn]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Organization: \"${ipinfo[org]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Latitude: \"${ipinfo[lat]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Longitude: \"${ipinfo[lon]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { DMS: \"${ipinfo[dms]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { Map: \"${ipinfo[map]:-null}\" }) | "
-basic_updates+=".Info |= map(. + { TimeZone: \"${ipinfo[timezone]:-null}\" }) | "
-basic_updates+=".Info |= map(. * { City: { Name: \"${ipinfo[city]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { City: { PostalCode: \"${ipinfo[post]:-null}\" } }) | "
-basic_updates+='.Info |= map(. * { City: { SubCode: "null" } }) | '
-basic_updates+='.Info |= map(. * { City: { Subdivisions: "null" } }) | '
-basic_updates+=".Info |= map(. * { Region: { Code: \"${ipinfo[countrycode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { Region: { Name: \"${ipinfo[country]:-null}\" } }) | "
-basic_updates+='.Info |= map(. * { Continent: { Code: "null" } }) | '
-basic_updates+=".Info |= map(. * { Continent: { Name: \"${ipinfo[continent]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { RegisteredRegion: { Code: \"${ipinfo[regcountrycode]:-null}\" } }) | "
-basic_updates+=".Info |= map(. * { RegisteredRegion: { Name: \"${ipinfo[regcountry]:-null}\" } }) | "
+basic_updates+=".Info |= . + { ASN: \"${ipinfo[asn]:-null}\" } | "
+basic_updates+=".Info |= . + { Organization: \"${ipinfo[org]:-null}\" } | "
+basic_updates+=".Info |= . + { Latitude: \"${ipinfo[lat]:-null}\" } | "
+basic_updates+=".Info |= . + { Longitude: \"${ipinfo[lon]:-null}\" } | "
+basic_updates+=".Info |= . + { DMS: \"${ipinfo[dms]:-null}\" } | "
+basic_updates+=".Info |= . + { Map: \"${ipinfo[map]:-null}\" } | "
+basic_updates+=".Info |= . + { TimeZone: \"${ipinfo[timezone]:-null}\" } | "
+basic_updates+=".Info |= . * { City: { Name: \"${ipinfo[city]:-null}\" } } | "
+basic_updates+=".Info |= . * { City: { PostalCode: \"${ipinfo[post]:-null}\" } } | "
+basic_updates+='.Info |= . * { City: { SubCode: "null" } } | '
+basic_updates+='.Info |= . * { City: { Subdivisions: "null" } } | '
+basic_updates+=".Info |= . * { Region: { Code: \"${ipinfo[countrycode]:-null}\" } } | "
+basic_updates+=".Info |= . * { Region: { Name: \"${ipinfo[country]:-null}\" } } | "
+basic_updates+='.Info |= . * { Continent: { Code: "null" } } | '
+basic_updates+=".Info |= . * { Continent: { Name: \"${ipinfo[continent]:-null}\" } } | "
+basic_updates+=".Info |= . * { RegisteredRegion: { Code: \"${ipinfo[regcountrycode]:-null}\" } } | "
+basic_updates+=".Info |= . * { RegisteredRegion: { Name: \"${ipinfo[regcountry]:-null}\" } } | "
 if [[ -n ${ipinfo[countrycode]} && ${ipinfo[countrycode]} != "null" ]];then
 if [ "${ipinfo[countrycode]}" == "${ipinfo[regcountrycode]}" ];then
-basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" }) | "
+basic_updates+=".Info |= . + { Type: \"$(clean_ansi "${sbasic[type0]:-null}")\" } | "
 else
-basic_updates+=".Info |= map(. + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" }) | "
+basic_updates+=".Info |= . + { Type: \"$(clean_ansi "${sbasic[type1]:-null}")\" } | "
 fi
 else
-basic_updates+='.Info |= map(. + { Type: "null" }) | '
+basic_updates+='.Info |= . + { Type: "null" } | '
 fi
 fi
-type_updates+=".Type |= map(. * { Usage: { IPinfo: \"$(clean_ansi "${ipinfo[susetype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Usage: { ipregistry: \"$(clean_ansi "${ipregistry[susetype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Usage: { ipapi: \"$(clean_ansi "${ipapi[susetype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Usage: { AbuseIPDB: \"$(clean_ansi "${abuseipdb[susetype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Usage: { IP2LOCATION: \"$(clean_ansi "${ip2location[susetype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Company: { IPinfo: \"$(clean_ansi "${ipinfo[scomtype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Company: { ipregistry: \"$(clean_ansi "${ipregistry[scomtype]:-null}")\" } }) | "
-type_updates+=".Type |= map(. * { Company: { ipapi: \"$(clean_ansi "${ipapi[scomtype]:-null}")\" } }) | "
-score_updates+=".Score |= map(. + { IP2LOCATION: \"${ip2location[score]:-null}\" }) | "
-score_updates+=".Score |= map(. + { SCAMALYTICS: \"${scamalytics[score]:-null}\" }) | "
-score_updates+=".Score |= map(. + { ipapi: \"${ipapi[score]:-null}\" }) | "
-score_updates+=".Score |= map(. + { AbuseIPDB: \"${abuseipdb[score]:-null}\" }) | "
-score_updates+=".Score |= map(. + { IPQS: \"${ipapi[ipqs]:-null}\" }) | "
-score_updates+=".Score |= map(. + { DBIP: \"${dbip[score]:-null}\" }) | "
+type_updates+=".Type |= . * { Usage: { IPinfo: \"$(clean_ansi "${ipinfo[susetype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Usage: { ipregistry: \"$(clean_ansi "${ipregistry[susetype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Usage: { ipapi: \"$(clean_ansi "${ipapi[susetype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Usage: { AbuseIPDB: \"$(clean_ansi "${abuseipdb[susetype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Usage: { IP2LOCATION: \"$(clean_ansi "${ip2location[susetype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Company: { IPinfo: \"$(clean_ansi "${ipinfo[scomtype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Company: { ipregistry: \"$(clean_ansi "${ipregistry[scomtype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Company: { ipapi: \"$(clean_ansi "${ipapi[scomtype]:-null}")\" } } | "
+score_updates+=".Score |= . + { IP2LOCATION: \"${ip2location[score]:-null}\" } | "
+score_updates+=".Score |= . + { SCAMALYTICS: \"${scamalytics[score]:-null}\" } | "
+score_updates+=".Score |= . + { ipapi: \"${ipapi[score]:-null}\" } | "
+score_updates+=".Score |= . + { AbuseIPDB: \"${abuseipdb[score]:-null}\" } | "
+score_updates+=".Score |= . + { IPQS: \"${ipapi[ipqs]:-null}\" } | "
+score_updates+=".Score |= . + { DBIP: \"${dbip[score]:-null}\" } | "
 factor_updates+=$(factor_bool "${ip2location[countrycode]}" "IP2LOCATION" "CountryCode")
 factor_updates+=$(factor_bool "${ipapi[countrycode]}" "ipapi" "CountryCode")
 factor_updates+=$(factor_bool "${ipregistry[countrycode]}" "ipregistry" "CountryCode")
@@ -2511,64 +2511,64 @@ factor_updates+=$(factor_bool "${ipdata[robot]}" "ipdata" "Robot")
 factor_updates+=$(factor_bool "${ipinfo[robot]}" "IPinfo" "Robot")
 factor_updates+=$(factor_bool "${ipwhois[robot]}" "IPWHOIS" "Robot")
 factor_updates+=$(factor_bool "${dbip[robot]}" "DBIP" "Robot")
-media_updates+=".Media |= map(. * { TikTok: { Status: \"$(clean_ansi "${tiktok[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { DisneyPlus: { Status: \"$(clean_ansi "${disney[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Netflix: { Status: \"$(clean_ansi "${netflix[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Youtube: { Status: \"$(clean_ansi "${youtube[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Status: \"$(clean_ansi "${amazon[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Spotify: { Status: \"$(clean_ansi "${spotify[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { ChatGPT: { Status: \"$(clean_ansi "${chatgpt[ustatus]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { TikTok: { Region: \"$(clean_ansi "${tiktok[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { DisneyPlus: { Region: \"$(clean_ansi "${disney[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { Netflix: { Region: \"$(clean_ansi "${netflix[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { Youtube: { Region: \"$(clean_ansi "${youtube[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Region: \"$(clean_ansi "${amazon[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { Spotify: { Region: \"$(clean_ansi "${spotify[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { ChatGPT: { Region: \"$(clean_ansi "${chatgpt[uregion]//[][]/}")\" } }) | "
-media_updates+=".Media |= map(. * { TikTok: { Type: \"$(clean_ansi "${tiktok[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { DisneyPlus: { Type: \"$(clean_ansi "${disney[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Netflix: { Type: \"$(clean_ansi "${netflix[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Youtube: { Type: \"$(clean_ansi "${youtube[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { AmazonPrimeVideo: { Type: \"$(clean_ansi "${amazon[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { Spotify: { Type: \"$(clean_ansi "${spotify[utype]:-null}")\" } }) | "
-media_updates+=".Media |= map(. * { ChatGPT: { Type: \"$(clean_ansi "${chatgpt[utype]:-null}")\" } }) | "
+media_updates+=".Media |= . * { TikTok: { Status: \"$(clean_ansi "${tiktok[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { DisneyPlus: { Status: \"$(clean_ansi "${disney[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { Netflix: { Status: \"$(clean_ansi "${netflix[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { Youtube: { Status: \"$(clean_ansi "${youtube[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { AmazonPrimeVideo: { Status: \"$(clean_ansi "${amazon[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { Spotify: { Status: \"$(clean_ansi "${spotify[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { ChatGPT: { Status: \"$(clean_ansi "${chatgpt[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { TikTok: { Region: \"$(clean_ansi "${tiktok[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { DisneyPlus: { Region: \"$(clean_ansi "${disney[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { Netflix: { Region: \"$(clean_ansi "${netflix[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { Youtube: { Region: \"$(clean_ansi "${youtube[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { AmazonPrimeVideo: { Region: \"$(clean_ansi "${amazon[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { Spotify: { Region: \"$(clean_ansi "${spotify[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { ChatGPT: { Region: \"$(clean_ansi "${chatgpt[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { TikTok: { Type: \"$(clean_ansi "${tiktok[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { DisneyPlus: { Type: \"$(clean_ansi "${disney[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { Netflix: { Type: \"$(clean_ansi "${netflix[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { Youtube: { Type: \"$(clean_ansi "${youtube[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { AmazonPrimeVideo: { Type: \"$(clean_ansi "${amazon[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { Spotify: { Type: \"$(clean_ansi "${spotify[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { ChatGPT: { Type: \"$(clean_ansi "${chatgpt[utype]:-null}")\" } } | "
 if [[ ${smail[local]} -eq 1 ]];then
-mail_updates+=".Mail |= map(. + { Port25: true }) | "
+mail_updates+=".Mail |= . + { Port25: true } | "
 for service in "${services[@]}";do
 if [[ ${smailstatus[$service]} == "true" ]];then
-mail_updates+=".Mail |= map(. + { \"$service\": true }) | "
+mail_updates+=".Mail |= . + { \"$service\": true } | "
 else
-mail_updates+=".Mail |= map(. + { \"$service\": false }) | "
+mail_updates+=".Mail |= . + { \"$service\": false } | "
 fi
 done
 elif [[ ${smail[local]} -eq 2 ]];then
-mail_updates+=".Mail |= map(. + { Port25: null }) | "
+mail_updates+=".Mail |= . + { Port25: null } | "
 for service in "${services[@]}";do
-mail_updates+=".Mail |= map(. + { \"$service\": null }) | "
+mail_updates+=".Mail |= . + { \"$service\": null } | "
 done
 else
-mail_updates+=".Mail |= map(. + { Port25: false }) | "
+mail_updates+=".Mail |= . + { Port25: false } | "
 for service in "${services[@]}";do
-mail_updates+=".Mail |= map(. + { \"$service\": false }) | "
+mail_updates+=".Mail |= . + { \"$service\": false } | "
 done
 fi
-mail_updates+=".Mail |= map(. * { DNSBlacklist: { Total: ${smail[t]:-null} } }) | "
-mail_updates+=".Mail |= map(. * { DNSBlacklist: { Clean: ${smail[c]:-null} } }) | "
-mail_updates+=".Mail |= map(. * { DNSBlacklist: { Marked: ${smail[m]:-null} } }) | "
-mail_updates+=".Mail |= map(. * { DNSBlacklist: { Blacklisted: ${smail[b]:-null} } }) | "
+mail_updates+=".Mail |= . * { DNSBlacklist: { Total: ${smail[t]:-null} } } | "
+mail_updates+=".Mail |= . * { DNSBlacklist: { Clean: ${smail[c]:-null} } } | "
+mail_updates+=".Mail |= . * { DNSBlacklist: { Marked: ${smail[m]:-null} } } | "
+mail_updates+=".Mail |= . * { DNSBlacklist: { Blacklisted: ${smail[b]:-null} } } | "
 ipjson=$(echo "$ipjson"|jq "$head_updates$basic_updates$type_updates$score_updates$factor_updates$media_updates$mail_updates.")
 }
 check_IP(){
 IP=$1
 ibar_step=0
 ipjson='{
-      "Head": [{}],
-      "Info": [{}],
-      "Type": [{}],
-      "Score": [{}],
-      "Factor": [{}],
-      "Media": [{}],
-      "Mail": [{}]
+      "Head": {},
+      "Info": {},
+      "Type": {},
+      "Score": {},
+      "Factor": {},
+      "Media": {},
+      "Mail": {}
     }'
 [[ $2 -eq 4 ]]&&hide_ipv4 $IP
 [[ $2 -eq 6 ]]&&hide_ipv6 $IP
