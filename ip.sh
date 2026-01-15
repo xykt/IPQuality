@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-01-10"
+script_version="v2026-01-15"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -149,7 +149,8 @@ shead[title_lite]="IP QUALITY CHECK REPORT(LITE): "
 shead[ver]="Version: $script_version"
 shead[bash]="bash <(curl -sL https://Check.Place) -EI"
 shead[git]="https://github.com/xykt/IPQuality"
-shead[time]=$(date -u +"Report Time: %Y-%m-%d %H:%M:%S UTC")
+shead[time_raw]=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+shead[time]="Report Time: ${shead[time_raw]}"
 shead[ltitle]=25
 shead[ltitle_lite]=31
 shead[ptime]=$(printf '%7s' '')
@@ -273,7 +274,8 @@ shead[title_lite]="IP质量体检报告(Lite)："
 shead[ver]="脚本版本：$script_version"
 shead[bash]="bash <(curl -sL https://Check.Place) -I"
 shead[git]="https://github.com/xykt/IPQuality"
-shead[time]=$(TZ="Asia/Shanghai" date +"报告时间：%Y-%m-%d %H:%M:%S CST")
+shead[time_raw]=$(TZ="Asia/Shanghai" date +"%Y-%m-%d %H:%M:%S CST")
+shead[time]="报告时间：${shead[time_raw]}"
 shead[ltitle]=16
 shead[ltitle_lite]=22
 shead[ptime]=$(printf '%8s' '')
@@ -869,7 +871,12 @@ tmpgo="${BASH_REMATCH[1]}"
 fi
 fi
 local RESPONSE
-RESPONSE=$(curl $CurlARG -sS --compressed -m 10 -H "authority: api.ipregistry.co" -H "origin: https://ipregistry.co" -H "referer: https://ipregistry.co/" -H "user-agent: $UA_Browser" "https://api.ipregistry.co/$IP?hostname=true&key=$tmpgo")
+RESPONSE=$(curl $CurlARG -sS --compressed -m 10 \
+-H "authority: api.ipregistry.co" \
+-H "origin: https://ipregistry.co" \
+-H "referer: https://ipregistry.co/" \
+-H "user-agent: $UA_Browser" \
+"https://api.ipregistry.co/$IP?hostname=true&key=$tmpgo")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
 ipregistry[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
@@ -1168,16 +1175,13 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipwhois=()
-local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipwhois.io/widget?ip=$IP&lang=en" --compressed \
--H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0" \
--H "Accept: */*" \
--H "Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2" \
--H "Connection: keep-alive" \
--H "Referer: https://ipwhois.io/" \
--H "Sec-Fetch-Dest: empty" \
--H "Sec-Fetch-Mode: cors" \
--H "Sec-Fetch-Site: same-origin" \
--H "TE: trailers")
+local html=$(curl -s https://ipwhois.io/ -H "User-Agent: $UA_Browser" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "Accept-Language: en-US,en;q=0.9")
+local js_path=$(printf '%s\n' "$html"|grep -oE '<script[^>]+src="[^"]+"'|grep 'global\.min\.js'|sed -E 's/.*src="([^"]+)".*/\1/')
+local js_url="https://ipwhois.io$js_path"
+local js_code=$(curl -s "$js_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Referer: https://ipwhois.io/")
+local api_base=$(printf '%s\n' "$js_code"|grep -oE 'https://ipwhois\.io/widget_[a-zA-Z0-9_]+'|head -n1)
+local final_url="$api_base?ip=&lang=en"
+RESPONSE=$(curl -s "$final_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Referer: https://ipwhois.io/")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
@@ -2276,7 +2280,9 @@ content=$(curl -fsL --max-time 5 "${rawgithub}main/ref/ad$i.ans")||break
 ads+=("$content")
 ((i++))
 done
+ADLines=0
 local adCount=${#ads[@]}
+[[ $adCount -eq 0 ]]&&return
 local -a indices=()
 for ((i=1; i<=adCount; i++));do indices+=("$i");done
 for ((i=adCount-1; i>0; i--));do
@@ -2292,7 +2298,6 @@ aad[${indices[i]}]="${ads[i]}"
 done
 local rows cols
 if ! read rows cols < <(stty size 2>/dev/null);then cols=0;fi
-ADLines=0
 print_pair(){
 local left="$1" right="$2"
 local -a L R
@@ -2372,8 +2377,8 @@ head_updates+=".Head |= map(. + { IP: \"${IPhide:-null}\" }) | "
 fi
 head_updates+=".Head |= map(. + { Command: \"${shead[bash]:-null}\" }) | "
 head_updates+=".Head |= map(. + { GitHub: \"${shead[git]:-null}\" }) | "
-head_updates+=".Head |= map(. + { Time: \"${shead[time]:-null}\" }) | "
-head_updates+=".Head |= map(. + { Version: \"${shead[ver]:-null}\" }) | "
+head_updates+=".Head |= map(. + { Time: \"${shead[time_raw]:-null}\" }) | "
+head_updates+=".Head |= map(. + { Version: \"${script_version:-null}\" }) | "
 if [ $mode_lite -eq 0 ];then
 basic_updates+=".Info |= map(. + { ASN: \"${maxmind[asn]:-null}\" }) | "
 basic_updates+=".Info |= map(. + { Organization: \"${maxmind[org]:-null}\" }) | "
