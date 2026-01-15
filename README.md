@@ -130,6 +130,8 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 
 ## 脚本更新
 
+2026/01/15 17:23 修正不规范的JSON
+
 2025/08/03 00:00 增加Docker运行方式
 
 2025/08/01 16:15 增加-p隐私模式，禁用在线报告生成功能
