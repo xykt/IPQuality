@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-01-15"
+script_version="v2026-01-20"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1181,7 +1181,7 @@ local js_url="https://ipwhois.io$js_path"
 local js_code=$(curl -s "$js_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Referer: https://ipwhois.io/")
 local api_base=$(printf '%s\n' "$js_code"|grep -oE 'https://ipwhois\.io/widget_[a-zA-Z0-9_]+'|head -n1)
 local final_url="$api_base?ip=&lang=en"
-RESPONSE=$(curl -s "$final_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Referer: https://ipwhois.io/")
+RESPONSE=$(curl -s "$final_url" -H "User-Agent: ${UA_Browser}" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.9" -H "Referer: https://ipwhois.io/" -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-origin')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
