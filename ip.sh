@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-01-21"
+script_version="v2026-01-23"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1181,7 +1181,7 @@ local js_url="https://ipwhois.io$js_path"
 local js_code=$(curl -s "$js_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Referer: https://ipwhois.io/")
 local api_base=$(printf '%s\n' "$js_code"|grep -oE 'https://ipwhois\.io/widget_[a-zA-Z0-9_]+'|head -n1)
 local final_url="$api_base?ip=&lang=en"
-RESPONSE=$(curl -s "$final_url" -H "User-Agent: ${UA_Browser}" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.9" -H "Referer: https://ipwhois.io/" -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-origin')
+RESPONSE=$(curl -s "$final_url" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.9" -H "Referer: https://ipwhois.io/" -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-origin')
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
 ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
@@ -1359,6 +1359,7 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
 local Ftmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
+[[ $Ftmpresult == *"Please wait..."* ]]&&Ftmpresult=$(curl $useNIC $usePROXY $xForward --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/explore")
 if [[ $Ftmpresult == "curl"* ]];then
 tiktok[ustatus]="${smedia[no]}"
 tiktok[uregion]="${smedia[nodata]}"
@@ -1376,6 +1377,7 @@ tiktok[utype]="$resultunlocktype"
 return
 fi
 local STmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
+[[ $Ftmpresult == *"Please wait..."* ]]&&STmpresult=$(curl $useNIC $usePROXY $xForward --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com/explore"|gunzip 2>/dev/null)
 local SRegion=$(echo $STmpresult|grep '"region":'|sed 's/.*"region"//'|cut -f2 -d'"')
 if [ -n "$SRegion" ];then
 tiktok[ustatus]="${smedia[idc]}"
