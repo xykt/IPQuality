@@ -14,7 +14,7 @@
 - 基础信息、IP类型、风险评分、风险因子、流媒体解锁、邮局检测六大模块
 - 基础数据源自*Maxmind*数据库
 - 风险信息 *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2Location / IPQS / DB-IP / Scamalytics / IPWHOIS* 多数据库整合
-- 流媒体及AI多个服务商 *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Spotify / ChatGPT* 解锁及解锁类型检测
+- 流媒体及AI多个服务商 *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Reddit / ChatGPT* 解锁及解锁类型检测
 - 多邮局服务商 *Gmail / Outlook / Yahoo / Apple / QQ / Mail.ru / AOL / GMX / Mail.com / 163 / Sohu / Sina* 连通性检测
 - IP地址黑名单400+数据库检测
 
@@ -129,6 +129,8 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 ````
 
 ## 脚本更新
+
+2026/01/24 12:40 将Spotify检测替换为Reddit检测
 
 2026/01/15 17:23 修正不规范的JSON
 
