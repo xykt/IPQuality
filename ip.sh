@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-01-23"
+script_version="v2026-01-24"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -55,7 +55,7 @@ declare -A disney
 declare -A netflix
 declare -A youtube
 declare -A amazon
-declare -A spotify
+declare -A reddit
 declare -A chatgpt
 declare IPV4
 declare IPV6
@@ -1328,7 +1328,6 @@ fi
 }
 function Check_DNS_3(){
 local resultdnstext=$(dig "test$RANDOM$RANDOM.$1"|grep "ANSWER:")
-echo "test$RANDOM$RANDOM.$1"
 local resultdnstext=${resultdnstext#*"ANSWER: "}
 local resultdnstext=${resultdnstext%", AUTHORITY:"*}
 if [ "$resultdnstext" == "0" ];then
@@ -1602,49 +1601,55 @@ amazon[utype]="${smedia[nodata]}"
 return
 fi
 }
-function MediaUnlockTest_Spotify(){
-local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Spotify $Font_Suffix"
+function MediaUnlockTest_Reddit(){
+local temp_info="$Font_Cyan$Font_B${sinfo[media]}${Font_I}Reddit $Font_Suffix"
 ((ibar_step+=3))
-show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
+show_progress_bar "$temp_info" $((40-7-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
-spotify=()
-local checkunlockurl="spclient.wg.spotify.com"
+reddit=()
+local checkunlockurl="www.reddit.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
-local result3=$(Check_DNS_3 $checkunlockurl)
-local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
-local tmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -s --max-time 10 -X POST "https://spclient.wg.spotify.com/signup/public/v1/account" -d "birth_day=11&birth_month=11&birth_year=2000&collect_personal_info=undefined&creation_flow=&creation_point=https%3A%2F%2Fwww.spotify.com%2Fhk-en%2F&displayname=Gay%20Lord&gender=male&iagree=1&key=a1e486e2729f46d6bb368d6b2bcda326&platform=www&referrer=&send-email=0&thirdpartyemail=0&identifier_token=AgE6YTvEzkReHNfJpO114514" -H "Accept-Language: en" 2>&1)
-if echo "$tmpresult"|jq . >/dev/null 2>&1;then
-local region=$(echo $tmpresult|jq -r '.country')
-local isLaunched=$(echo $tmpresult|jq -r '.is_country_launched')
-local StatusCode=$(echo $tmpresult|jq -r '.status')
-if [ "$tmpresult" = "000" ];then
-spotify[ustatus]="${smedia[bad]}"
-spotify[uregion]="${smedia[nodata]}"
-spotify[utype]="${smedia[nodata]}"
-return
-elif [ "$StatusCode" = "320" ]||[ "$StatusCode" = "120" ];then
-spotify[ustatus]="${smedia[no]}"
-spotify[uregion]="${smedia[nodata]}"
-spotify[utype]="${smedia[nodata]}"
-return
-elif [ "$StatusCode" = "311" ]&&[ "$isLaunched" = "true" ];then
-spotify[ustatus]="${smedia[yes]}"
-spotify[uregion]="  [$region]   "
-spotify[utype]="$resultunlocktype"
-return
+local result2=$(Check_DNS_2 $checkunlockurl)
+local resultunlocktype=$(Get_Unlock_Type $result1 $result2)
+local resp http_code html region
+local resolve_opt=""
+if [ "$1" = "6" ];then
+local dual_ipv6
+dual_ipv6=$(dig AAAA reddit.com +short|head -n 1)
+[[ -z $dual_ipv6 ]]&&dual_ipv6=$(dig AAAA dualstack.reddit.map.fastly.net +short|head -n 1)
+if [ -n "$dual_ipv6" ];then
+resolve_opt="--resolve www.reddit.com:443:[$dual_ipv6]"
 else
-spotify[ustatus]="${smedia[bad]}"
-spotify[uregion]="${smedia[nodata]}"
-spotify[utype]="${smedia[nodata]}"
+reddit[ustatus]="${smedia[bad]}"
+reddit[uregion]="${smedia[nodata]}"
+reddit[utype]="${smedia[nodata]}"
 return
 fi
-else
-spotify[ustatus]="${smedia[bad]}"
-spotify[uregion]="${smedia[nodata]}"
-spotify[utype]="${smedia[nodata]}"
-return
 fi
+resp=$(curl $useNIC $usePROXY $xForward -$1 $ssll -fsL --user-agent "$UA_Browser" --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/")
+http_code=$(printf '%s' "$resp"|tail -n 1|tr -d '\r')
+html=$(printf '%s' "$resp"|sed '$d')
+if [ "$http_code" = "200" ];then
+region=$(printf '%s' "$html"|tr '\n' ' '|sed -n 's/.*country="\([^"]*\)".*/\1/p'|head -n 1)
+fi
+case "$http_code" in
+000)reddit[ustatus]="${smedia[bad]}"
+reddit[uregion]="${smedia[nodata]}"
+reddit[utype]="${smedia[nodata]}"
+;;
+403)reddit[ustatus]="${smedia[no]}"
+reddit[uregion]="${smedia[nodata]}"
+reddit[utype]="${smedia[nodata]}"
+;;
+200)reddit[ustatus]="${smedia[yes]}"
+reddit[uregion]="  [$region]   "
+reddit[utype]="$resultunlocktype"
+;;
+*)reddit[ustatus]="${smedia[bad]}"
+reddit[uregion]="${smedia[nodata]}"
+reddit[utype]="${smedia[nodata]}"
+esac
 }
 function OpenAITest(){
 local temp_info="$Font_Cyan$Font_B${sinfo[ai]}${Font_I}ChatGPT $Font_Suffix"
@@ -2153,10 +2158,10 @@ echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
 echo -ne "\r${smedia[title]}\n"
-echo -ne "\r$Font_Cyan${smedia[meida]}$Font_I TikTok   Disney+  Netflix Youtube  AmazonPV  Spotify  ChatGPT $Font_Suffix\n"
-echo -ne "\r$Font_Cyan${smedia[status]}${tiktok[ustatus]}${disney[ustatus]}${netflix[ustatus]}${youtube[ustatus]}${amazon[ustatus]}${spotify[ustatus]}${chatgpt[ustatus]}$Font_Suffix\n"
-echo -ne "\r$Font_Cyan${smedia[region]}$Font_Green${tiktok[uregion]}${disney[uregion]}${netflix[uregion]}${youtube[uregion]}${amazon[uregion]}${spotify[uregion]}${chatgpt[uregion]}$Font_Suffix\n"
-echo -ne "\r$Font_Cyan${smedia[type]}${tiktok[utype]}${disney[utype]}${netflix[utype]}${youtube[utype]}${amazon[utype]}${spotify[utype]}${chatgpt[utype]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[meida]}$Font_I TikTok   Disney+  Netflix Youtube  AmazonPV  Reddit   ChatGPT $Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[status]}${tiktok[ustatus]}${disney[ustatus]}${netflix[ustatus]}${youtube[ustatus]}${amazon[ustatus]}${reddit[ustatus]}${chatgpt[ustatus]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[region]}$Font_Green${tiktok[uregion]}${disney[uregion]}${netflix[uregion]}${youtube[uregion]}${amazon[uregion]}${reddit[uregion]}${chatgpt[uregion]}$Font_Suffix\n"
+echo -ne "\r$Font_Cyan${smedia[type]}${tiktok[utype]}${disney[utype]}${netflix[utype]}${youtube[utype]}${amazon[utype]}${reddit[utype]}${chatgpt[utype]}$Font_Suffix\n"
 }
 show_mail(){
 echo -ne "\r${smail[title]}\n"
@@ -2518,21 +2523,21 @@ media_updates+=".Media |= . * { DisneyPlus: { Status: \"$(clean_ansi "${disney[u
 media_updates+=".Media |= . * { Netflix: { Status: \"$(clean_ansi "${netflix[ustatus]:-null}")\" } } | "
 media_updates+=".Media |= . * { Youtube: { Status: \"$(clean_ansi "${youtube[ustatus]:-null}")\" } } | "
 media_updates+=".Media |= . * { AmazonPrimeVideo: { Status: \"$(clean_ansi "${amazon[ustatus]:-null}")\" } } | "
-media_updates+=".Media |= . * { Spotify: { Status: \"$(clean_ansi "${spotify[ustatus]:-null}")\" } } | "
+media_updates+=".Media |= . * { Reddit: { Status: \"$(clean_ansi "${reddit[ustatus]:-null}")\" } } | "
 media_updates+=".Media |= . * { ChatGPT: { Status: \"$(clean_ansi "${chatgpt[ustatus]:-null}")\" } } | "
 media_updates+=".Media |= . * { TikTok: { Region: \"$(clean_ansi "${tiktok[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { DisneyPlus: { Region: \"$(clean_ansi "${disney[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { Netflix: { Region: \"$(clean_ansi "${netflix[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { Youtube: { Region: \"$(clean_ansi "${youtube[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { AmazonPrimeVideo: { Region: \"$(clean_ansi "${amazon[uregion]//[][]/}")\" } } | "
-media_updates+=".Media |= . * { Spotify: { Region: \"$(clean_ansi "${spotify[uregion]//[][]/}")\" } } | "
+media_updates+=".Media |= . * { Reddit: { Region: \"$(clean_ansi "${reddit[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { ChatGPT: { Region: \"$(clean_ansi "${chatgpt[uregion]//[][]/}")\" } } | "
 media_updates+=".Media |= . * { TikTok: { Type: \"$(clean_ansi "${tiktok[utype]:-null}")\" } } | "
 media_updates+=".Media |= . * { DisneyPlus: { Type: \"$(clean_ansi "${disney[utype]:-null}")\" } } | "
 media_updates+=".Media |= . * { Netflix: { Type: \"$(clean_ansi "${netflix[utype]:-null}")\" } } | "
 media_updates+=".Media |= . * { Youtube: { Type: \"$(clean_ansi "${youtube[utype]:-null}")\" } } | "
 media_updates+=".Media |= . * { AmazonPrimeVideo: { Type: \"$(clean_ansi "${amazon[utype]:-null}")\" } } | "
-media_updates+=".Media |= . * { Spotify: { Type: \"$(clean_ansi "${spotify[utype]:-null}")\" } } | "
+media_updates+=".Media |= . * { Reddit: { Type: \"$(clean_ansi "${reddit[utype]:-null}")\" } } | "
 media_updates+=".Media |= . * { ChatGPT: { Type: \"$(clean_ansi "${chatgpt[utype]:-null}")\" } } | "
 if [[ ${smail[local]} -eq 1 ]];then
 mail_updates+=".Mail |= . + { Port25: true } | "
@@ -2591,7 +2596,7 @@ MediaUnlockTest_DisneyPlus $2
 MediaUnlockTest_Netflix $2
 MediaUnlockTest_YouTube_Premium $2
 MediaUnlockTest_PrimeVideo_Region $2
-MediaUnlockTest_Spotify $2
+MediaUnlockTest_Reddit $2
 OpenAITest $2
 check_mail
 [[ $2 -eq 4 ]]&&check_dnsbl "$IP" 50
