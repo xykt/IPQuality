@@ -1608,7 +1608,7 @@ show_progress_bar "$temp_info" $((40-7-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 reddit=()
-local checkunlockurl="www.reddit.com"
+local checkunlockurl="reddit.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result2=$(Check_DNS_2 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2)
