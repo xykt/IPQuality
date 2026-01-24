@@ -14,7 +14,7 @@
 - Six modules: Basic Information, IP Type, Risk Score, Risk Factors, Streaming Media Unlocking, and Post Office Check
 - Basic data sourced from the *Maxmind* database
 - Risk information integrated from multiple databases: *IPinfo / ipregistry / ipapi / AbuseIPDB / IP2Location / IPQS / DB-IP / Scamalytics / IPWHOIS*
-- Streaming and AI service providers' unlocking and type detection: *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Spotify / ChatGPT*
+- Streaming and AI service providers' unlocking and type detection: *TikTok / Disney+ / Netflix / Youtube / AmazonPrimeVideo / Reddit / ChatGPT*
 - Connectivity tests for multiple email providers: *Gmail / Outlook / Yahoo / Apple / QQ / Mail.ru / AOL / GMX / Mail.com / 163 / Sohu / Sina*
 - Over 400 IP address blacklist database checks
 
@@ -126,6 +126,8 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 ````
 
 ## Script Updates
+
+2026/01/24 12:40 Replace Spotify detection with Reddit detection
 
 2026/01/15 17:23 Fix non-standard JSON
 
