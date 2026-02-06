@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-01-25"
+script_version="v2026-02-06"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -496,8 +496,8 @@ $usesudo $install_command jq curl bc netcat bind-utils iproute2
 esac
 }
 declare -A browsers=(
-[Chrome]="139.0.7258.128 139.0.7258.67 138.0.7204.185 138.0.7204.170 138.0.7204.159 138.0.7204.102 138.0.7204.100 138.0.7204.51 138.0.7204.49 137.0.7151.122 138.0.7204.35 137.0.7151.121 137.0.7151.105 137.0.7151.104 137.0.7151.57 137.0.7151.55 136.0.7103.116 137.0.7151.40 136.0.7103.113 136.0.7103.92 135.0.7049.117 136.0.7103.48 135.0.7049.114 135.0.7049.86 135.0.7049.42 135.0.7049.41 134.0.6998.167 134.0.6998.119 134.0.6998.117 134.0.6998.37 134.0.6998.35 133.0.6943.128 133.0.6943.100 133.0.6943.59 133.0.6943.53 132.0.6834.162 133.0.6943.35 132.0.6834.160 132.0.6834.112 132.0.6834.110 131.0.6778.267 132.0.6834.83 131.0.6778.264 131.0.6778.204 131.0.6778.139 131.0.6778.109 131.0.6778.71 131.0.6778.69 130.0.6723.119 131.0.6778.33 130.0.6723.116 130.0.6723.71 130.0.6723.60 130.0.6723.58 129.0.6668.103 130.0.6723.44 129.0.6668.100 129.0.6668.72 129.0.6668.60 129.0.6668.42 128.0.6613.122 128.0.6613.121 128.0.6613.115 128.0.6613.113 127.0.6533.122 128.0.6613.36 127.0.6533.119 127.0.6533.100 127.0.6533.74 127.0.6533.72 126.0.6478.185 127.0.6533.57 126.0.6478.183 126.0.6478.128 126.0.6478.116 126.0.6478.114 126.0.6478.61 125.0.6422.176 126.0.6478.56 125.0.6422.144 126.0.6478.36 125.0.6422.142 125.0.6422.114 125.0.6422.77 125.0.6422.76 124.0.6367.210 125.0.6422.60 124.0.6367.208 124.0.6367.201 124.0.6367.156 125.0.6422.41 124.0.6367.155 124.0.6367.119 124.0.6367.92 124.0.6367.63 124.0.6367.61 123.0.6312.124 124.0.6367.60 123.0.6312.122 123.0.6312.106 123.0.6312.105 123.0.6312.60 123.0.6312.58 122.0.6261.131 123.0.6312.46 122.0.6261.129 122.0.6261.128 122.0.6261.112 122.0.6261.111 122.0.6261.71 122.0.6261.69 121.0.6167.189 122.0.6261.57 121.0.6167.187 121.0.6167.186 121.0.6167.162 121.0.6167.160 121.0.6167.140 121.0.6167.86 121.0.6167.85 120.0.6099.227 120.0.6099.225 121.0.6167.75 120.0.6099.224 120.0.6099.218 120.0.6099.216 120.0.6099.200 120.0.6099.199 120.0.6099.129 120.0.6099.110 120.0.6099.109 120.0.6099.62 120.0.6099.56"
-[Firefox]="132.0 131.0 130.0 129.0 128.0 127.0 126.0 125.0 124.0 123.0 122.0 121.0 120.0")
+[Chrome]="145.0.0.0 144.0.0.0 143.0.0.0 142.0.0.0 141.0.0.0 140.0.0.0"
+[Firefox]="147.0 146.0 145.0 144.0 143.0 142.0 141.0 140.0")
 generate_random_user_agent(){
 local browsers_keys=(${!browsers[@]})
 local random_browser_index=$((RANDOM%${#browsers_keys[@]}))
@@ -864,18 +864,18 @@ trap "kill_progress_bar" RETURN
 ipregistry=()
 local tmpgo="sb69ksjcajfs4c"
 local REGISTRY_HTML
-REGISTRY_HTML=$(curl $CurlARG -sL -m 10 -H "user-agent: $UA_Browser" "https://ipregistry.co")
+REGISTRY_HTML=$(curl $CurlARG -sL -$1 -m 10 -H "User-Agent: $UA_Browser" "https://ipregistry.co")
 if [[ -n $REGISTRY_HTML ]];then
 if [[ $REGISTRY_HTML =~ apiKey=\"([a-zA-Z0-9]+)\" ]];then
 tmpgo="${BASH_REMATCH[1]}"
 fi
 fi
 local RESPONSE
-RESPONSE=$(curl $CurlARG -sS --compressed -m 10 \
+RESPONSE=$(curl $CurlARG -sS -$1 --compressed -m 10 \
 -H "authority: api.ipregistry.co" \
 -H "origin: https://ipregistry.co" \
 -H "referer: https://ipregistry.co/" \
--H "user-agent: $UA_Browser" \
+-H "User-Agent: $UA_Browser" \
 "https://api.ipregistry.co/$IP?hostname=true&key=$tmpgo")
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipregistry[usetype]=$(echo "$RESPONSE"|jq -r '.connection.type')
@@ -925,12 +925,17 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
-if [[ $IP == *:* ]];then
-local RESPONSE=$(curl -Ls -m 10 "https://api.ipapi.is/?q=$IP")
-else
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://api.ipapi.is/?q=$IP")
+local RESPONSE=$(curl -sL $CurlARG -$1 -m 10 'https://ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
+local retry=0
+while ((retry<6));do
+RESPONSE=$(curl -sL $CurlARG -$1 -m 10 'https://api.ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
+if [[ -n $RESPONSE ]]&&jq -e . >/dev/null 2>&1 <<<"$RESPONSE";then
+break
 fi
-echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+RESPONSE=""
+((retry++))
+sleep 1
+done
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
 shopt -s nocasematch
