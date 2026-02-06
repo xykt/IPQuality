@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-02-06"
+script_version="v2026-02-07"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -925,10 +925,10 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
-local RESPONSE=$(curl -sL $CurlARG -$1 -m 10 'https://ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
+local RESPONSE=$(curl -sL $CurlARG -m 10 'https://ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
 local retry=0
 while ((retry<6));do
-RESPONSE=$(curl -sL $CurlARG -$1 -m 10 'https://api.ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
+RESPONSE=$(curl -sL $CurlARG -m 10 'https://api.ipapi.is/' -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ipapi.is' -H 'Referer: https://ipapi.is/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36' -H 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"' -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"')
 if [[ -n $RESPONSE ]]&&jq -e . >/dev/null 2>&1 <<<"$RESPONSE";then
 break
 fi
