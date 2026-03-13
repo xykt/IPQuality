@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-03-05"
+script_version="v2026-03-13"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -47,7 +47,6 @@ declare -A ipapi
 declare -A abuseipdb
 declare -A ip2location
 declare -A dbip
-declare -A ipwhois
 declare -A ipdata
 declare -A ipqs
 declare -A tiktok
@@ -1168,21 +1167,6 @@ dbip[score]=100
 esac
 shopt -u nocasematch
 }
-db_ipwhois(){
-local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPWHOIS $Font_Suffix"
-((ibar_step+=3))
-show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
-bar_pid="$!"&&disown "$bar_pid"
-trap "kill_progress_bar" RETURN
-ipwhois=()
-local RESPONSE=$(curl ${CurlARG} -sL -$1 -m 10 "http://ipwho.is/")
-echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
-ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
-ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
-ipwhois[tor]=$(echo "$RESPONSE"|jq -r '.security.tor')
-ipwhois[vpn]=$(echo "$RESPONSE"|jq -r '.security.vpn')
-ipwhois[server]=$(echo "$RESPONSE"|jq -r '.security.hosting')
-}
 db_ipdata(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipdata $Font_Suffix"
 ((ibar_step+=3))
@@ -1498,7 +1482,7 @@ fi
 region=$(echo "$result1"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
 [[ -n $region ]]&&region=$(echo "$result2"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
 result1=$(echo $result1|grep 'Oh no!')
-result2=$(echo $result1|grep 'Oh no!')
+result2=$(echo $result2|grep 'Oh no!')
 if [ -n "$result1" ]&&[ -n "$result2" ];then
 netflix[ustatus]="${smedia[org]}"
 netflix[uregion]="  [$region]   "
@@ -2068,6 +2052,7 @@ tmp_txt+="$Font_Green[$4]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
+if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $5 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2078,7 +2063,6 @@ tmp_txt+="$Font_Green[$5]$Font_Suffix"
 else
 tmp_txt+="${sfactor[na]}"
 fi
-if [[ $mode_lite -eq 0 ]];then
 tmp_txt+="    "
 if [[ $6 == "true" ]];then
 tmp_txt+="${sfactor[yes]}"
@@ -2115,39 +2099,39 @@ echo "$tmp_txt"
 show_factor(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS Scamalytics ipdata IPinfo IPWHOIS$Font_Suffix\n"
-tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS Scamalytics ipdata IPinfo DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
+tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${ipregistry[tor]}" "${ipqs[tor]}" "${scamalytics[tor]}" "${ipdata[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
+tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${ipregistry[tor]}" "${ipqs[tor]}" "${scamalytics[tor]}" "${ipdata[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipqs[vpn]}" "${scamalytics[vpn]}" "${ipdata[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
+tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipqs[vpn]}" "${scamalytics[vpn]}" "${ipdata[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${ipregistry[server]}" "${ipqs[server]}" "${scamalytics[server]}" "${ipdata[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
+tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${ipregistry[server]}" "${ipqs[server]}" "${scamalytics[server]}" "${ipdata[server]}" "${ipinfo[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipqs[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
+tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipqs[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${ipqs[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
+tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${ipqs[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo IPWHOIS DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo DB-IP$Font_Suffix\n"
+tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${ipwhois[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${dbip[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2582,7 +2566,6 @@ db_ipapi $2
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
 [[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
 db_dbip
-db_ipwhois $2
 [[ $mode_lite -eq 0 ]]&&db_ipdata $2||ipdata=()
 [[ $mode_lite -eq 0 ]]&&db_ipqs $2||ipqs=()
 MediaUnlockTest_TikTok $2
