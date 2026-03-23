@@ -203,6 +203,7 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 | VIRCS</br>威尔克斯 | ![vircs_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vircs.png) | [https://vircs.com](https://www.vircs.com/promotion?code=6)|   
 | RapidProxy</br>`原生IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)|   
 | 华纳云</br>HNCloud | ![hncloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_hncloud.png) | [https://hncloud.com](https://www.hncloud.com/activity/activity_2026spring.html/?g=nodequality)| 
+| VMRack | ![vmrack_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vmrack.png) | [https://vmrack.net](https://www.vmrack.net?affid=ipcheck)| 
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **仅接受长期稳定运营，信誉良好的商家*
