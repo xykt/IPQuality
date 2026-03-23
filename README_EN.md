@@ -199,7 +199,8 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 | LisaHost</br>丽萨主机 | ![lisa_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_lisa.png) | [https://lisahost.com](https://lisahost.com)|
 | VIRCS</br>威尔克斯 | ![vircs_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vircs.png) | [https://vircs.com](https://www.vircs.com/promotion?code=6)|   
 | RapidProxy</br>`ISP IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)|   
-| HNCloud</br>华纳云 | ![hncloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_hncloud.png) | [https://hncloud.com](https://www.hncloud.com/activity/activity_2026spring.html/?g=nodequality)| 
+| HNCloud</br>华纳云 | ![hncloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_hncloud.png) | [https://hncloud.com](https://www.hncloud.com/activity/activity_2026spring.html/?g=nodequality)|  
+| VMRack | ![vmrack_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vmrack.png) | [https://vmrack.net](https://www.vmrack.net?affid=ipcheck)| 
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **Only accepting merchants with long-term stable operations and good reputation*
