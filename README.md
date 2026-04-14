@@ -205,6 +205,7 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 | 华纳云</br>HNCloud | ![hncloud_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_hncloud.png) | [https://hncloud.com](https://www.hncloud.com/activity/activity_2026spring.html/?g=nodequality)| 
 | VMRack | ![vmrack_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vmrack.png) | [https://vmrack.net](https://www.vmrack.net?affid=ipcheck)|  
 | 蔭雲</br>YINNET | ![yinnet_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_yinnet.png) | [https://yin-net.com](https://yin-net.com)| 
+| Swiftproxy</br>`原生IP` | ![swiftproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_swiftproxy.png) | [https://swiftproxy.net](https://www.swiftproxy.net/)|  
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **仅接受长期稳定运营，信誉良好的商家*
