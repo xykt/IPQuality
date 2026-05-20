@@ -212,4 +212,4 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 
 **Daily Runs History:**
 
-![daily_runs_history](https://hits.xykt.de/history/ip.svg?days=46&chartType=bar&title=Daily%20Runs%20of%20Network%20Quality%20Script&width=1024&height=400&color=green)
+![daily_runs_history](https://hits.xykt.de/history/ip.svg?days=46&chartType=bar&title=Daily%20Runs%20of%20IP%20Quality%20Script&width=1024&height=400&color=green)
