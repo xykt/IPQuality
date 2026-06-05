@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-03-13"
+script_version="v2026-03-29"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -558,10 +558,10 @@ return 1
 get_ipv4(){
 local response
 IPV4=""
-local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
+local API_NET=("ipinfo.io/ip" "myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s4 --max-time 2 "$p")
-if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
+if [[ $? -eq 0 && $response =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]];then
 IPV4="$response"
 break
 fi
@@ -601,7 +601,8 @@ IPV6=""
 local API_NET=("myip.check.place" "ip.sb" "ping0.cc" "icanhazip.com" "api64.ipify.org" "ifconfig.co" "ident.me")
 for p in "${API_NET[@]}";do
 response=$(curl $CurlARG -s6k --max-time 2 "$p")
-if [[ $? -eq 0 && ! $response =~ error && -n $response ]];then
+response="${response%$'\n'}"
+if [[ $? -eq 0 && $response =~ ^[0-9a-fA-F:]+$ && $response == *:* ]];then
 IPV6="$response"
 break
 fi
