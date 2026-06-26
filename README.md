@@ -204,7 +204,8 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 | RapidProxy</br>`原生IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)|   
 | 蔭雲</br>YINNET | ![yinnet_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_yinnet.png) | [https://yin-net.com](https://yin-net.com)| 
 | Swiftproxy</br>`原生IP` | ![swiftproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_swiftproxy.png) | [https://swiftproxy.net](https://www.swiftproxy.net/?ref=ipquality)|   
-| IPWO</br>`原生IP` | ![ipwo_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ipwo.png) | [https://ipwo.net](https://www.ipwo.net/?ref=githubxykt)|  
+| IPWO</br>`原生IP` | ![ipwo_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ipwo.png) | [https://ipwo.net](https://www.ipwo.net/?ref=githubxykt)|   
+| IPPeak</br>`原生IP` | ![ippeak_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ippeak.png) | [https://ippeak.com](https://www.ippeak.com/?utm_t=1&utm_i=125)|  
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **仅接受长期稳定运营，信誉良好的商家*
