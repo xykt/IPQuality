@@ -211,7 +211,7 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 
 **Stars History:**
 
-![Stargazers over time](https://starchart.cc/xykt/IPQuality.svg?background=%23FFFFFF&axis=%23333333&line=%2377ff77)
+![Stargazers over time](https://star.xykt.de/xykt/IPQuality.svg?width=1024&height=400&maxRequestPages=20&xTicks=9&yTicks=6&showTitle=false&samplePointRadius=4&lineColor=green&samplePointColor=green&fillColor=green)
 
 **Daily Runs History:**
 
