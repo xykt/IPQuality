@@ -83,10 +83,6 @@ bsb.empty.us
 bsb.spamlookup.net
 cart00ney.surriel.com
 catchspam.com
-cbl.anti-spam.org.cn
-cblless.anti-spam.org.cn
-cblplus.anti-spam.org.cn
-cdl.anti-spam.org.cn
 china.rominet.net
 client-domain.sjesl.monkeys.com
 combined.abuse.ch
@@ -110,7 +106,6 @@ dnsbl.abuse.ch
 dnsbl.anticaptcha.net
 dnsbl.antispam.or.id
 dnsbl.calivent.com.pe
-dnsbl.cbn.net.id
 dnsblchile.org
 dnsbl.clue-by-4.org
 dnsbl.cobion.com
@@ -147,7 +142,6 @@ drone.abuse.ch
 dronebl.noderebellion.net
 dsn.rfc-clueless.org
 dsn.rfc-ignorant.org
-dssl.imrss.org
 duinv.aupads.org
 dul.dnsbl.sorbs.net
 dul.dnsbl.sorbs.netdul.ru
@@ -217,12 +211,10 @@ list.anonwhois.net
 list.bbfh.org
 list.blogspambl.com
 list.dnswl.org
-list.quorum.to
 mail-abuse.blacklist.jippg.org
 mail.people.it
 manual.orbz.gst-group.co.uk
 misc.dnsbl.sorbs.net
-mr-out.imrss.org
 msgid.bl.gweep.ca
 mtawlrev.dnsbl.rediris.es
 multi.surbl.org
@@ -278,7 +270,6 @@ rbl.abuse.ro
 rbl.blakjak.net
 rbl.blockedservers.com
 rbl.bulkfeeds.jp
-rbl.cbn.net.id
 rbl.dns-servicios.com
 rbl.echelon.pl
 rbl.efnethelp.net
@@ -294,7 +285,6 @@ rbl.jp
 rbl.lugh.ch
 rbl.mail-abuse.org
 rbl.ma.krakow.pl
-rbl.ntvinet.net
 rbl.pil.dk
 rbl.polarcomm.net
 rbl.rope.net
@@ -315,7 +305,6 @@ relays.dorkslayers.com
 relays.nether.net
 relays.radparker.com
 relays.sandes.dk
-relaywatcher.n13mbl.com
 rep.mailspike.net
 reputation-domain.rbl.scrolloutf1.com
 reputation-ip.rbl.scrolloutf1.com
@@ -367,8 +356,6 @@ spamsources.fabel.dk
 spam.spamrats.com
 spamsupport.dnsbl.rangers.eu.org
 spam.wonk.org
-spam.wytnij.to
-spbl.bl.winbots.org
 spews.block.transip.nl
 stale.dict.rbl.arix.com
 stale.sa_slip.arix.com
@@ -395,7 +382,6 @@ urired.spameatingmonkey.net
 url.rbl.jp
 v4.fullbogons.cymru.com
 v6.fullbogons.cymru.com
-vbl.mookystick.com
 virbl.bit.nl
 virbl.dnsbl.bit.nl
 virus.rbl.jp
@@ -407,7 +393,6 @@ vote.drbl.dataforce.net
 vote.drbldf.dsbl.ru
 vote.drbl.gremlin.ru
 vote.drbl.host.kz
-vote.rbl.ntvinet.net
 vouch.dwl.spamhaus.org
 wadb.isipp.com
 wbl.triumf.ca
@@ -430,7 +415,6 @@ worm.dnsbl.rangers.eu.org
 wormrbl.imp.ch
 worms-bl.kundenserver.de
 wpb.bl.reynolds.net.au
-xbl.selwerd.cx
 ybl.megacity.org
 zebl.zoneedit.com
 z.mailspike.net
