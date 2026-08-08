@@ -926,9 +926,9 @@ bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
 if [[ $IP == *:* ]];then
-local RESPONSE=$(curl -Ls -m 10 "https://api.ipapi.is/?q=$IP")
+local RESPONSE=$(curl -Ls -m 10 -H 'origin: https://ipapi.is' "https://api.ipapi.is/?q=$IP")
 else
-local RESPONSE=$(curl $CurlARG -sL -m 10 "https://api.ipapi.is/?q=$IP")
+local RESPONSE=$(curl $CurlARG -sL -m 10 -H 'origin: https://ipapi.is' "https://api.ipapi.is/?q=$IP")
 fi
 echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
