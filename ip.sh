@@ -926,6 +926,8 @@ bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
 local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipapi")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+[[ -z $RESPONSE ]]&&return 1
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
 shopt -s nocasematch
@@ -959,11 +961,10 @@ case ${ipapi[comtype]} in
 ;;
 *)ipapi[scomtype]="${stype[other]}"
 esac
-[[ -z $RESPONSE ]]&&return 1
 ipapi[scoretext]=$(echo "$RESPONSE"|jq -r '.company.abuser_score')
 ipapi[scorenum]=$(echo "${ipapi[scoretext]}"|awk '{print $1}')
 ipapi[risktext]=$(echo "${ipapi[scoretext]}"|awk -F'[()]' '{print $2}')
-ipapi[score]=$(awk "BEGIN {printf \"%.2f%%\", ${ipapi[scorenum]} * 100}")
+[[ -n ${ipapi[scorenum]} ]]&&ipapi[score]=$(awk "BEGIN {printf \"%.2f%%\", ${ipapi[scorenum]} * 100}")
 case ${ipapi[risktext]} in
 "Very Low")ipapi[risk]="${sscore[verylow]}"
 ;;
