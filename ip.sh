@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-09-04"
+script_version="v2026-09-16"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1513,7 +1513,7 @@ fi
 local isCN=$(echo $tmpresult|grep 'www.google.cn')
 if [ -n "$isCN" ];then
 youtube[ustatus]="${smedia[cn]}"
-youtube[uregion]="  [CN]   "
+youtube[uregion]="  $Font_Red[CN]$Font_Green   "
 youtube[utype]="${smedia[nodata]}"
 return
 fi
