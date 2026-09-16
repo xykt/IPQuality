@@ -926,6 +926,8 @@ bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 ipapi=()
 local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipapi")
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+[[ -z $RESPONSE ]]&&return 1
 ipapi[usetype]=$(echo "$RESPONSE"|jq -r '.asn.type')
 ipapi[comtype]=$(echo "$RESPONSE"|jq -r '.company.type')
 shopt -s nocasematch
@@ -959,11 +961,10 @@ case ${ipapi[comtype]} in
 ;;
 *)ipapi[scomtype]="${stype[other]}"
 esac
-[[ -z $RESPONSE ]]&&return 1
 ipapi[scoretext]=$(echo "$RESPONSE"|jq -r '.company.abuser_score')
 ipapi[scorenum]=$(echo "${ipapi[scoretext]}"|awk '{print $1}')
 ipapi[risktext]=$(echo "${ipapi[scoretext]}"|awk -F'[()]' '{print $2}')
-ipapi[score]=$(awk "BEGIN {printf \"%.2f%%\", ${ipapi[scorenum]} * 100}")
+[[ -n ${ipapi[scorenum]} ]]&&ipapi[score]=$(awk "BEGIN {printf \"%.2f%%\", ${ipapi[scorenum]} * 100}")
 case ${ipapi[risktext]} in
 "Very Low")ipapi[risk]="${sscore[verylow]}"
 ;;
@@ -1134,7 +1135,7 @@ show_progress_bar "$temp_info" $((40-6-${sinfo[ldatabase]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 dbip=()
-local tmpcurlarg='$CurlARG'
+local tmpcurlarg="$CurlARG"
 if [[ $IP == *:* ]];then
 tmpcurlarg=""
 fi
@@ -1271,7 +1272,7 @@ else
 echo 1
 fi
 else
-echo 0
+echo 1
 fi
 }
 function Check_DNS_1(){
@@ -1300,7 +1301,7 @@ function Check_DNS_3(){
 local resultdnstext=$(dig "test$RANDOM$RANDOM.$1"|grep "ANSWER:")
 local resultdnstext=${resultdnstext#*"ANSWER: "}
 local resultdnstext=${resultdnstext%", AUTHORITY:"*}
-if [ "$resultdnstext" == "0" ];then
+if [ "$resultdnstext" == "0" ]||[ -z "$resultdnstext" ];then
 echo 1
 else
 echo 0
@@ -1512,7 +1513,7 @@ fi
 local isCN=$(echo $tmpresult|grep 'www.google.cn')
 if [ -n "$isCN" ];then
 youtube[ustatus]="${smedia[cn]}"
-youtube[uregion]="  $Font_Red[CN]$Font_Green   "
+youtube[uregion]="  [CN]   "
 youtube[utype]="${smedia[nodata]}"
 return
 fi
@@ -1558,7 +1559,7 @@ amazon[uregion]="${smedia[nodata]}"
 amazon[utype]="${smedia[nodata]}"
 return
 fi
-local result=$(echo $tmpresult|grep '"currentTerritory":'|sed 's/.*currentTerritory//'|cut -f3 -d'"'|head -n 1)
+local result=$(echo $tmpresult|grep -o -E '"currentTerritory":\s*"[A-Z]{2}"'|head -n 1|cut -d'"' -f4)
 if [ -n "$result" ];then
 amazon[ustatus]="${smedia[yes]}"
 amazon[uregion]="  [$result]   "
@@ -2419,6 +2420,7 @@ type_updates+=".Type |= . * { Usage: { IP2LOCATION: \"$(clean_ansi "${ip2locatio
 type_updates+=".Type |= . * { Company: { IPinfo: \"$(clean_ansi "${ipinfo[scomtype]:-null}")\" } } | "
 type_updates+=".Type |= . * { Company: { ipregistry: \"$(clean_ansi "${ipregistry[scomtype]:-null}")\" } } | "
 type_updates+=".Type |= . * { Company: { ipapi: \"$(clean_ansi "${ipapi[scomtype]:-null}")\" } } | "
+type_updates+=".Type |= . * { Company: { IP2LOCATION: \"$(clean_ansi "${ip2location[scomtype]:-null}")\" } } | "
 score_updates+=".Score |= . + { IP2LOCATION: \"${ip2location[score]:-null}\" } | "
 score_updates+=".Score |= . + { SCAMALYTICS: \"${scamalytics[score]:-null}\" } | "
 score_updates+=".Score |= . + { ipapi: \"${ipapi[score]:-null}\" } | "
