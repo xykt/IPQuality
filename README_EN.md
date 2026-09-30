@@ -200,7 +200,6 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 | RapidProxy</br>`ISP IP` | ![rapidproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rapidproxy.png) | [https://rapidproxy.io](https://www.rapidproxy.io/?ref=gitipquality)|   
 | YINNET</br>蔭雲 | ![yinnet_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_yinnet.png) | [https://yin-net.com](https://yin-net.com)| 
 | Swiftproxy</br>`ISP IP` | ![swiftproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_swiftproxy.png) | [https://swiftproxy.net](https://www.swiftproxy.net/?ref=ipquality)|   
-| IPPeak</br>`ISP IP` | ![ippeak_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ippeak.png) | [https://ippeak.com](https://www.ippeak.com/?utm_t=1&utm_i=125)|  
 | ColaProxy</br>`ISP IP` | ![colaproxy_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_colaproxy.png) | [https://colaproxy.com](https://colaproxy.com/?utm_source=IPQuality&utm_medium=IPQuality&ref=IPQuality)|  
 | VMRack | ![vmrack_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vmrack.png) | [https://vmrack.com](https://www.vmrack.net?affid=ipeck)| 
 
