@@ -1,12 +1,11 @@
 #!/bin/bash
 script_version="v2026-11-07"
 check_bash(){
-current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
-if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
+if ((BASH_VERSINFO[0]<4));then
 echo "ERROR: Bash version is lower than 4.0!"
 echo "Tips: Run the following script to automatically upgrade Bash."
 echo "bash <(curl -sL https://raw.githubusercontent.com/xykt/IPQuality/main/ref/upgrade_bash.sh)"
-exit 0
+exit 1
 fi
 }
 check_bash
@@ -2234,9 +2233,9 @@ esac
 done
 if [[ $mode_menu -eq 1 ]];then
 if [[ $YY == "cn" ]];then
-eval "bash <(curl -sL https://Check.Place) -I"
+"$BASH" <(curl -sL https://Check.Place) -I
 else
-eval "bash <(curl -sL https://Check.Place) -EI"
+"$BASH" <(curl -sL https://Check.Place) -EI
 fi
 exit 0
 fi
