@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-09-16"
+script_version="v2026-11-07"
 check_bash(){
 current_bash_version=$(bash --version|head -n 1|awk -F ' ' '{for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+\.[0-9]+\.[0-9]+/) {print $i; exit}}'|cut -d . -f 1)
 if [ "$current_bash_version" = "0" ]||[ "$current_bash_version" = "1" ]||[ "$current_bash_version" = "2" ]||[ "$current_bash_version" = "3" ];then
@@ -1598,7 +1598,7 @@ reddit[utype]="${smedia[nodata]}"
 return
 fi
 fi
-resp=$(curl $useNIC $usePROXY -$1 -fsL --user-agent "$UA_Browser" --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat")
+resp=$(curl $useNIC $usePROXY -$1 -fsL --http2 --user-agent "$UA_Browser" -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Referer: https://www.reddit.com/' -H 'Origin: https://www.reddit.com' -H 'Sec-CH-UA: "Google Chrome";v="136", "Chromium";v="136", "Not.A/Brand";v="99"' -H 'Sec-CH-UA-Mobile: ?0' -H 'Sec-CH-UA-Platform: "Windows"' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Priority: u=1, i' -H 'Connection: keep-alive' --compressed --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat")
 http_code=$(printf '%s' "$resp"|tail -n 1|tr -d '\r')
 html=$(printf '%s' "$resp"|sed '$d')
 if [ "$http_code" = "200" ];then
@@ -2425,7 +2425,7 @@ score_updates+=".Score |= . + { IP2LOCATION: \"${ip2location[score]:-null}\" } |
 score_updates+=".Score |= . + { SCAMALYTICS: \"${scamalytics[score]:-null}\" } | "
 score_updates+=".Score |= . + { ipapi: \"${ipapi[score]:-null}\" } | "
 score_updates+=".Score |= . + { AbuseIPDB: \"${abuseipdb[score]:-null}\" } | "
-score_updates+=".Score |= . + { IPQS: \"${ipapi[ipqs]:-null}\" } | "
+score_updates+=".Score |= . + { IPQS: \"${ipqs[ipqs]:-null}\" } | "
 score_updates+=".Score |= . + { DBIP: \"${dbip[score]:-null}\" } | "
 factor_updates+=$(factor_bool "${ip2location[countrycode]}" "IP2LOCATION" "CountryCode")
 factor_updates+=$(factor_bool "${ipapi[countrycode]}" "ipapi" "CountryCode")
