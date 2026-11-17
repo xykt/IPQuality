@@ -186,6 +186,7 @@ docker run --rm --net=host -it xykt/ipquality & docker rmi xykt/ipquality > NUL 
 | - | - | - | 
 | IP2Location | ![ip2location_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ip2location.png) | [https://ip2location.io](https://ip2location.io)</br>[https://ip2location.com](https://ip2location.com) | 
 | Scamalytics | ![scamalytics_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_scamalytics.png) | [https://scamalytics.com](https://scamalytics.com) | 
+| ipapi | ![ipapi_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_ipapi.png) | [https://ipapi.is](https://ipapi.is/?ref=ipquality) | 
 
 - 衷心感谢主流IP风险数据库[AbuseIPDB](https://www.abuseipdb.com/)/[Cloudflare](https://cloudflare.com/)/[DB-IP](https://db-ip.com/)/[IP2Location](https://www.ip2location.io/)/[ipapi](https://ipapi.is/)/[IPinfo](https://ipinfo.io/)/[IPQS](https://www.ipqualityscore.com/)/[ipregistry](https://ipregistry.co/)/[Scamalytics](https://scamalytics.com/)提供的风险数据（排名不分先后）
 
