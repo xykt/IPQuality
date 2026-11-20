@@ -1290,7 +1290,7 @@ function Check_DNS_2(){
 local resultdnstext=$(dig $1|grep "ANSWER:")
 local resultdnstext=${resultdnstext#*"ANSWER: "}
 local resultdnstext=${resultdnstext%", AUTHORITY:"*}
-if [ "$resultdnstext" == "0" ]||[ "$resultdnstext" == "1" ]||[ "$resultdnstext" == "2" ];then
+if [ "$resultdnstext" == "1" ]||[ "$resultdnstext" == "2" ];then
 echo 0
 else
 echo 1
@@ -1458,36 +1458,59 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 netflix=()
-local checkunlockurl="netflix.com"
+local checkunlockurl="www.netflix.com"
 local result1=$(Check_DNS_1 $checkunlockurl)
 local result2=$(Check_DNS_2 $checkunlockurl)
-local result3=$(Check_DNS_3 $checkunlockurl)
+local result3=$(Check_DNS_3 "netflix.com")
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
-local result1=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsL -X GET --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
-local result2=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsL -X GET --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
-if [ -z "$result1" ]||[ -z "$result2" ];then
+local resp1 resp2 code1 code2 body1 body2 region unavail1=0 unavail2=0
+resp1=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -X GET --max-time 10 --tlsv1.3 --write-out '\n%{http_code}' "https://www.netflix.com/title/81280792" 2>/dev/null)
+code1=$(printf '%s' "$resp1"|tail -n 1|tr -d '\r')
+body1=$(printf '%s' "$resp1"|sed '$d')
+resp2=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -X GET --max-time 10 --tlsv1.3 --write-out '\n%{http_code}' "https://www.netflix.com/title/70143836" 2>/dev/null)
+code2=$(printf '%s' "$resp2"|tail -n 1|tr -d '\r')
+body2=$(printf '%s' "$resp2"|sed '$d')
+if [ -z "$code1" ]||[ "$code1" = "000" ]||[ -z "$code2" ]||[ "$code2" = "000" ];then
 netflix[ustatus]="${smedia[bad]}"
 netflix[uregion]="${smedia[nodata]}"
 netflix[utype]="${smedia[nodata]}"
 return
 fi
-region=$(echo "$result1"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
-[[ -n $region ]]&&region=$(echo "$result2"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
-result1=$(echo $result1|grep 'Oh no!')
-result2=$(echo $result2|grep 'Oh no!')
-if [ -n "$result1" ]&&[ -n "$result2" ];then
-netflix[ustatus]="${smedia[org]}"
-netflix[uregion]="  [$region]   "
-netflix[utype]="$resultunlocktype"
-return
-fi
-if [ -z "$result1" ]||[ -z "$result2" ];then
-netflix[ustatus]="${smedia[yes]}"
-netflix[uregion]="  [$region]   "
-netflix[utype]="$resultunlocktype"
-return
-fi
+if [ "$code1" = "403" ]&&[ "$code2" = "403" ];then
 netflix[ustatus]="${smedia[no]}"
+netflix[uregion]="${smedia[nodata]}"
+netflix[utype]="${smedia[nodata]}"
+return
+fi
+region=$(printf '%s' "$body1"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
+[[ -z $region ]]&&region=$(printf '%s' "$body2"|sed -n 's/.*"id":"\([^"]*\)".*"countryName":"[^"]*".*/\1/p'|head -n1)
+if [ "$code1" = "404" ]||grep -q 'Oh no!' <<<"$body1";then
+unavail1=1
+fi
+if [ "$code2" = "404" ]||grep -q 'Oh no!' <<<"$body2";then
+unavail2=1
+fi
+if [ "$unavail1" -eq 1 ]&&[ "$unavail2" -eq 1 ];then
+netflix[ustatus]="${smedia[org]}"
+if [ -n "$region" ];then
+netflix[uregion]="  [$region]   "
+else
+netflix[uregion]="${smedia[nodata]}"
+fi
+netflix[utype]="$resultunlocktype"
+return
+fi
+if { [ "$code1" = "200" ]&&[ "$unavail1" -eq 0 ]; }||{ [ "$code2" = "200" ]&&[ "$unavail2" -eq 0 ]; };then
+netflix[ustatus]="${smedia[yes]}"
+if [ -n "$region" ];then
+netflix[uregion]="  [$region]   "
+else
+netflix[uregion]="${smedia[nodata]}"
+fi
+netflix[utype]="$resultunlocktype"
+return
+fi
+netflix[ustatus]="${smedia[bad]}"
 netflix[uregion]="${smedia[nodata]}"
 netflix[utype]="${smedia[nodata]}"
 }
@@ -1586,8 +1609,8 @@ local resp http_code html region
 local resolve_opt=""
 if [ "$1" = "6" ];then
 local dual_ipv6
-dual_ipv6=$(dig AAAA reddit.com +short|head -n 1)
-[[ -z $dual_ipv6 ]]&&dual_ipv6=$(dig AAAA dualstack.reddit.map.fastly.net +short|head -n 1)
+dual_ipv6=$(dig AAAA reddit.com +short|grep -m1 ':')
+[[ -z $dual_ipv6 ]]&&dual_ipv6=$(dig AAAA dualstack.reddit.map.fastly.net +short|grep -m1 ':')
 if [ -n "$dual_ipv6" ];then
 resolve_opt="--resolve www.reddit.com:443:[$dual_ipv6]"
 else
@@ -1597,14 +1620,18 @@ reddit[utype]="${smedia[nodata]}"
 return
 fi
 fi
-resp=$(curl $useNIC $usePROXY -$1 -fsL --http2 --user-agent "$UA_Browser" -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Referer: https://www.reddit.com/' -H 'Origin: https://www.reddit.com' -H 'Sec-CH-UA: "Google Chrome";v="136", "Chromium";v="136", "Not.A/Brand";v="99"' -H 'Sec-CH-UA-Mobile: ?0' -H 'Sec-CH-UA-Platform: "Windows"' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Priority: u=1, i' -H 'Connection: keep-alive' --compressed --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat")
+resp=$(curl $CurlARG -$1 -sL --http2 --tlsv1.3 --user-agent "$UA_Browser" -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.9' --compressed --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat" 2>/dev/null)
 http_code=$(printf '%s' "$resp"|tail -n 1|tr -d '\r')
 html=$(printf '%s' "$resp"|sed '$d')
 if [ "$http_code" = "200" ];then
+if grep -qiE "blocked by network security|Whoa there, pardner" <<<"$html";then
+http_code="403"
+else
 region=$(grep -oE 'country="[^"]+"' <<<"$html"|sed -n 's/^country="\([^"]*\)"$/\1/p'|grep -m1 .)
 fi
+fi
 case "$http_code" in
-000)reddit[ustatus]="${smedia[bad]}"
+000|"")reddit[ustatus]="${smedia[bad]}"
 reddit[uregion]="${smedia[nodata]}"
 reddit[utype]="${smedia[nodata]}"
 ;;
@@ -1613,7 +1640,11 @@ reddit[uregion]="${smedia[nodata]}"
 reddit[utype]="${smedia[nodata]}"
 ;;
 200)reddit[ustatus]="${smedia[yes]}"
+if [ -n "$region" ];then
 reddit[uregion]="  [$region]   "
+else
+reddit[uregion]="${smedia[nodata]}"
+fi
 reddit[utype]="$resultunlocktype"
 ;;
 *)reddit[ustatus]="${smedia[bad]}"
