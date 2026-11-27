@@ -204,7 +204,8 @@ docker run --rm --net=host -it xykt/ipquality -E & docker rmi xykt/ipquality > N
 | VMRack | ![vmrack_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_vmrack.png) | [https://vmrack.com](https://www.vmrack.net?affid=ipeck)| 
 | KFCHost | ![kfchost_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_kfchost.png) | [https://kfchost.com](https://kfchost.com)| 
 | RFCHost | ![rfchost_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_rfchost.png) | [https://rfchost.com](https://rfchost.com)| 
-| PO0 | ![po0_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_po0.png) | [https://po0.io](https://po0.io)| 
+| PO0 | ![po0_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_po0.png) | [https://po0.io](https://po0.io)|   
+| Proxy-Seller</br>`ISP IP` | ![proxyseller_logo](https://raw.githubusercontent.com/xykt/IPQuality/main/res/sponsor/logo_proxyseller.png) | [https://proxy-seller.com](https://proxy-seller.com)|
 
 ##### *E-Mail: sponsor@check.place Telegram Bot: https://t.me/xythebot*
 **Only accepting merchants with long-term stable operations and good reputation*
