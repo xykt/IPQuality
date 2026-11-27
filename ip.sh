@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="v2026-11-07"
+script_version="v2026-11-27"
 check_bash(){
 if ((BASH_VERSINFO[0]<4));then
 echo "ERROR: Bash version is lower than 4.0!"
@@ -46,8 +46,8 @@ declare -A ipapi
 declare -A abuseipdb
 declare -A ip2location
 declare -A dbip
+declare -A ipwhois
 declare -A ipdata
-declare -A ipqs
 declare -A tiktok
 declare -A disney
 declare -A netflix
@@ -1159,6 +1159,22 @@ dbip[score]=100
 esac
 shopt -u nocasematch
 }
+db_ipwhois(){
+local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPWHOIS $Font_Suffix"
+((ibar_step+=3))
+show_progress_bar "$temp_info" $((40-8-${sinfo[ldatabase]}))&
+bar_pid="$!"&&disown "$bar_pid"
+trap "kill_progress_bar" RETURN
+ipwhois=()
+local RESPONSEBASE=$(curl $CurlARG -sL -$1 -m 10 "https://ipwhois.io/documentation?do=live_demo&ip=$IP&lang=en" -H "User-Agent: $UA_Browser" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.9" -H "Referer: https://ipwhois.io/" -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' -H 'sec-fetch-dest: empty' -H 'sec-fetch-mode: cors' -H 'sec-fetch-site: same-origin')
+local RESPONSE=$(echo "$RESPONSEBASE"|jq -r '.html'|base64 -d|sed -E 's/<\/?span[^>]*>//g; s/<[^>]+>[^<]*<\/[^>]+>//g'|sed -E 's/^([[:space:]]*)([a-z_]+)[[:space:]]*\{/\1"\2": {/g')
+echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
+ipwhois[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
+ipwhois[proxy]=$(echo "$RESPONSE"|jq -r '.security.proxy')
+ipwhois[tor]=$(echo "$RESPONSE"|jq -r '.security.tor')
+ipwhois[vpn]=$(echo "$RESPONSE"|jq -r '.security.vpn')
+ipwhois[server]=$(echo "$RESPONSE"|jq -r '.security.hosting')
+}
 db_ipdata(){
 local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}ipdata $Font_Suffix"
 ((ibar_step+=3))
@@ -1177,32 +1193,6 @@ ipdata[abuser2]=$(echo "$RESPONSE"|jq -r '.threat.is_known_abuser')
 ipdata[abuser3]=$(echo "$RESPONSE"|jq -r '.threat.is_known_attacker')
 [[ ${ipdata[abuser1]} == "true" || ${ipdata[abuser2]} == "true" || ${ipdata[abuser3]} == "true" ]]&&ipdata[abuser]="true"
 [[ ${ipdata[abuser1]} == "false" && ${ipdata[abuser2]} == "false" && ${ipdata[abuser3]} == "false" ]]&&ipdata[abuser]="false"
-}
-db_ipqs(){
-local temp_info="$Font_Cyan$Font_B${sinfo[database]}${Font_I}IPQS $Font_Suffix"
-((ibar_step+=3))
-show_progress_bar "$temp_info" $((40-5-${sinfo[ldatabase]}))&
-bar_pid="$!"&&disown "$bar_pid"
-trap "kill_progress_bar" RETURN
-ipqs=()
-local RESPONSE=$(curl $CurlARG -sL -$1 -m 10 "https://ipinfo.check.place/$IP?db=ipqualityscore")
-echo "$RESPONSE"|jq . >/dev/null 2>&1||RESPONSE=""
-ipqs[score]=$(echo "$RESPONSE"|jq -r '.fraud_score')
-if [[ ${ipqs[score]} -lt 75 ]];then
-ipqs[risk]="${sscore[low]}"
-elif [[ ${ipqs[score]} -lt 85 ]];then
-ipqs[risk]="${sscore[suspicious]}"
-elif [[ ${ipqs[score]} -lt 90 ]];then
-ipqs[risk]="${sscore[risky]}"
-elif [[ ${ipqs[score]} -ge 90 ]];then
-ipqs[risk]="${sscore[highrisk]}"
-fi
-ipqs[countrycode]=$(echo "$RESPONSE"|jq -r '.country_code')
-ipqs[proxy]=$(echo "$RESPONSE"|jq -r '.proxy')
-ipqs[tor]=$(echo "$RESPONSE"|jq -r '.tor')
-ipqs[vpn]=$(echo "$RESPONSE"|jq -r '.vpn')
-ipqs[abuser]=$(echo "$RESPONSE"|jq -r '.recent_abuse')
-ipqs[robot]=$(echo "$RESPONSE"|jq -r '.bot_status')
 }
 function check_ip_valide(){
 local IPPattern='^(\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>\.){3}\<([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\>$'
@@ -1328,7 +1318,7 @@ local result1=$(Check_DNS_1 $checkunlockurl)
 local result3=$(Check_DNS_3 $checkunlockurl)
 local resultunlocktype=$(Get_Unlock_Type $result1 $result3)
 local Ftmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/")
-[[ $Ftmpresult == *"Please wait..."* ]]&&Ftmpresult=$(curl $useNIC $usePROXY --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/explore")
+[[ $Ftmpresult == *"Please wait..."* ]]&&Ftmpresult=$(curl -$1 $useNIC $usePROXY --user-agent "$UA_Browser" -sL -m 10 "https://www.tiktok.com/explore")
 if [[ $Ftmpresult == "curl"* ]];then
 tiktok[ustatus]="${smedia[no]}"
 tiktok[uregion]="${smedia[nodata]}"
@@ -1346,7 +1336,7 @@ tiktok[utype]="$resultunlocktype"
 return
 fi
 local STmpresult=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com"|gunzip 2>/dev/null)
-[[ $Ftmpresult == *"Please wait..."* ]]&&STmpresult=$(curl $useNIC $usePROXY --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com/explore"|gunzip 2>/dev/null)
+[[ $Ftmpresult == *"Please wait..."* ]]&&STmpresult=$(curl -$1 $useNIC $usePROXY --user-agent "$UA_Browser" -sL -m 10 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" -H "Accept-Encoding: gzip" -H "Accept-Language: en" "https://www.tiktok.com/explore"|gunzip 2>/dev/null)
 local SRegion=$(echo $STmpresult|grep '"region":'|sed 's/.*"region"//'|cut -f2 -d'"')
 if [ -n "$SRegion" ];then
 tiktok[ustatus]="${smedia[idc]}"
@@ -1458,10 +1448,9 @@ show_progress_bar "$temp_info" $((40-8-${sinfo[lmedia]}))&
 bar_pid="$!"&&disown "$bar_pid"
 trap "kill_progress_bar" RETURN
 netflix=()
-local checkunlockurl="netflix.com"
-local result1=$(Check_DNS_1 $checkunlockurl)
-local result2=$(Check_DNS_2 $checkunlockurl)
-local result3=$(Check_DNS_3 $checkunlockurl)
+local result1=$(Check_DNS_1 "www.netflix.com")
+local result2=$(Check_DNS_2 "www.netflix.com")
+local result3=$(Check_DNS_3 "netflix.com")
 local resultunlocktype=$(Get_Unlock_Type $result1 $result2 $result3)
 local result1=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsL -X GET --max-time 10 --tlsv1.3 "https://www.netflix.com/title/81280792" 2>&1)
 local result2=$(curl $CurlARG -$1 --user-agent "$UA_Browser" -fsL -X GET --max-time 10 --tlsv1.3 "https://www.netflix.com/title/70143836" 2>&1)
@@ -1597,7 +1586,7 @@ reddit[utype]="${smedia[nodata]}"
 return
 fi
 fi
-resp=$(curl $useNIC $usePROXY -$1 -fsL --http2 --user-agent "$UA_Browser" -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Referer: https://www.reddit.com/' -H 'Origin: https://www.reddit.com' -H 'Sec-CH-UA: "Google Chrome";v="136", "Chromium";v="136", "Not.A/Brand";v="99"' -H 'Sec-CH-UA-Mobile: ?0' -H 'Sec-CH-UA-Platform: "Windows"' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Priority: u=1, i' -H 'Connection: keep-alive' --compressed --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat")
+resp=$(curl $useNIC $usePROXY -$1 -fsL --http2 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" -H 'Accept: */*' -H 'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Referer: https://www.reddit.com/' -H 'Origin: https://www.reddit.com' -H 'Sec-CH-UA: "Google Chrome";v="136", "Chromium";v="136", "Not.A/Brand";v="99"' -H 'Sec-CH-UA-Mobile: ?0' -H 'Sec-CH-UA-Platform: "Windows"' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'Priority: u=1, i' -H 'Connection: keep-alive' --compressed --max-time 10 $resolve_opt --write-out '\n%{http_code}' "https://www.reddit.com/svc/shreddit/reddit-chat")
 http_code=$(printf '%s' "$resp"|tail -n 1|tr -d '\r')
 html=$(printf '%s' "$resp"|sed '$d')
 if [ "$http_code" = "200" ];then
@@ -1995,10 +1984,6 @@ fi
 if [[ $mode_lite -eq 0 ]];then
 sscore_text "${abuseipdb[score]}" ${abuseipdb[score]} 25 25 100 11
 [[ -n ${abuseipdb[score]} ]]&&echo -ne "\r${Font_Cyan}AbuseIPDB${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${abuseipdb[risk]}\n"
-if [ -n "${ipqs[score]}" ]&&[ "${ipqs[score]}" != "null" ];then
-sscore_text "${ipqs[score]}" ${ipqs[score]} 75 85 100 6
-echo -ne "\r${Font_Cyan}IPQS${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${ipqs[risk]}\n"
-fi
 fi
 sscore_text " " ${dbip[score]} 33 66 100 7
 [[ -n ${dbip[risk]} ]]&&echo -ne "\r${Font_Cyan}DB-IP${sscore[colon]}$Font_White$Font_B${sscore[text1]}$Back_Green${sscore[text2]}$Back_Yellow${sscore[text3]}$Back_Red${sscore[text4]}$Font_Suffix${dbip[risk]}\n"
@@ -2091,39 +2076,39 @@ echo "$tmp_txt"
 show_factor(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry IPQS Scamalytics ipdata IPinfo DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipqs[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}${Font_I}IP2Location ipapi ipregistry DBIP Scamalytics ipdata IPinfo IPWHOIS$Font_Suffix\n"
+tmp_factor=$(format_factor "${ip2location[countrycode]}" "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${dbip[countrycode]}" "${scamalytics[countrycode]}" "${ipdata[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipqs[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${ip2location[proxy]}" "${ipapi[proxy]}" "${ipregistry[proxy]}" "${dbip[proxy]}" "${scamalytics[proxy]}" "${ipdata[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${ipregistry[tor]}" "${ipqs[tor]}" "${scamalytics[tor]}" "${ipdata[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${ip2location[tor]}" "${ipapi[tor]}" "${ipregistry[tor]}" "${dbip[tor]}" "${scamalytics[tor]}" "${ipdata[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipqs[vpn]}" "${scamalytics[vpn]}" "${ipdata[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${ip2location[vpn]}" "${ipapi[vpn]}" "${ipregistry[vpn]}" "${dbip[vpn]}" "${scamalytics[vpn]}" "${ipdata[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${ipregistry[server]}" "${ipqs[server]}" "${scamalytics[server]}" "${ipdata[server]}" "${ipinfo[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${ip2location[server]}" "${ipapi[server]}" "${ipregistry[server]}" "${dbip[server]}" "${scamalytics[server]}" "${ipdata[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipqs[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${ip2location[abuser]}" "${ipapi[abuser]}" "${ipregistry[abuser]}" "${dbip[abuser]}" "${scamalytics[abuser]}" "${ipdata[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${ipqs[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${ip2location[robot]}" "${ipapi[robot]}" "${ipregistry[robot]}" "${dbip[robot]}" "${scamalytics[robot]}" "${ipdata[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_factor_lite(){
 local tmp_factor=""
 echo -ne "\r${sfactor[title]}\n"
-echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    ipapi ipregistry IPinfo DB-IP$Font_Suffix\n"
-tmp_factor=$(format_factor "${ipapi[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${dbip[countrycode]}")
+echo -ne "\r$Font_Cyan${sfactor[factor]}$Font_I    DB-IP ipregistry IPinfo IPWHOIS$Font_Suffix\n"
+tmp_factor=$(format_factor "${dbip[countrycode]}" "${ipregistry[countrycode]}" "${ipinfo[countrycode]}" "${ipwhois[countrycode]}")
 echo -ne "\r$Font_Cyan${sfactor[countrycode]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${dbip[proxy]}")
+tmp_factor=$(format_factor "${dbip[proxy]}" "${ipregistry[proxy]}" "${ipinfo[proxy]}" "${ipwhois[proxy]}")
 echo -ne "\r$Font_Cyan${sfactor[proxy]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${dbip[tor]}")
+tmp_factor=$(format_factor "${dbip[tor]}" "${ipregistry[tor]}" "${ipinfo[tor]}" "${ipwhois[tor]}")
 echo -ne "\r$Font_Cyan${sfactor[tor]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${dbip[vpn]}")
+tmp_factor=$(format_factor "${dbip[vpn]}" "${ipregistry[vpn]}" "${ipinfo[vpn]}" "${ipwhois[vpn]}")
 echo -ne "\r$Font_Cyan${sfactor[vpn]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${dbip[server]}")
+tmp_factor=$(format_factor "${dbip[server]}" "${ipregistry[server]}" "${ipinfo[server]}" "${ipwhois[server]}")
 echo -ne "\r$Font_Cyan${sfactor[server]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${dbip[abuser]}")
+tmp_factor=$(format_factor "${dbip[abuser]}" "${ipregistry[abuser]}" "${ipinfo[abuser]}" "${ipwhois[abuser]}")
 echo -ne "\r$Font_Cyan${sfactor[abuser]}$Font_Suffix$tmp_factor\n"
-tmp_factor=$(format_factor "${ipapi[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${dbip[robot]}")
+tmp_factor=$(format_factor "${dbip[robot]}" "${ipregistry[robot]}" "${ipinfo[robot]}" "${ipwhois[robot]}")
 echo -ne "\r$Font_Cyan${sfactor[robot]}$Font_Suffix$tmp_factor\n"
 }
 show_media(){
@@ -2559,8 +2544,8 @@ db_ipapi $2
 [[ $mode_lite -eq 0 ]]&&db_abuseipdb $2||abuseipdb=()
 [[ $mode_lite -eq 0 ]]&&db_ip2location $2||ip2location=()
 db_dbip
+db_ipwhois $2
 [[ $mode_lite -eq 0 ]]&&db_ipdata $2||ipdata=()
-[[ $mode_lite -eq 0 ]]&&db_ipqs $2||ipqs=()
 MediaUnlockTest_TikTok $2
 MediaUnlockTest_DisneyPlus $2
 MediaUnlockTest_Netflix $2
